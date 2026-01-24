@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 const { NEXT_PUBLIC_BASE_URL = 'http://localhost:3000' } = process.env;
 
 export default async function Home() {
@@ -10,6 +11,7 @@ export default async function Home() {
           <div key={orgName}>
             <h1>{orgName}</h1>
             <h3>Potrzeby:</h3>
+            <Button>Click me</Button>
             <ul>
               {needs.map(({ name, link }) => (
                 <li key={link}>
