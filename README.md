@@ -19,6 +19,7 @@ We welcome contributions! Please follow these guidelines to ensure smooth collab
 
 ### Branch Naming
 
+<<<<<<< HEAD
 Create branches using the pattern: `type/#ticket_number-short-description`
 
 - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
