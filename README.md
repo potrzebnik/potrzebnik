@@ -51,7 +51,9 @@ feat: add organizations API endpoint (#18)
   npm run lint:fix
   npm run format
   ```
-- **Merge**: Squash merge unless there's a strong reason not to
+- **Merge**:
+  - You are **NOT ALLOWED** to merge to main without at least **one** approval
+  - Squash merge unless there's a strong reason not to
 
 ### Code Quality
 
