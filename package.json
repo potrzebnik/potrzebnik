@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "check": "tsc --noEmit && eslint .",
+    "check": "tsc --noEmit && eslint . && prettier --check .",
+    "format": "prettier --write .",
     "prepare": "husky",
     "storybook:dev": "storybook dev -p 6006",
     "storybook:build": "storybook build"
