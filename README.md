@@ -20,7 +20,7 @@ We welcome contributions! Please follow these guidelines to ensure smooth collab
 
 ### Getting Assigned
 
-- **Tickets are assigned** by maintainers—if you're interested in contributing, comment on an existing ticket on the [project board](https://github.com/orgs/potrzebnik/projects/1/views/1) or contact the project coordinator
+- **Tickets are assigned** by maintainers - if you're interested in contributing, comment on an existing ticket on the [project board](https://github.com/orgs/potrzebnik/projects/1/views/1) or contact the project coordinator
 - **Do not start work** on a ticket unless you are the assigned contributor
 
 ### Branch Naming
@@ -57,7 +57,7 @@ feat: add organizations API endpoint (#18)
 
 - Follow existing code style (Prettier + ESLint)
 - Add/update tests for behavior changes
-- Update documentation (README, comments) for public API changes
+- Update documentation (README, comments)
 
 **Questions?** Contact the project coordinator or open a discussion.
 
