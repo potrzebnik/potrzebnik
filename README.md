@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Potrzebnik 
+
 
 ## Getting Started
 
@@ -14,11 +15,46 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Contributing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+We welcome contributions! Please follow these guidelines to ensure smooth collaboration.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Getting Assigned
+- **Tickets are assigned** by maintainers—if you're interested in contributing, comment on an existing ticket on the [project board](https://github.com/orgs/potrzebnik/projects/1/views/1) or contact the project coordinator
+- **Do not start work** on a ticket unless you are the assigned contributor
+
+### Branch Naming
+Create branches using the pattern: `type/#ticket_number-short-description`
+- Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+- Example: `feat/#12-tailwind-setup`
+
+### Commit Messages
+Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and include the ticket number in **at least one commit** on your branch:
+
+```
+feat: add organizations API endpoint (#18)
+```
+
+**Why?** Mentioning the ticket number links your work to the ticket and Pull Request. Since we squash-merge PRs, only one commit needs the ticket number - it will be preserved in the final squashed commit.
+
+### Pull Requests
+- **Required**: All changes must go through PR - no direct pushes to `main`
+- **Title format**: `type: description (#ticket)` (e.g., `feat: add orgs API (#18)`)
+- **Scope**: Keep PRs small and focused on a single logical change
+- **Checks**: Ensure all checks pass before requesting review:
+  ```bash
+  npm test
+  npm run lint
+  npm run format
+  ```
+- **Merge**: Squash merge unless there's a strong reason not to
+
+### Code Quality
+- Follow existing code style (Prettier + ESLint)
+- Add/update tests for behavior changes
+- Update documentation (README, comments) for public API changes
+
+**Questions?** Contact the project coordinator or open a discussion.
 
 ## Learn More
 
@@ -29,8 +65,3 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
