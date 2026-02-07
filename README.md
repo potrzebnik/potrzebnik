@@ -5,13 +5,7 @@
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm run dev
 ```
 
 ## Contributing
@@ -47,9 +41,9 @@ feat: add organizations API endpoint (#18)
 - **Scope**: Keep PRs small and focused on a single logical change
 - **Checks**: Ensure all checks pass before requesting review:
   ```bash
-  npm run check
-  npm run lint:fix
-  npm run format
+  pnpm run check
+  pnpm run lint:fix
+  pnpm run format
   ```
 - **Merge**:
   - You are **NOT ALLOWED** to merge to main without at least **one** approval
