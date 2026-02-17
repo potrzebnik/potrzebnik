@@ -19,7 +19,7 @@ We welcome contributions! Please follow these guidelines to ensure smooth collab
 
 ### Branch Naming
 
-Create branches using the pattern: `type/#ticket_number-short_description`
+Create branches using the pattern: `type/#ticket_number-short-description`
 
 - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 - Example: `feat/#12-tailwind-setup`
