@@ -2,9 +2,13 @@
 
 ## Getting Started
 
-First, run the development server:
+Install `pnpm` if missing: <https://pnpm.io/installation>
 
 ```bash
+# install dependencies
+pnpm install
+
+# start dev server
 pnpm run dev
 ```
 
