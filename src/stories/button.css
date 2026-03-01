@@ -29,17 +29,17 @@
   font-size: 16px;
 }
 .storybook-button--unique {
-    padding: 20px 30px;
-    font-size: 34px;
-    font-weight: 400;
-    color: #ffffff;
-    border-radius: 20px;
-    transform: scale(1);
-    transition-duration: 0.7s;
-    background-image: linear-gradient(to right, #da9131, #555ab9);
+  padding: 20px 30px;
+  font-size: 34px;
+  font-weight: 400;
+  color: #ffffff;
+  border-radius: 20px;
+  transform: scale(1);
+  transition-duration: 0.7s;
+  background-image: linear-gradient(to right, #da9131, #555ab9);
 }
-.storybook-button--unique:hover{
-    background-image: linear-gradient(to top, #da9131, #555ab9);
-    transform: scale(1.2);
-    transition-duration: 0.7s;
+.storybook-button--unique:hover {
+  background-image: linear-gradient(to top, #da9131, #555ab9);
+  transform: scale(1.2);
+  transition-duration: 0.7s;
 }
