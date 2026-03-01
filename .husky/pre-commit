@@ -1,1 +1,3 @@
-npx lint-staged
+. "$(dirname "$0")/hook-env.sh"
+
+lint-staged
