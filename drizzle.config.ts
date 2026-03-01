@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
-import { resolveDatabaseUrl } from './src/db/resolve-database-url';
+import { resolveDatabaseUrl } from '@/db/resolve-database-url';
 
 export default defineConfig({
   out: './drizzle',

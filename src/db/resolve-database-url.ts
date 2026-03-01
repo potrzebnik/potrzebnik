@@ -1,4 +1,4 @@
-const ENV_REFERENCE_PATTERN = /\$\{([A-Z0-9_]+)\}/g;
+const ENV_REFERENCE_PATTERN = /\$\{([A-Z0-9_]+)}/g;
 
 function expandEnvReferences(value: string, env: NodeJS.ProcessEnv): string {
   return value.replace(ENV_REFERENCE_PATTERN, (_, key: string) => {
