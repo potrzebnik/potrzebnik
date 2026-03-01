@@ -1,5 +1,13 @@
 # Potrzebnik
 
+## Prerequisites
+
+Before running the project locally, make sure you have:
+
+- Node.js and npm: [install instructions](https://nodejs.org/en/download)
+- pnpm: [install instructions](https://pnpm.io/installation)
+- Docker with Docker Compose: [install instructions](https://docs.docker.com/get-docker/)
+
 ## Getting Started
 
 Set up environment variables first:
@@ -12,6 +20,12 @@ Then start local database + migrations + development server:
 
 ```bash
 bash startup_dev.sh
+```
+
+On Windows (CMD/PowerShell):
+
+```bat
+startup_dev.bat
 ```
 
 ## Contributing
