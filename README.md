@@ -2,10 +2,16 @@
 
 ## Getting Started
 
-First, run the development server:
+Set up environment variables first:
 
 ```bash
-pnpm run dev
+cp .env.example .env
+```
+
+Then start local database + migrations + development server:
+
+```bash
+bash startup_dev.sh
 ```
 
 ## Contributing
