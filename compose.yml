@@ -14,5 +14,3 @@ services:
 
 volumes:
   postgres_data:
-
-## now configure drizzle connection to this container start with `.env` file
