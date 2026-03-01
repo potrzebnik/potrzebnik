@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    '.storybook/**',
+    'storybook-static/**',
   ]),
   eslintPluginPrettier,
   ...storybook.configs['flat/recommended'],
