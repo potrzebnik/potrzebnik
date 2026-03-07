@@ -1,11 +1,45 @@
 # Potrzebnik
 
+## Prerequisites
+
+Before running the project locally, make sure you have:
+
+- Node.js and npm: [install instructions](https://nodejs.org/en/download)
+- pnpm: [install instructions](https://pnpm.io/installation)
+- Docker with Docker Compose: [install instructions](https://docs.docker.com/get-docker/)
+
 ## Getting Started
 
-First, run the development server:
+Set up environment variables first:
 
 ```bash
-pnpm run dev
+cp .env.example .env
+```
+
+Then start local database and development server:
+
+```bash
+bash startup_dev.sh
+```
+
+## Database Migrations
+
+Apply all pending migrations:
+
+```bash
+pnpm run db:migrate
+```
+
+Generate a new migration after schema changes:
+
+```bash
+pnpm run db:generate
+```
+
+Open Drizzle Studio:
+
+```bash
+pnpm run db:studio
 ```
 
 ## Contributing
