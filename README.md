@@ -22,12 +22,6 @@ Then start local database + migrations + development server:
 bash startup_dev.sh
 ```
 
-On Windows (CMD/PowerShell):
-
-```bat
-startup_dev.bat
-```
-
 ## Contributing
 
 We welcome contributions! Please follow these guidelines to ensure smooth collaboration.
