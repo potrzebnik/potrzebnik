@@ -9,4 +9,5 @@ fi
 # startup logic
 pnpm install
 docker compose up -d --wait
+pnpm run db:migrate
 npm run dev
