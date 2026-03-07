@@ -39,5 +39,4 @@ fi
 pnpm install
 docker compose up -d
 wait_for_postgres_health
-npm run db:migrate
 npm run dev
