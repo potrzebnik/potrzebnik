@@ -1,0 +1,133 @@
+classDiagram
+class User {
++id: int
++email: String
++passwordHash: String
++role: UserRole
++createdAt: Timestamp
++updatedAt: Timestamp
+}
+
+    class UserRole {
+        <<enumeration>>
+        DONOR
+        ORGANIZATION_ADMIN
+    }
+
+    class Need {
+        +id: int
+        +description: String
+        +price: Number
+        +organizationId: int
+        +donee: String
+        +item: String
+        +addressId: int
+        +expiry: Date
+        +photo?: String
+        +status: NeedStatus
+        +categoryId: int
+        +type: NeedType
+        +important: boolean
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class NeedStatus {
+        <<enumeration>>
+        ACTIVE
+        FULFILLED
+        EXPIRED
+    }
+
+    class NeedType {
+        <<enumeration>>
+        ONE_TIME
+%%        RECURRING
+    }
+
+%%    class RecurringNeedConfig {
+%%        +id: int
+%%        +needId: int
+%%        +intervalDays: Integer
+%%        +nextOccurrence: Date
+%%        +endDate?: Date
+%%        +createdAt: Timestamp
+%%        +updatedAt: Timestamp
+%%    }
+
+    class NeedStatusHistory {
+        +id: int
+        +needId: int
+        +status: NeedStatus
+        +changedById: int
+        +createdAt: Timestamp
+    }
+
+    class NeedCategory {
+        +id: int
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class Donor {
+        +id: int
+        +userId: int
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class Organization {
+        +id: int
+        +userId: int
+        +name: String
+        +krs: String
+        +addressId: int
+        +categoryId: int
+        +phoneNumber: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class OrganizationCategory {
+        +id: int
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class Address {
+        +id: int
+        +city: String
+        +street: String
+        +building: String
+        +apartment?: String
+        +zipCode: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class DonorFavouriteNeed {
+        +donorId: int [PK]
+        +needId: int [PK]
+        +createdAt: Timestamp
+    }
+
+    %% Relations
+    User -- UserRole
+    Donor "userId" --> User : id
+    Organization "userId" --> User : id
+    Need "categoryId" --> NeedCategory : id
+    Need "organizationId" --> Organization : id
+    Need "addressId" --> Address : id
+    Need -- NeedStatus
+    Need -- NeedType
+%%    RecurringNeedConfig "needId" --> Need : id
+    NeedStatusHistory "needId" --> Need : id
+    NeedStatusHistory -- NeedStatus
+    NeedStatusHistory "changedById" --> User : id
+    Organization "addressId" --> Address : id
+    Organization "categoryId" --> OrganizationCategory : id
+    DonorFavouriteNeed "donorId" --> Donor : id
+    DonorFavouriteNeed "needId" --> Need : id
