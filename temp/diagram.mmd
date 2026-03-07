@@ -1,53 +1,60 @@
 classDiagram
-class User {
-+id: int
-+email: String
-+passwordHash: String
-+role: UserRole
-+createdAt: Timestamp
-+updatedAt: Timestamp
-}
+    direction LR
 
-    class UserRole {
-        <<enumeration>>
-        DONOR
-        ORGANIZATION_ADMIN
+%% ── Core: User & Roles ──────────────────────
+
+    class User {
+        +id: int [PK]
+        +email: String
+        +passwordHash: String
+        +role: UserRole ~DONOR | ORGANIZATION_ADMIN~
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
     }
 
+    class Donor {
+        +id: int [PK]
+        +userId: int [FK]
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class Organization {
+        +id: int [PK]
+        +userId: int [FK]
+        +name: String
+        +krs: String
+        +addressId: int [FK]
+        +categoryId: int [FK]
+        +phoneNumber: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+%% ── Need ────────────────────────────────────
+
     class Need {
-        +id: int
+        +id: int [PK]
         +description: String
         +price: Number
-        +organizationId: int
+        +organizationId: int [FK]
         +donee: String
         +item: String
-        +addressId: int
+        +addressId: int [FK]
         +expiry: Date
         +photo?: String
-        +status: NeedStatus
-        +categoryId: int
-        +type: NeedType
+        +status: NeedStatus ~ACTIVE | FULFILLED | EXPIRED~
+        +categoryId: int [FK]
+        +type: NeedType ~ONE_TIME~
         +important: boolean
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
-    class NeedStatus {
-        <<enumeration>>
-        ACTIVE
-        FULFILLED
-        EXPIRED
-    }
-
-    class NeedType {
-        <<enumeration>>
-        ONE_TIME
-%%        RECURRING
-    }
-
-%%    class RecurringNeedConfig {
-%%        +id: int
-%%        +needId: int
+%%    class RecurringNeed {
+%%        +id: UUID [PK]
+%%        +needId: UUID [FK]
 %%        +intervalDays: Integer
 %%        +nextOccurrence: Date
 %%        +endDate?: Date
@@ -56,49 +63,48 @@ class User {
 %%    }
 
     class NeedStatusHistory {
-        +id: int
-        +needId: int
+        +id: int [PK]
+        +needId: int [FK]
         +status: NeedStatus
-        +changedById: int
+        +changedById: int [FK]
         +createdAt: Timestamp
     }
 
     class NeedCategory {
-        +id: int
+        +id: int [PK]
         +name: String
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
-    class Donor {
-        +id: int
-        +userId: int
-        +name: String
-        +createdAt: Timestamp
+%% ── Donation ────────────────────────────────
+
+    class Donation {
+        +id: int [PK]
+        +donorId: int [FK]
+        +needId: int [FK]
+        +status: DonationStatus ~BOOKED | FULFILLED | CANCELLED~
+        +bookedAt: Timestamp
+        +fulfilledAt?: Timestamp
         +updatedAt: Timestamp
     }
 
-    class Organization {
-        +id: int
-        +userId: int
-        +name: String
-        +krs: String
-        +addressId: int
-        +categoryId: int
-        +phoneNumber: String
-        +createdAt: Timestamp
-        +updatedAt: Timestamp
+    class DonorFavouriteNeed {
+        +donorId: int [PK, FK]
+        +needId: int [PK, FK]
     }
+
+%% ── Shared ──────────────────────────────────
 
     class OrganizationCategory {
-        +id: int
+        +id: int [PK]
         +name: String
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
     class Address {
-        +id: int
+        +id: int [PK]
         +city: String
         +street: String
         +building: String
@@ -108,26 +114,24 @@ class User {
         +updatedAt: Timestamp
     }
 
-    class DonorFavouriteNeed {
-        +donorId: int [PK]
-        +needId: int [PK]
-        +createdAt: Timestamp
-    }
+%% ── Relations ───────────────────────────────
 
-    %% Relations
-    User -- UserRole
-    Donor "userId" --> User : id
-    Organization "userId" --> User : id
-    Need "categoryId" --> NeedCategory : id
-    Need "organizationId" --> Organization : id
-    Need "addressId" --> Address : id
-    Need -- NeedStatus
-    Need -- NeedType
-%%    RecurringNeedConfig "needId" --> Need : id
-    NeedStatusHistory "needId" --> Need : id
-    NeedStatusHistory -- NeedStatus
-    NeedStatusHistory "changedById" --> User : id
-    Organization "addressId" --> Address : id
-    Organization "categoryId" --> OrganizationCategory : id
-    DonorFavouriteNeed "donorId" --> Donor : id
-    DonorFavouriteNeed "needId" --> Need : id
+    Donor --> User : userId
+    Organization --> User : userId
+
+    Need --> Organization : organizationId
+    Need --> NeedCategory : categoryId
+    Need --> Address : addressId
+
+%%    RecurringNeed --> Need : needId
+    NeedStatusHistory --> Need : needId
+    NeedStatusHistory --> User : changedById
+
+    Organization --> Address : addressId
+    Organization --> OrganizationCategory : categoryId
+
+    Donation --> Donor : donorId
+    Donation --> Need : needId
+
+    DonorFavouriteNeed --> Donor : donorId
+    DonorFavouriteNeed --> Need : needId

@@ -4,13 +4,23 @@ import {
   date,
   index,
   integer,
+  pgEnum,
   pgTable,
-  primaryKey,
   serial,
   text,
 } from 'drizzle-orm/pg-core';
-import { addresses, donors, organizations, users } from './users';
-import { createdAt, needStatus, needType, updatedAt } from './shared';
+import { organizations } from './organizations';
+import { addresses, createdAt, updatedAt } from './shared';
+import { users } from './users';
+import { donorFavouriteNeeds } from '@/db/schema/donors';
+
+export const needStatus = pgEnum('need_status', [
+  'ACTIVE',
+  'FULFILLED',
+  'EXPIRED',
+]);
+
+export const needType = pgEnum('need_type', ['ONE_TIME']);
 
 export const needCategories = pgTable('need_categories', {
   id: serial('id').primaryKey(),
@@ -59,25 +69,6 @@ export const needStatusHistory = pgTable('need_status_history', {
   createdAt: createdAt(),
 });
 
-export const donorFavouriteNeeds = pgTable(
-  'donor_favourite_needs',
-  {
-    donorId: integer('donor_id')
-      .notNull()
-      .references(() => donors.id),
-    needId: integer('need_id')
-      .notNull()
-      .references(() => needs.id),
-    createdAt: createdAt(),
-  },
-  (table) => [
-    primaryKey({
-      columns: [table.donorId, table.needId],
-      name: 'donor_favourite_needs_pkey',
-    }),
-  ],
-);
-
 export const needCategoriesRelations = relations(
   needCategories,
   ({ many }) => ({
@@ -112,20 +103,6 @@ export const needStatusHistoryRelations = relations(
     changedBy: one(users, {
       fields: [needStatusHistory.changedById],
       references: [users.id],
-    }),
-  }),
-);
-
-export const donorFavouriteNeedsRelations = relations(
-  donorFavouriteNeeds,
-  ({ one }) => ({
-    donor: one(donors, {
-      fields: [donorFavouriteNeeds.donorId],
-      references: [donors.id],
-    }),
-    need: one(needs, {
-      fields: [donorFavouriteNeeds.needId],
-      references: [needs.id],
     }),
   }),
 );

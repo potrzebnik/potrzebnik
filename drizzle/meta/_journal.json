@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772918217098,
+      "tag": "0000_calm_veda",
+      "breakpoints": true
+    }
+  ]
 }

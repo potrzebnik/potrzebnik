@@ -1,14 +1,21 @@
 import { relations } from 'drizzle-orm';
 import {
   integer,
+  pgEnum,
   pgTable,
   serial,
   timestamp,
   unique,
 } from 'drizzle-orm/pg-core';
 import { needs } from './needs';
-import { donationStatus, updatedAt } from './shared';
-import { donors } from './users';
+import { donors } from './donors';
+import { updatedAt } from '@/db/schema/shared';
+
+export const donationStatus = pgEnum('donation_status', [
+  'BOOKED',
+  'FULFILLED',
+  'CANCELLED',
+]);
 
 export const donations = pgTable(
   'donations',
@@ -20,10 +27,8 @@ export const donations = pgTable(
     needId: integer('need_id')
       .notNull()
       .references(() => needs.id),
-    status: donationStatus('status').notNull().default('BOOKED'),
-    bookedAt: timestamp('booked_at', { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    status: donationStatus('status').notNull(),
+    bookedAt: timestamp('booked_at', { withTimezone: true }).notNull(),
     fulfilledAt: timestamp('fulfilled_at', { withTimezone: true }),
     updatedAt: updatedAt(),
   },
