@@ -11,6 +11,12 @@ services:
       - '${POSTGRES_PORT}:5432' ##remove it in prod if app on the same server. use networks
     volumes:
       - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
 volumes:
   postgres_data:
