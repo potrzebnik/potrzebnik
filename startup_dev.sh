@@ -10,4 +10,4 @@ fi
 pnpm install
 docker compose up -d --wait
 pnpm run db:migrate
-npm run dev
+pnpm run dev
