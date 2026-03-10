@@ -5,6 +5,7 @@ const navigationItems = [
   { href: '/needs', label: 'Potrzeby' },
   { href: '/organizations', label: 'Organizacje' },
   { href: '/about', label: 'O nas' },
+  { href: '/contact', label: 'Dla organizacji' },
 ] as const;
 
 export function PublicHeader() {
