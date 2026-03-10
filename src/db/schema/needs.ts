@@ -4,7 +4,6 @@ import {
   date,
   index,
   integer,
-  pgEnum,
   pgTable,
   serial,
   text,
@@ -13,14 +12,6 @@ import { organizations } from './organizations';
 import { addresses, createdAt, updatedAt } from './shared';
 import { users } from './users';
 import { donorFavouriteNeeds } from '@/db/schema/donors';
-
-export const needStatus = pgEnum('need_status', [
-  'ACTIVE',
-  'FULFILLED',
-  'EXPIRED',
-]);
-
-export const needType = pgEnum('need_type', ['ONE_TIME']);
 
 export const needCategories = pgTable('need_categories', {
   id: serial('id').primaryKey(),
@@ -45,11 +36,11 @@ export const needs = pgTable(
       .references(() => addresses.id),
     expiry: date('expiry').notNull(),
     photo: text('photo'),
-    status: needStatus('status').notNull(),
+    status: text('status').notNull(),
     categoryId: integer('category_id')
       .notNull()
       .references(() => needCategories.id),
-    type: needType('type').notNull(),
+    type: text('type').notNull(),
     important: boolean('important').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -62,7 +53,7 @@ export const needStatusHistory = pgTable('need_status_history', {
   needId: integer('need_id')
     .notNull()
     .references(() => needs.id),
-  status: needStatus('status').notNull(),
+  status: text('status').notNull(),
   changedById: integer('changed_by_id')
     .notNull()
     .references(() => users.id),

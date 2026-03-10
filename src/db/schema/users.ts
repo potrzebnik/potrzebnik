@@ -1,7 +1,5 @@
-import { pgEnum, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
 import { createdAt, updatedAt } from './shared';
-
-export const userRole = pgEnum('user_role', ['DONOR', 'ORGANIZATION_ADMIN']);
 
 export const users = pgTable(
   'users',
@@ -9,7 +7,7 @@ export const users = pgTable(
     id: serial('id').primaryKey(),
     email: text('email').notNull(),
     passwordHash: text('password_hash').notNull(),
-    role: userRole('role').notNull(),
+    role: text('role').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

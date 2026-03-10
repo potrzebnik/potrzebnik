@@ -1,7 +1,3 @@
-CREATE TYPE "public"."user_role" AS ENUM('DONOR', 'ORGANIZATION_ADMIN');--> statement-breakpoint
-CREATE TYPE "public"."need_status" AS ENUM('ACTIVE', 'FULFILLED', 'EXPIRED');--> statement-breakpoint
-CREATE TYPE "public"."need_type" AS ENUM('ONE_TIME');--> statement-breakpoint
-CREATE TYPE "public"."donation_status" AS ENUM('BOOKED', 'FULFILLED', 'CANCELLED');--> statement-breakpoint
 CREATE TABLE "addresses" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"city" text NOT NULL,
@@ -17,7 +13,7 @@ CREATE TABLE "users" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"email" text NOT NULL,
 	"password_hash" text NOT NULL,
-	"role" "user_role" NOT NULL,
+	"role" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
@@ -68,7 +64,7 @@ CREATE TABLE "need_categories" (
 CREATE TABLE "need_status_history" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"need_id" integer NOT NULL,
-	"status" "need_status" NOT NULL,
+	"status" text NOT NULL,
 	"changed_by_id" integer NOT NULL,
 	"created_at" timestamp with time zone NOT NULL
 );
@@ -83,9 +79,9 @@ CREATE TABLE "needs" (
 	"address_id" integer NOT NULL,
 	"expiry" date NOT NULL,
 	"photo" text,
-	"status" "need_status" NOT NULL,
+	"status" text NOT NULL,
 	"category_id" integer NOT NULL,
-	"type" "need_type" NOT NULL,
+	"type" text NOT NULL,
 	"important" boolean NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL
@@ -95,11 +91,10 @@ CREATE TABLE "donations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"donor_id" integer NOT NULL,
 	"need_id" integer NOT NULL,
-	"status" "donation_status" NOT NULL,
+	"status" text NOT NULL,
 	"booked_at" timestamp with time zone NOT NULL,
 	"fulfilled_at" timestamp with time zone,
-	"updated_at" timestamp with time zone NOT NULL,
-	CONSTRAINT "donations_donor_need_unique" UNIQUE("donor_id","need_id")
+	"updated_at" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "donor_favourite_needs" ADD CONSTRAINT "donor_favourite_needs_donor_id_donors_id_fk" FOREIGN KEY ("donor_id") REFERENCES "public"."donors"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

@@ -1,5 +1,5 @@
 {
-  "id": "7eb83d34-5903-4ca3-ab01-0c845b8fb26d",
+  "id": "c26b4fb0-9c78-43be-9d54-c17bbf6aad8d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -89,8 +89,7 @@
         },
         "role": {
           "name": "role",
-          "type": "user_role",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -422,8 +421,7 @@
         },
         "status": {
           "name": "status",
-          "type": "need_status",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -527,8 +525,7 @@
         },
         "status": {
           "name": "status",
-          "type": "need_status",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -540,8 +537,7 @@
         },
         "type": {
           "name": "type",
-          "type": "need_type",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -640,8 +636,7 @@
         },
         "status": {
           "name": "status",
-          "type": "donation_status",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -686,40 +681,13 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "donations_donor_need_unique": {
-          "name": "donations_donor_need_unique",
-          "nullsNotDistinct": false,
-          "columns": ["donor_id", "need_id"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     }
   },
-  "enums": {
-    "public.user_role": {
-      "name": "user_role",
-      "schema": "public",
-      "values": ["DONOR", "ORGANIZATION_ADMIN"]
-    },
-    "public.need_status": {
-      "name": "need_status",
-      "schema": "public",
-      "values": ["ACTIVE", "FULFILLED", "EXPIRED"]
-    },
-    "public.need_type": {
-      "name": "need_type",
-      "schema": "public",
-      "values": ["ONE_TIME"]
-    },
-    "public.donation_status": {
-      "name": "donation_status",
-      "schema": "public",
-      "values": ["BOOKED", "FULFILLED", "CANCELLED"]
-    }
-  },
+  "enums": {},
   "schemas": {},
   "sequences": {},
   "roles": {},
