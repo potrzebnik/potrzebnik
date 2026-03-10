@@ -1,6 +1,7 @@
 import { Facebook, Linkedin, Mail } from 'lucide-react';
 
 import { Link } from '@/components/ui/link';
+import { PublicHeader } from '@/components/features/public-header';
 
 export default function PublicLayout({
   children,
@@ -8,11 +9,8 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <header>
-        <nav>{/* Add navigation links */}</nav>
-      </header>
-
+    <>
+      <PublicHeader />
       <main>{children}</main>
 
       <footer className="public-footer">
@@ -79,6 +77,8 @@ export default function PublicLayout({
           </Link>
         </nav>
       </footer>
-    </div>
+    </>
+  );
+}
   );
 }
