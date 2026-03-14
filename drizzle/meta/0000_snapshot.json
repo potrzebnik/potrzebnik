@@ -1,5 +1,5 @@
 {
-  "id": "c26b4fb0-9c78-43be-9d54-c17bbf6aad8d",
+  "id": "d8c3267d-cafa-4518-9185-82dc1eb4f374",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -40,7 +40,7 @@
         },
         "zip_code": {
           "name": "zip_code",
-          "type": "varchar(16)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -289,7 +289,7 @@
         },
         "krs": {
           "name": "krs",
-          "type": "varchar(10)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -307,7 +307,7 @@
         },
         "phone_number": {
           "name": "phone_number",
-          "type": "varchar(32)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

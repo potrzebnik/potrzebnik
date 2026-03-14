@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const createdAt = () =>
   timestamp('created_at', { withTimezone: true }).notNull();
@@ -12,7 +12,7 @@ export const addresses = pgTable('addresses', {
   street: text('street').notNull(),
   building: text('building').notNull(),
   apartment: text('apartment'),
-  zipCode: varchar('zip_code', { length: 16 }).notNull(),
+  zipCode: text('zip_code').notNull(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });

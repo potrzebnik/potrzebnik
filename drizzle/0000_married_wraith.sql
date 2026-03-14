@@ -4,7 +4,7 @@ CREATE TABLE "addresses" (
 	"street" text NOT NULL,
 	"building" text NOT NULL,
 	"apartment" text,
-	"zip_code" varchar(16) NOT NULL,
+	"zip_code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL
 );
@@ -45,10 +45,10 @@ CREATE TABLE "organizations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
 	"name" text NOT NULL,
-	"krs" varchar(10) NOT NULL,
+	"krs" text NOT NULL,
 	"address_id" integer NOT NULL,
 	"category_id" integer NOT NULL,
-	"phone_number" varchar(32) NOT NULL,
+	"phone_number" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "organizations_krs_unique" UNIQUE("krs")
