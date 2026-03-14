@@ -1,8 +1,7 @@
-import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
-import { donors } from './donors';
-import { addresses, createdAt, updatedAt } from './shared';
-import { userRoles, users } from './users';
+import { addresses } from './addresses';
+import { createdAt, updatedAt } from './shared';
+import { users } from './users';
 
 export const organizationCategories = pgTable('organization_categories', {
   id: serial('id').primaryKey(),
@@ -32,38 +31,3 @@ export const organizations = pgTable(
   },
   (table) => [unique('organizations_krs_unique').on(table.krs)],
 );
-
-export const usersRelations = relations(users, ({ one }) => ({
-  role: one(userRoles, {
-    fields: [users.roleId],
-    references: [userRoles.id],
-  }),
-  donor: one(donors),
-  organization: one(organizations),
-}));
-
-export const addressesRelations = relations(addresses, ({ many }) => ({
-  organizations: many(organizations),
-}));
-
-export const organizationCategoriesRelations = relations(
-  organizationCategories,
-  ({ many }) => ({
-    organizations: many(organizations),
-  }),
-);
-
-export const organizationsRelations = relations(organizations, ({ one }) => ({
-  user: one(users, {
-    fields: [organizations.userId],
-    references: [users.id],
-  }),
-  address: one(addresses, {
-    fields: [organizations.addressId],
-    references: [addresses.id],
-  }),
-  category: one(organizationCategories, {
-    fields: [organizations.categoryId],
-    references: [organizationCategories.id],
-  }),
-}));

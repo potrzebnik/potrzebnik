@@ -1,4 +1,3 @@
-import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
 import { createdAt, updatedAt } from './shared';
 
@@ -27,7 +26,3 @@ export const users = pgTable(
   },
   (table) => [unique('users_email_unique').on(table.email)],
 );
-
-export const userRolesRelations = relations(userRoles, ({ many }) => ({
-  users: many(users),
-}));

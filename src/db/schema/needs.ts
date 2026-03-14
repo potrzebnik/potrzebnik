@@ -1,4 +1,3 @@
-import { relations } from 'drizzle-orm';
 import {
   boolean,
   date,
@@ -9,10 +8,10 @@ import {
   text,
   unique,
 } from 'drizzle-orm/pg-core';
+import { addresses } from './addresses';
 import { organizations } from './organizations';
-import { addresses, createdAt, updatedAt } from './shared';
+import { createdAt, updatedAt } from './shared';
 import { users } from './users';
-import { donorFavouriteNeeds } from '@/db/schema/donors';
 
 export const needCategories = pgTable('need_categories', {
   id: serial('id').primaryKey(),
@@ -88,62 +87,3 @@ export const needStatusHistory = pgTable('need_status_history', {
     .references(() => users.id),
   createdAt: createdAt(),
 });
-
-export const needCategoriesRelations = relations(
-  needCategories,
-  ({ many }) => ({
-    needs: many(needs),
-  }),
-);
-
-export const needStatusesRelations = relations(needStatuses, ({ many }) => ({
-  needs: many(needs),
-  historyEntries: many(needStatusHistory),
-}));
-
-export const needTypesRelations = relations(needTypes, ({ many }) => ({
-  needs: many(needs),
-}));
-
-export const needsRelations = relations(needs, ({ one, many }) => ({
-  organization: one(organizations, {
-    fields: [needs.organizationId],
-    references: [organizations.id],
-  }),
-  address: one(addresses, {
-    fields: [needs.addressId],
-    references: [addresses.id],
-  }),
-  category: one(needCategories, {
-    fields: [needs.categoryId],
-    references: [needCategories.id],
-  }),
-  status: one(needStatuses, {
-    fields: [needs.statusId],
-    references: [needStatuses.id],
-  }),
-  type: one(needTypes, {
-    fields: [needs.typeId],
-    references: [needTypes.id],
-  }),
-  statusHistory: many(needStatusHistory),
-  favouritedBy: many(donorFavouriteNeeds),
-}));
-
-export const needStatusHistoryRelations = relations(
-  needStatusHistory,
-  ({ one }) => ({
-    need: one(needs, {
-      fields: [needStatusHistory.needId],
-      references: [needs.id],
-    }),
-    changedBy: one(users, {
-      fields: [needStatusHistory.changedById],
-      references: [users.id],
-    }),
-    status: one(needStatuses, {
-      fields: [needStatusHistory.statusId],
-      references: [needStatuses.id],
-    }),
-  }),
-);

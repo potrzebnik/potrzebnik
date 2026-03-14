@@ -1,4 +1,3 @@
-import { relations } from 'drizzle-orm';
 import {
   integer,
   pgTable,
@@ -7,9 +6,9 @@ import {
   timestamp,
   unique,
 } from 'drizzle-orm/pg-core';
-import { needs } from './needs';
 import { donors } from './donors';
-import { createdAt, updatedAt } from '@/db/schema/shared';
+import { needs } from './needs';
+import { createdAt, updatedAt } from './shared';
 
 export const donationStatuses = pgTable(
   'donation_statuses',
@@ -37,25 +36,3 @@ export const donations = pgTable('donations', {
   fulfilledAt: timestamp('fulfilled_at', { withTimezone: true }),
   updatedAt: updatedAt(),
 });
-
-export const donationStatusesRelations = relations(
-  donationStatuses,
-  ({ many }) => ({
-    donations: many(donations),
-  }),
-);
-
-export const donationsRelations = relations(donations, ({ one }) => ({
-  donor: one(donors, {
-    fields: [donations.donorId],
-    references: [donors.id],
-  }),
-  need: one(needs, {
-    fields: [donations.needId],
-    references: [needs.id],
-  }),
-  status: one(donationStatuses, {
-    fields: [donations.statusId],
-    references: [donationStatuses.id],
-  }),
-}));
