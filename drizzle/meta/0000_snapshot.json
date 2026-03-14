@@ -1,5 +1,5 @@
 {
-  "id": "d8c3267d-cafa-4518-9185-82dc1eb4f374",
+  "id": "3a8caf7b-f6f0-4267-a693-e00fe1da9557",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -65,6 +65,49 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.user_roles": {
+      "name": "user_roles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_roles_code_unique": {
+          "name": "user_roles_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.users": {
       "name": "users",
       "schema": "",
@@ -87,9 +130,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "role": {
-          "name": "role",
-          "type": "text",
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -107,7 +150,17 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "users_role_id_user_roles_id_fk": {
+          "name": "users_role_id_user_roles_id_fk",
+          "tableFrom": "users",
+          "tableTo": "user_roles",
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "users_email_unique": {
@@ -419,9 +472,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "status": {
-          "name": "status",
-          "type": "text",
+        "status_id": {
+          "name": "status_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -449,6 +502,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
+        "need_status_history_status_id_need_statuses_id_fk": {
+          "name": "need_status_history_status_id_need_statuses_id_fk",
+          "tableFrom": "need_status_history",
+          "tableTo": "need_statuses",
+          "columnsFrom": ["status_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "need_status_history_changed_by_id_users_id_fk": {
           "name": "need_status_history_changed_by_id_users_id_fk",
           "tableFrom": "need_status_history",
@@ -461,6 +523,92 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.need_statuses": {
+      "name": "need_statuses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "need_statuses_code_unique": {
+          "name": "need_statuses_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.need_types": {
+      "name": "need_types",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "need_types_code_unique": {
+          "name": "need_types_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -523,9 +671,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "text",
+        "status_id": {
+          "name": "status_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -535,9 +683,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "type": {
-          "name": "type",
-          "type": "text",
+        "type_id": {
+          "name": "type_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -596,6 +744,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
+        "needs_status_id_need_statuses_id_fk": {
+          "name": "needs_status_id_need_statuses_id_fk",
+          "tableFrom": "needs",
+          "tableTo": "need_statuses",
+          "columnsFrom": ["status_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "needs_category_id_need_categories_id_fk": {
           "name": "needs_category_id_need_categories_id_fk",
           "tableFrom": "needs",
@@ -604,10 +761,62 @@
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "needs_type_id_need_types_id_fk": {
+          "name": "needs_type_id_need_types_id_fk",
+          "tableFrom": "needs",
+          "tableTo": "need_types",
+          "columnsFrom": ["type_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.donation_statuses": {
+      "name": "donation_statuses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "donation_statuses_code_unique": {
+          "name": "donation_statuses_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -634,9 +843,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "status": {
-          "name": "status",
-          "type": "text",
+        "status_id": {
+          "name": "status_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -675,6 +884,15 @@
           "tableFrom": "donations",
           "tableTo": "needs",
           "columnsFrom": ["need_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "donations_status_id_donation_statuses_id_fk": {
+          "name": "donations_status_id_donation_statuses_id_fk",
+          "tableFrom": "donations",
+          "tableTo": "donation_statuses",
+          "columnsFrom": ["status_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
