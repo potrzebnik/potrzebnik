@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1773488100956,
+      "tag": "0000_glorious_colleen_wing",
+      "breakpoints": true
+    }
+  ]
 }
