@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
 import { donors } from './donors';
 import { addresses, createdAt, updatedAt } from './shared';
-import { users } from './users';
+import { userRoles, users } from './users';
 
 export const organizationCategories = pgTable('organization_categories', {
   id: serial('id').primaryKey(),
@@ -34,6 +34,10 @@ export const organizations = pgTable(
 );
 
 export const usersRelations = relations(users, ({ one }) => ({
+  role: one(userRoles, {
+    fields: [users.roleId],
+    references: [userRoles.id],
+  }),
   donor: one(donors),
   organization: one(organizations),
 }));

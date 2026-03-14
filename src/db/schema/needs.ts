@@ -7,6 +7,7 @@ import {
   pgTable,
   serial,
   text,
+  unique,
 } from 'drizzle-orm/pg-core';
 import { organizations } from './organizations';
 import { addresses, createdAt, updatedAt } from './shared';
@@ -19,6 +20,28 @@ export const needCategories = pgTable('need_categories', {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
+
+export const needStatuses = pgTable(
+  'need_statuses',
+  {
+    id: serial('id').primaryKey(),
+    code: text('code').notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [unique('need_statuses_code_unique').on(table.code)],
+);
+
+export const needTypes = pgTable(
+  'need_types',
+  {
+    id: serial('id').primaryKey(),
+    code: text('code').notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [unique('need_types_code_unique').on(table.code)],
+);
 
 export const needs = pgTable(
   'needs',
@@ -36,11 +59,15 @@ export const needs = pgTable(
       .references(() => addresses.id),
     expiry: date('expiry').notNull(),
     photo: text('photo'),
-    status: text('status').notNull(),
+    statusId: integer('status_id')
+      .notNull()
+      .references(() => needStatuses.id),
     categoryId: integer('category_id')
       .notNull()
       .references(() => needCategories.id),
-    type: text('type').notNull(),
+    typeId: integer('type_id')
+      .notNull()
+      .references(() => needTypes.id),
     important: boolean('important').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -53,7 +80,9 @@ export const needStatusHistory = pgTable('need_status_history', {
   needId: integer('need_id')
     .notNull()
     .references(() => needs.id),
-  status: text('status').notNull(),
+  statusId: integer('status_id')
+    .notNull()
+    .references(() => needStatuses.id),
   changedById: integer('changed_by_id')
     .notNull()
     .references(() => users.id),
@@ -67,6 +96,15 @@ export const needCategoriesRelations = relations(
   }),
 );
 
+export const needStatusesRelations = relations(needStatuses, ({ many }) => ({
+  needs: many(needs),
+  historyEntries: many(needStatusHistory),
+}));
+
+export const needTypesRelations = relations(needTypes, ({ many }) => ({
+  needs: many(needs),
+}));
+
 export const needsRelations = relations(needs, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [needs.organizationId],
@@ -79,6 +117,14 @@ export const needsRelations = relations(needs, ({ one, many }) => ({
   category: one(needCategories, {
     fields: [needs.categoryId],
     references: [needCategories.id],
+  }),
+  status: one(needStatuses, {
+    fields: [needs.statusId],
+    references: [needStatuses.id],
+  }),
+  type: one(needTypes, {
+    fields: [needs.typeId],
+    references: [needTypes.id],
   }),
   statusHistory: many(needStatusHistory),
   favouritedBy: many(donorFavouriteNeeds),
@@ -94,6 +140,10 @@ export const needStatusHistoryRelations = relations(
     changedBy: one(users, {
       fields: [needStatusHistory.changedById],
       references: [users.id],
+    }),
+    status: one(needStatuses, {
+      fields: [needStatusHistory.statusId],
+      references: [needStatuses.id],
     }),
   }),
 );
