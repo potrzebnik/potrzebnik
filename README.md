@@ -16,6 +16,14 @@ Set up environment variables first:
 cp .env.example .env
 ```
 
+If you want Google sign-in locally for testing purposes, set `GOOGLE_CLIENT_ID` and
+`GOOGLE_CLIENT_SECRET` in `.env`, then register this redirect URI in Google
+Cloud:
+
+```text
+http://localhost:3000/api/auth/callback/google
+```
+
 Then start local database and development server:
 
 ```bash
