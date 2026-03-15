@@ -15,6 +15,13 @@
       "when": 1773565765121,
       "tag": "0001_seed_default_statuses",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773567215627,
+      "tag": "0002_cute_toad",
+      "breakpoints": true
     }
   ]
 }

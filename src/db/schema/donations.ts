@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   serial,
@@ -22,19 +23,26 @@ export const donationStatuses = pgTable(
   (table) => [unique('donation_statuses_code_unique').on(table.code)],
 );
 
-export const donations = pgTable('donations', {
-  id: serial('id').primaryKey(),
-  donorId: integer('donor_id')
-    .notNull()
-    .references(() => donors.id),
-  needId: integer('need_id')
-    .notNull()
-    .references(() => needs.id),
-  statusId: integer('status_id')
-    .notNull()
-    .references(() => donationStatuses.id),
-  bookedAt: timestamp('booked_at', { withTimezone: true }).notNull(),
-  fulfilledAt: timestamp('fulfilled_at', { withTimezone: true }),
-  updatedAt: updatedAt(),
-  deletedAt: deletedAt(),
-});
+export const donations = pgTable(
+  'donations',
+  {
+    id: serial('id').primaryKey(),
+    donorId: integer('donor_id')
+      .notNull()
+      .references(() => donors.id),
+    needId: integer('need_id')
+      .notNull()
+      .references(() => needs.id),
+    statusId: integer('status_id')
+      .notNull()
+      .references(() => donationStatuses.id),
+    bookedAt: timestamp('booked_at', { withTimezone: true }).notNull(),
+    fulfilledAt: timestamp('fulfilled_at', { withTimezone: true }),
+    updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
+  },
+  (table) => [
+    index('donations_donor_id_idx').on(table.donorId),
+    index('donations_need_id_idx').on(table.needId),
+  ],
+);

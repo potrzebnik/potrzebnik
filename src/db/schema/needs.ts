@@ -78,17 +78,24 @@ export const needs = pgTable(
   (table) => [index('needs_organization_id_idx').on(table.organizationId)],
 );
 
-export const needStatusHistory = pgTable('need_status_history', {
-  id: serial('id').primaryKey(),
-  needId: integer('need_id')
-    .notNull()
-    .references(() => needs.id),
-  statusId: integer('status_id')
-    .notNull()
-    .references(() => needStatuses.id),
-  changedById: integer('changed_by_id')
-    .notNull()
-    .references(() => users.id),
-  createdAt: createdAt(),
-  deletedAt: deletedAt(),
-});
+export const needStatusHistory = pgTable(
+  'need_status_history',
+  {
+    id: serial('id').primaryKey(),
+    needId: integer('need_id')
+      .notNull()
+      .references(() => needs.id),
+    statusId: integer('status_id')
+      .notNull()
+      .references(() => needStatuses.id),
+    changedById: integer('changed_by_id')
+      .notNull()
+      .references(() => users.id),
+    createdAt: createdAt(),
+    deletedAt: deletedAt(),
+  },
+  (table) => [
+    index('need_status_history_need_id_idx').on(table.needId),
+    index('need_status_history_changed_by_id_idx').on(table.changedById),
+  ],
+);

@@ -1,6 +1,6 @@
 {
-  "id": "c17524f-3434-4856-9725-5ce63bd75043",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c4883400-c49d-4882-b326-ae1a16119341",
+  "prevId": "c17524f-3434-4856-9725-5ce63bd75043",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -573,7 +573,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "need_status_history_need_id_idx": {
+          "name": "need_status_history_need_id_idx",
+          "columns": [
+            {
+              "expression": "need_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "need_status_history_changed_by_id_idx": {
+          "name": "need_status_history_changed_by_id_idx",
+          "columns": [
+            {
+              "expression": "changed_by_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "need_status_history_need_id_needs_id_fk": {
           "name": "need_status_history_need_id_needs_id_fk",
@@ -980,7 +1011,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "donations_donor_id_idx": {
+          "name": "donations_donor_id_idx",
+          "columns": [
+            {
+              "expression": "donor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "donations_need_id_idx": {
+          "name": "donations_need_id_idx",
+          "columns": [
+            {
+              "expression": "need_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "donations_donor_id_donors_id_fk": {
           "name": "donations_donor_id_donors_id_fk",
