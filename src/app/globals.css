@@ -116,10 +116,23 @@
 }
 
 @layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
   * {
     @apply border-border outline-ring/50;
   }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  .tooltip {
+    @apply pointer-events-none absolute top-10 left-1/2 z-50 w-auto -translate-x-1/2 rounded-md border-1 border-white/70 bg-black/60 px-3 py-2 text-sm text-white/70 opacity-0 transition-opacity duration-200;
   }
 }
