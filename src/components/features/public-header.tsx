@@ -57,7 +57,7 @@ export function PublicHeader() {
         {isMobileMenuOpen ? (
           <div
             id="mobile-navbar-panel"
-            className="absolute top-[45px] right-[19px] z-30 h-[839px] w-[132px] rounded-[12.87px] border border-black bg-[#D1E7FE]"
+            className="absolute top-[45px] right-[19px] z-30 h-[360px] w-[132px] rounded-[12.87px] border border-black bg-[#D1E7FE]"
           >
             {mobileMenuItems.map((item) => (
               <Link
@@ -77,7 +77,7 @@ export function PublicHeader() {
 
             <button
               type="button"
-              className="absolute top-[709px] left-[38px] inline-flex h-6 w-14 items-center justify-center gap-0.5 rounded-[6.41px] border border-[#5B3DF5] bg-[#FFD73A] text-[12px] leading-4 font-normal text-black"
+              className="absolute bottom-[95px] left-1/2 inline-flex h-6 w-14 -translate-x-1/2 items-center justify-center gap-0.5 rounded-[6.41px] border border-[#5B3DF5] bg-[#FFD73A] text-[12px] leading-4 font-normal text-black"
               aria-label="Wybierz język"
             >
               ENG
