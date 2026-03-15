@@ -1,5 +1,5 @@
 {
-  "id": "c17524f-3434-4856-9725-5ce63bd75043",
+  "id": "99af7cdf-4d44-42a5-a9e5-5558f5fded6f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -13,12 +13,6 @@
           "type": "serial",
           "primaryKey": true,
           "notNull": true
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "city": {
           "name": "city",
@@ -69,34 +63,8 @@
           "notNull": false
         }
       },
-      "indexes": {
-        "addresses_organization_id_idx": {
-          "name": "addresses_organization_id_idx",
-          "columns": [
-            {
-              "expression": "organization_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "addresses_organization_id_organizations_id_fk": {
-          "name": "addresses_organization_id_organizations_id_fk",
-          "tableFrom": "addresses",
-          "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -349,6 +317,131 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.address_types": {
+      "name": "address_types",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "address_types_code_unique": {
+          "name": "address_types_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.organization_addresses": {
+      "name": "organization_addresses",
+      "schema": "",
+      "columns": {
+        "organization_id": {
+          "name": "organization_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_id": {
+          "name": "address_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_type_id": {
+          "name": "address_type_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "organization_addresses_organization_id_organizations_id_fk": {
+          "name": "organization_addresses_organization_id_organizations_id_fk",
+          "tableFrom": "organization_addresses",
+          "tableTo": "organizations",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "organization_addresses_address_id_addresses_id_fk": {
+          "name": "organization_addresses_address_id_addresses_id_fk",
+          "tableFrom": "organization_addresses",
+          "tableTo": "addresses",
+          "columnsFrom": ["address_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "organization_addresses_address_type_id_address_types_id_fk": {
+          "name": "organization_addresses_address_type_id_address_types_id_fk",
+          "tableFrom": "organization_addresses",
+          "tableTo": "address_types",
+          "columnsFrom": ["address_type_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "organization_addresses_pkey": {
+          "name": "organization_addresses_pkey",
+          "columns": ["organization_id", "address_id", "address_type_id"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.organization_categories": {
       "name": "organization_categories",
       "schema": "",
@@ -573,7 +666,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "need_status_history_need_id_idx": {
+          "name": "need_status_history_need_id_idx",
+          "columns": [
+            {
+              "expression": "need_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "need_status_history_changed_by_id_idx": {
+          "name": "need_status_history_changed_by_id_idx",
+          "columns": [
+            {
+              "expression": "changed_by_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "need_status_history_need_id_needs_id_fk": {
           "name": "need_status_history_need_id_needs_id_fk",
@@ -980,7 +1104,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "donations_donor_id_idx": {
+          "name": "donations_donor_id_idx",
+          "columns": [
+            {
+              "expression": "donor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "donations_need_id_idx": {
+          "name": "donations_need_id_idx",
+          "columns": [
+            {
+              "expression": "need_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "donations_donor_id_donors_id_fk": {
           "name": "donations_donor_id_donors_id_fk",
