@@ -1,20 +1,27 @@
 classDiagram
     direction LR
 
-%% ── Core: User & Roles ──────────────────────
+%% ── Accounts ─────────────────────────────────
+
+    class UserRole {
+        +id: int [PK]
+        +code: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
 
     class User {
         +id: int [PK]
         +email: String
         +passwordHash: String
-        +role: UserRole ~DONOR | ORGANIZATION_ADMIN~
+        +roleId: int [FK]
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
     class Donor {
         +id: int [PK]
-        +userId: int [FK]
+        +userId: int [FK, UNIQUE]
         +name: String
         +createdAt: Timestamp
         +updatedAt: Timestamp
@@ -22,17 +29,58 @@ classDiagram
 
     class Organization {
         +id: int [PK]
-        +userId: int [FK]
+        +userId: int [FK, UNIQUE]
         +name: String
-        +krs: String
-        +addressId: int [FK]
+        +krs: String [UNIQUE]
         +categoryId: int [FK]
         +phoneNumber: String
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
-%% ── Need ────────────────────────────────────
+%% ── Organization Data ────────────────────────
+
+    class OrganizationCategory {
+        +id: int [PK]
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class Address {
+        +id: int [PK]
+        +organizationId?: int [FK]
+        +city: String
+        +street: String
+        +building: String
+        +apartment?: String
+        +zipCode: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+%% ── Needs ────────────────────────────────────
+
+    class NeedCategory {
+        +id: int [PK]
+        +name: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class NeedStatus {
+        +id: int [PK]
+        +code: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
+
+    class NeedType {
+        +id: int [PK]
+        +code: String
+        +createdAt: Timestamp
+        +updatedAt: Timestamp
+    }
 
     class Need {
         +id: int [PK]
@@ -44,46 +92,36 @@ classDiagram
         +addressId: int [FK]
         +expiry: Date
         +photo?: String
-        +status: NeedStatus ~ACTIVE | FULFILLED | EXPIRED~
+        +statusId: int [FK]
         +categoryId: int [FK]
-        +type: NeedType ~ONE_TIME~
+        +typeId: int [FK]
         +important: boolean
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
 
-%%    class RecurringNeed {
-%%        +id: UUID [PK]
-%%        +needId: UUID [FK]
-%%        +intervalDays: Integer
-%%        +nextOccurrence: Date
-%%        +endDate?: Date
-%%        +createdAt: Timestamp
-%%        +updatedAt: Timestamp
-%%    }
-
     class NeedStatusHistory {
         +id: int [PK]
         +needId: int [FK]
-        +status: NeedStatus
+        +statusId: int [FK]
         +changedById: int [FK]
         +createdAt: Timestamp
     }
 
-    class NeedCategory {
+%% ── Donations ────────────────────────────────
+
+    class DonationStatus {
         +id: int [PK]
-        +name: String
+        +code: String
         +createdAt: Timestamp
         +updatedAt: Timestamp
     }
-
-%% ── Donation ────────────────────────────────
 
     class Donation {
         +id: int [PK]
         +donorId: int [FK]
         +needId: int [FK]
-        +status: DonationStatus ~BOOKED | FULFILLED | CANCELLED~
+        +statusId: int [FK]
         +bookedAt: Timestamp
         +fulfilledAt?: Timestamp
         +updatedAt: Timestamp
@@ -92,46 +130,31 @@ classDiagram
     class DonorFavouriteNeed {
         +donorId: int [PK, FK]
         +needId: int [PK, FK]
-    }
-
-%% ── Shared ──────────────────────────────────
-
-    class OrganizationCategory {
-        +id: int [PK]
-        +name: String
         +createdAt: Timestamp
-        +updatedAt: Timestamp
     }
 
-    class Address {
-        +id: int [PK]
-        +city: String
-        +street: String
-        +building: String
-        +apartment?: String
-        +zipCode: String
-        +createdAt: Timestamp
-        +updatedAt: Timestamp
-    }
+%% ── Relations ────────────────────────────────
 
-%% ── Relations ───────────────────────────────
+    UserRole "1" --> "0..*" User : role
+    User "1" --> "0..1" Donor : donor
+    User "1" --> "0..1" Organization : organization
+    User "1" --> "0..*" NeedStatusHistory : changedBy
 
-    Donor --> User : userId
-    Organization --> User : userId
+    OrganizationCategory "1" --> "0..*" Organization : category
+    Organization "1" --> "0..*" Address : addresses
+    Organization "1" --> "0..*" Need : needs
 
-    Need --> Organization : organizationId
-    Need --> NeedCategory : categoryId
-    Need --> Address : addressId
+    Address "1" --> "0..*" Need : address
+    NeedCategory "1" --> "0..*" Need : category
+    NeedStatus "1" --> "0..*" Need : currentStatus
+    NeedType "1" --> "0..*" Need : type
 
-%%    RecurringNeed --> Need : needId
-    NeedStatusHistory --> Need : needId
-    NeedStatusHistory --> User : changedById
+    Need "1" --> "0..*" NeedStatusHistory : statusHistory
+    NeedStatus "1" --> "0..*" NeedStatusHistory : historyStatus
 
-    Organization --> Address : addressId
-    Organization --> OrganizationCategory : categoryId
+    Donor "1" --> "0..*" Donation : donations
+    Need "1" --> "0..*" Donation : donations
+    DonationStatus "1" --> "0..*" Donation : status
 
-    Donation --> Donor : donorId
-    Donation --> Need : needId
-
-    DonorFavouriteNeed --> Donor : donorId
-    DonorFavouriteNeed --> Need : needId
+    Donor "1" --> "0..*" DonorFavouriteNeed : favourites
+    Need "1" --> "0..*" DonorFavouriteNeed : favouritedBy

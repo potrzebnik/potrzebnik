@@ -1,5 +1,6 @@
 INSERT INTO "user_roles" ("code", "created_at", "updated_at")
 VALUES
+    ('USER', now(), now()),
 	('DONOR', now(), now()),
 	('ORGANIZATION_ADMIN', now(), now())
 ON CONFLICT ("code") DO NOTHING;

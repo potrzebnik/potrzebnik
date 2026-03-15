@@ -1,5 +1,5 @@
 {
-  "id": "3a8caf7b-f6f0-4267-a693-e00fe1da9557",
+  "id": "a408910e-d4a7-4fa3-a1f0-c345d9643021",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -13,6 +13,12 @@
           "type": "serial",
           "primaryKey": true,
           "notNull": true
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "city": {
           "name": "city",
@@ -57,8 +63,34 @@
           "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
+      "indexes": {
+        "addresses_organization_id_idx": {
+          "name": "addresses_organization_id_idx",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "addresses_organization_id_organizations_id_fk": {
+          "name": "addresses_organization_id_organizations_id_fk",
+          "tableFrom": "addresses",
+          "tableTo": "organizations",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -128,7 +160,7 @@
           "name": "password_hash",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "role_id": {
           "name": "role_id",
@@ -276,7 +308,13 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "donors_user_id_unique": {
+          "name": "donors_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -346,12 +384,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "address_id": {
-          "name": "address_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "category_id": {
           "name": "category_id",
           "type": "integer",
@@ -388,15 +420,6 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "organizations_address_id_addresses_id_fk": {
-          "name": "organizations_address_id_addresses_id_fk",
-          "tableFrom": "organizations",
-          "tableTo": "addresses",
-          "columnsFrom": ["address_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "organizations_category_id_organization_categories_id_fk": {
           "name": "organizations_category_id_organization_categories_id_fk",
           "tableFrom": "organizations",
@@ -409,6 +432,11 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "organizations_user_id_unique": {
+          "name": "organizations_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id"]
+        },
         "organizations_krs_unique": {
           "name": "organizations_krs_unique",
           "nullsNotDistinct": false,

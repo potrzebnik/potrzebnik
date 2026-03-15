@@ -6,9 +6,9 @@ export const addresses = pgTable(
   'addresses',
   {
     id: serial('id').primaryKey(),
-    organizationId: integer('organization_id')
-      .notNull()
-      .references(() => organizations.id),
+    organizationId: integer('organization_id').references(
+      () => organizations.id,
+    ),
     city: text('city').notNull(),
     street: text('street').notNull(),
     building: text('building').notNull(),

@@ -47,11 +47,11 @@ export const needs = pgTable(
   {
     id: serial('id').primaryKey(),
     description: text('description').notNull(),
-    price: integer('price').notNull(),
+    price: integer('price').notNull(), // as cents / grosze
     organizationId: integer('organization_id')
       .notNull()
       .references(() => organizations.id),
-    donee: text('donee').notNull(),
+    donee: text('donee').notNull(), // for whom
     item: text('item').notNull(),
     addressId: integer('address_id')
       .notNull()
