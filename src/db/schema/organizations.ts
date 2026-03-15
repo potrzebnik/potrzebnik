@@ -1,5 +1,4 @@
 import { integer, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
-import { addresses } from './addresses';
 import { createdAt, updatedAt } from './shared';
 import { users } from './users';
 
@@ -19,9 +18,6 @@ export const organizations = pgTable(
       .references(() => users.id),
     name: text('name').notNull(),
     krs: text('krs').notNull(),
-    addressId: integer('address_id')
-      .notNull()
-      .references(() => addresses.id),
     categoryId: integer('category_id')
       .notNull()
       .references(() => organizationCategories.id),

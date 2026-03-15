@@ -10,17 +10,17 @@ export const organizationCategoriesRelations = relations(
   }),
 );
 
-export const organizationsRelations = relations(organizations, ({ one }) => ({
-  user: one(users, {
-    fields: [organizations.userId],
-    references: [users.id],
+export const organizationsRelations = relations(
+  organizations,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [organizations.userId],
+      references: [users.id],
+    }),
+    addresses: many(addresses),
+    category: one(organizationCategories, {
+      fields: [organizations.categoryId],
+      references: [organizationCategories.id],
+    }),
   }),
-  address: one(addresses, {
-    fields: [organizations.addressId],
-    references: [addresses.id],
-  }),
-  category: one(organizationCategories, {
-    fields: [organizations.categoryId],
-    references: [organizationCategories.id],
-  }),
-}));
+);
