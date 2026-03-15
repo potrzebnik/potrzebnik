@@ -26,7 +26,7 @@ export default function HelpCard({
   return (
     <Card className="group relative flex cursor-pointer flex-col overflow-hidden shadow-sm transition-shadow hover:shadow-md">
       <CardHeader>
-        <div className="tooltip `` group-active:opacity-100">
+        <div className="tooltip group-hover:opacity-100 group-active:opacity-100">
           <p>{title}</p>
         </div>
         <div className="relative">
