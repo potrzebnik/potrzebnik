@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { addresses } from './addresses';
+import { needs } from './needs';
 import { organizationCategories, organizations } from './organizations';
 import { users } from './users';
 
@@ -18,6 +19,7 @@ export const organizationsRelations = relations(
       references: [users.id],
     }),
     addresses: many(addresses),
+    needs: many(needs),
     category: one(organizationCategories, {
       fields: [organizations.categoryId],
       references: [organizationCategories.id],

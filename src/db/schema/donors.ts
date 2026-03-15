@@ -4,20 +4,25 @@ import {
   primaryKey,
   serial,
   text,
+  unique,
 } from 'drizzle-orm/pg-core';
 import { createdAt, updatedAt } from './shared';
 import { needs } from './needs';
 import { users } from './users';
 
-export const donors = pgTable('donors', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id')
-    .notNull()
-    .references(() => users.id),
-  name: text('name').notNull(),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
+export const donors = pgTable(
+  'donors',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id),
+    name: text('name').notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [unique('donors_user_id_unique').on(table.userId)],
+);
 
 export const donorFavouriteNeeds = pgTable(
   'donor_favourite_needs',

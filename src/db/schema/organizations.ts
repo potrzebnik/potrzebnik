@@ -25,5 +25,8 @@ export const organizations = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (table) => [unique('organizations_krs_unique').on(table.krs)],
+  (table) => [
+    unique('organizations_user_id_unique').on(table.userId),
+    unique('organizations_krs_unique').on(table.krs),
+  ],
 );

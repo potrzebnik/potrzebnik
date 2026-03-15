@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { addresses } from './addresses';
 import { donorFavouriteNeeds } from './donors';
+import { donations } from './donations';
 import {
   needCategories,
   needStatusHistory,
@@ -50,6 +51,7 @@ export const needsRelations = relations(needs, ({ one, many }) => ({
   }),
   statusHistory: many(needStatusHistory),
   favouritedBy: many(donorFavouriteNeeds),
+  donations: many(donations),
 }));
 
 export const needStatusHistoryRelations = relations(
