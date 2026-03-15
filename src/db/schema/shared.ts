@@ -5,3 +5,5 @@ export const createdAt = () =>
 
 export const updatedAt = () =>
   timestamp('updated_at', { withTimezone: true }).notNull();
+
+export const deletedAt = () => timestamp('deleted_at', { withTimezone: true });

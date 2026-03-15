@@ -1,6 +1,6 @@
 import { index, integer, pgTable, serial, text } from 'drizzle-orm/pg-core';
 import { organizations } from './organizations';
-import { createdAt, updatedAt } from './shared';
+import { createdAt, deletedAt, updatedAt } from './shared';
 
 export const addresses = pgTable(
   'addresses',
@@ -16,6 +16,7 @@ export const addresses = pgTable(
     zipCode: text('zip_code').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [index('addresses_organization_id_idx').on(table.organizationId)],
 );

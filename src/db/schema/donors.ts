@@ -6,7 +6,7 @@ import {
   text,
   unique,
 } from 'drizzle-orm/pg-core';
-import { createdAt, updatedAt } from './shared';
+import { createdAt, deletedAt, updatedAt } from './shared';
 import { needs } from './needs';
 import { users } from './users';
 
@@ -20,6 +20,7 @@ export const donors = pgTable(
     name: text('name').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [unique('donors_user_id_unique').on(table.userId)],
 );
@@ -34,6 +35,7 @@ export const donorFavouriteNeeds = pgTable(
       .notNull()
       .references(() => needs.id),
     createdAt: createdAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [
     primaryKey({

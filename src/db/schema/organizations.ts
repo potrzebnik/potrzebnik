@@ -1,5 +1,5 @@
 import { integer, pgTable, serial, text, unique } from 'drizzle-orm/pg-core';
-import { createdAt, updatedAt } from './shared';
+import { createdAt, deletedAt, updatedAt } from './shared';
 import { users } from './users';
 
 export const organizationCategories = pgTable('organization_categories', {
@@ -7,6 +7,7 @@ export const organizationCategories = pgTable('organization_categories', {
   name: text('name').notNull(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
+  deletedAt: deletedAt(),
 });
 
 export const organizations = pgTable(
@@ -24,6 +25,7 @@ export const organizations = pgTable(
     phoneNumber: text('phone_number').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [
     unique('organizations_user_id_unique').on(table.userId),

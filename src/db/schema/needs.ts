@@ -10,7 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { addresses } from './addresses';
 import { organizations } from './organizations';
-import { createdAt, updatedAt } from './shared';
+import { createdAt, deletedAt, updatedAt } from './shared';
 import { users } from './users';
 
 export const needCategories = pgTable('need_categories', {
@@ -18,6 +18,7 @@ export const needCategories = pgTable('need_categories', {
   name: text('name').notNull(),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
+  deletedAt: deletedAt(),
 });
 
 export const needStatuses = pgTable(
@@ -27,6 +28,7 @@ export const needStatuses = pgTable(
     code: text('code').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [unique('need_statuses_code_unique').on(table.code)],
 );
@@ -38,6 +40,7 @@ export const needTypes = pgTable(
     code: text('code').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [unique('need_types_code_unique').on(table.code)],
 );
@@ -70,6 +73,7 @@ export const needs = pgTable(
     important: boolean('important').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [index('needs_organization_id_idx').on(table.organizationId)],
 );
@@ -86,4 +90,5 @@ export const needStatusHistory = pgTable('need_status_history', {
     .notNull()
     .references(() => users.id),
   createdAt: createdAt(),
+  deletedAt: deletedAt(),
 });

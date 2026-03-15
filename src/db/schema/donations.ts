@@ -8,7 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { donors } from './donors';
 import { needs } from './needs';
-import { createdAt, updatedAt } from './shared';
+import { createdAt, deletedAt, updatedAt } from './shared';
 
 export const donationStatuses = pgTable(
   'donation_statuses',
@@ -17,6 +17,7 @@ export const donationStatuses = pgTable(
     code: text('code').notNull(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    deletedAt: deletedAt(),
   },
   (table) => [unique('donation_statuses_code_unique').on(table.code)],
 );
@@ -35,4 +36,5 @@ export const donations = pgTable('donations', {
   bookedAt: timestamp('booked_at', { withTimezone: true }).notNull(),
   fulfilledAt: timestamp('fulfilled_at', { withTimezone: true }),
   updatedAt: updatedAt(),
+  deletedAt: deletedAt(),
 });

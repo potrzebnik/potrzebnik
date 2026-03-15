@@ -7,7 +7,8 @@ CREATE TABLE "addresses" (
 	"apartment" text,
 	"zip_code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "user_roles" (
@@ -15,6 +16,7 @@ CREATE TABLE "user_roles" (
 	"code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "user_roles_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
@@ -25,6 +27,7 @@ CREATE TABLE "users" (
 	"role_id" integer NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -32,6 +35,7 @@ CREATE TABLE "donor_favourite_needs" (
 	"donor_id" integer NOT NULL,
 	"need_id" integer NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "donor_favourite_needs_pkey" PRIMARY KEY("donor_id","need_id")
 );
 --> statement-breakpoint
@@ -41,6 +45,7 @@ CREATE TABLE "donors" (
 	"name" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "donors_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
@@ -48,7 +53,8 @@ CREATE TABLE "organization_categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "organizations" (
@@ -60,6 +66,7 @@ CREATE TABLE "organizations" (
 	"phone_number" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "organizations_user_id_unique" UNIQUE("user_id"),
 	CONSTRAINT "organizations_krs_unique" UNIQUE("krs")
 );
@@ -68,7 +75,8 @@ CREATE TABLE "need_categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "need_status_history" (
@@ -76,7 +84,8 @@ CREATE TABLE "need_status_history" (
 	"need_id" integer NOT NULL,
 	"status_id" integer NOT NULL,
 	"changed_by_id" integer NOT NULL,
-	"created_at" timestamp with time zone NOT NULL
+	"created_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "need_statuses" (
@@ -84,6 +93,7 @@ CREATE TABLE "need_statuses" (
 	"code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "need_statuses_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
@@ -92,6 +102,7 @@ CREATE TABLE "need_types" (
 	"code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "need_types_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
@@ -110,7 +121,8 @@ CREATE TABLE "needs" (
 	"type_id" integer NOT NULL,
 	"important" boolean NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "donation_statuses" (
@@ -118,6 +130,7 @@ CREATE TABLE "donation_statuses" (
 	"code" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone,
 	CONSTRAINT "donation_statuses_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
@@ -128,7 +141,8 @@ CREATE TABLE "donations" (
 	"status_id" integer NOT NULL,
 	"booked_at" timestamp with time zone NOT NULL,
 	"fulfilled_at" timestamp with time zone,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
