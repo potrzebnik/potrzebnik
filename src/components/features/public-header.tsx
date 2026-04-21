@@ -103,51 +103,53 @@ export function PublicHeader() {
         <span className="absolute top-[61px] right-0 left-0 border-t-[0.5px] border-black" />
       </div>
 
-      <div className="hidden overflow-x-auto border-b-[0.5px] border-black md:block">
-        <div className="mx-auto box-border flex h-[84px] max-w-[1440px] min-w-[1180px] items-center justify-between px-[100px] pt-[20px] pb-[24px]">
-          <div className="flex h-9 w-[1016px] flex-1 items-center justify-between">
-            <div className="flex items-center gap-16">
-              <Link
-                href="/"
-                className="flex items-center gap-[18px] text-[#0A0A0A]"
-              >
-                <span className="h-[23px] w-[23px] rounded-full bg-[#0A0A0A]" />
-                <span className="text-[18px] leading-[27px] font-semibold">
-                  Potrzebnik
-                </span>
-              </Link>
+      <div className="hidden border-b-[0.5px] border-black md:block">
+        <div className="mx-auto flex h-[84px] w-full max-w-[1440px] items-center justify-between gap-4 bg-[#FBFDFF] px-[100px] pt-5 pb-6">
+          <div className="flex h-9 w-[926px] items-center justify-between">
+            <Link
+              href="/"
+              className="flex h-9 items-center gap-[18px] text-[#0A0A0A]"
+            >
+              <span className="h-[23px] w-[23px] rounded-full bg-[#0A0A0A]" />
+              <span className="text-[18px] leading-[27px] font-semibold">
+                Potrzebnik
+              </span>
+            </Link>
 
-              <nav aria-label="Nawigacja główna">
-                <ul className="flex h-9 items-center">
-                  {navigationItems.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className="inline-flex h-9 items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[#404040] transition-colors hover:bg-black/5"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
+            <nav aria-label="Nawigacja główna">
+              <ul className="flex h-9 items-center p-0">
+                {navigationItems.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`inline-flex h-9 min-h-9 items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[#404040] ${
+                        item.label === 'O nas' ? 'w-[70px]' : 'w-[84px]'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
 
+          <div className="flex h-10 w-[260px] items-center gap-3">
             <Link
               href="/contact"
-              className="inline-flex h-9 min-h-9 items-center justify-center rounded-lg border-[0.5px] border-black bg-[#FFD73A] px-4 py-2 text-sm leading-5 font-medium text-[#0A0A0A] transition-colors hover:bg-[#f2c91f]"
+              className="inline-flex h-9 min-h-9 w-[147px] items-center justify-center gap-[23px] rounded-lg border-[0.5px] border-black bg-[#FFD73A] px-4 py-2 text-sm leading-5 font-medium text-[#0A0A0A]"
             >
               Zgłoś organizację
             </Link>
+            <button
+              type="button"
+              className="inline-flex h-10 min-h-10 w-[101px] items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm leading-5 font-medium text-[#404040]"
+              aria-label="Zmień język"
+            >
+              ENG
+              <ChevronDown className="h-4 w-4 text-[#0A0A0A]" strokeWidth={2} />
+            </button>
           </div>
-
-          <button
-            type="button"
-            className="ml-[27px] inline-flex h-10 min-h-10 items-center justify-center rounded-lg px-6 text-sm leading-5 font-medium text-[#404040] transition-colors hover:bg-black/5"
-            aria-label="Zmień język"
-          >
-            ENG
-          </button>
         </div>
       </div>
     </header>
