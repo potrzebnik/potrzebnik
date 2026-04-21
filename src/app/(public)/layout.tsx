@@ -28,7 +28,7 @@ export default function PublicLayout({
                 href="mailto:potrzebnik@mail.com"
                 className="public-footer__mail"
               >
-                <Mail className="hidden lg:block" aria-hidden="true" />
+                <Mail aria-hidden="true" />
                 <span>potrzebnik@mail.com</span>
               </Link>
             </div>
