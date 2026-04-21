@@ -347,9 +347,10 @@
   }
 
   .public-footer__legal {
-    flex-wrap: wrap;
+    align-items: center;
     justify-content: flex-start;
-    gap: 16px 64px;
+    gap: 64px;
+    flex-wrap: nowrap;
     background: transparent;
     padding: 22px 100px;
   }
