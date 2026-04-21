@@ -1,36 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronDown, Menu } from 'lucide-react';
-
-type MobileMenuItem = {
-  href: string;
-  label: string;
-  top: number;
-  left: number;
-  isInverted?: boolean;
-};
+import { ChevronDown, Menu, X } from 'lucide-react';
 
 const navigationItems = [
   { href: '/about', label: 'O nas' },
   { href: '/contact', label: 'Kontakt' },
 ] as const;
-
-const mobileMenuItems: MobileMenuItem[] = [
-  { href: '/about', label: 'O nas', top: 25, left: 8 },
-  { href: '/contact', label: 'Kontakt', top: 59, left: 9 },
-  { href: '/contact', label: 'Zgłoś organizację', top: 93, left: 9 },
-  { href: '/dashboard', label: 'Zaloguj się', top: 127, left: 9 },
-  {
-    href: '/needs',
-    label: 'Dla darczyńców',
-    top: 161,
-    left: 9,
-    isInverted: true,
-  },
-];
 
 export function PublicHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,66 +18,81 @@ export function PublicHeader() {
 
   return (
     <header className="bg-[#FBFDFF]">
-      <div className="relative h-[62px] md:hidden">
-        <button
-          id="navi-bar-icon-mobile"
-          type="button"
-          className="absolute top-[13px] right-[19px] inline-flex h-6 w-6 items-center justify-center text-[#525252]"
-          aria-expanded={isMobileMenuOpen}
-          aria-controls="mobile-navbar-panel"
-          aria-label="Otwórz menu"
-          onClick={toggleMobileMenu}
-        >
-          <Menu className="h-6 w-6" strokeWidth={2} />
-        </button>
+      <div className="relative bg-white md:hidden">
+        <div className="relative flex h-[60px] items-center">
+          <div className="flex h-9 w-full items-center justify-between px-5">
+            <Link
+              href="/"
+              className="flex h-9 items-center gap-[18px] text-[#0A0A0A]"
+            >
+              <span className="h-[23px] w-[23px] rounded-full bg-[#0A0A0A]" />
+              <span className="inline-flex h-[23px] items-center text-[18px] leading-none font-semibold">
+                Potrzebnik
+              </span>
+            </Link>
+            <button
+              id="navi-bar-icon-mobile"
+              type="button"
+              className="inline-flex h-6 w-6 items-center justify-center text-[#525252]"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navbar-panel"
+              aria-label={isMobileMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
+              onClick={toggleMobileMenu}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" strokeWidth={2} />
+              ) : (
+                <Menu className="h-6 w-6" strokeWidth={2} />
+              )}
+            </button>
+          </div>
+          <span className="absolute right-0 bottom-0 left-0 border-t-[0.5px] border-black" />
+          <span className="absolute right-0 bottom-1 left-0 border-t-[0.5px] border-black" />
+        </div>
 
         {isMobileMenuOpen ? (
           <div
             id="mobile-navbar-panel"
-            className="absolute top-[45px] right-[19px] z-30 h-[360px] w-[132px] rounded-[12.87px] border border-black bg-[#D1E7FE]"
+            className="flex min-h-[736px] w-full items-start bg-white pt-5 pr-8 pb-0 pl-5"
           >
-            {mobileMenuItems.map((item) => (
+            <div className="flex w-full max-w-[349px] flex-col gap-10">
+              <div className="flex w-full flex-col">
+                <Link
+                  href="/about"
+                  onClick={closeMobileMenu}
+                  className="inline-flex h-14 w-full items-center border-b-[0.5px] border-[#D4D4D4] px-[10px] py-4 text-base leading-6 font-medium text-black"
+                >
+                  O nas
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={closeMobileMenu}
+                  className="inline-flex h-14 w-full items-center px-[10px] py-4 text-base leading-6 font-medium text-black"
+                >
+                  Kontakt
+                </Link>
+              </div>
               <Link
-                key={item.label}
-                href={item.href}
+                href="/contact"
                 onClick={closeMobileMenu}
-                className={`absolute inline-flex h-[22px] w-[116px] items-center justify-center rounded-[6.41px] border text-[12px] leading-4 font-normal ${
-                  item.isInverted
-                    ? 'border-[#FFD73A] bg-[#5B3DF5] text-[#FFD73A]'
-                    : 'border-[#5B3DF5] bg-[#FFD73A] text-[#5B3DF5]'
-                }`}
-                style={{ left: `${item.left}px`, top: `${item.top}px` }}
+                className="inline-flex h-14 min-h-10 w-full items-center justify-center rounded-lg border-[0.5px] border-black bg-[#FFD73A] px-8 py-2.5 text-[18px] leading-[27px] font-medium text-[#0A0A0A]"
               >
-                {item.label}
+                Zgłoś organizację
               </Link>
-            ))}
-
-            <button
-              type="button"
-              className="absolute bottom-[95px] left-1/2 inline-flex h-6 w-14 -translate-x-1/2 items-center justify-center gap-0.5 rounded-[6.41px] border border-[#5B3DF5] bg-[#FFD73A] text-[12px] leading-4 font-normal text-black"
-              aria-label="Wybierz język"
-            >
-              ENG
-              <ChevronDown className="h-4 w-4 text-[#1D1B20]" strokeWidth={2} />
-            </button>
-
-            <div
-              className="absolute bottom-[11.06px] left-[19px] h-[77.94px] w-[94px]"
-              aria-hidden="true"
-            >
-              <Image
-                src="/mobile-heart-logo.svg"
-                alt=""
-                fill
-                className="object-cover"
-                sizes="94px"
-              />
+              <button
+                type="button"
+                className="inline-flex h-9 min-h-9 w-[85px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[#404040]"
+                aria-label="Zmień język"
+              >
+                ENG
+                <ChevronDown
+                  className="h-4 w-4 text-[#0A0A0A]"
+                  strokeWidth={2}
+                />
+              </button>
             </div>
           </div>
         ) : null}
-
-        <span className="absolute top-[51px] right-0 left-0 border-t-[0.5px] border-black" />
-        <span className="absolute top-[61px] right-0 left-0 border-t-[0.5px] border-black" />
       </div>
 
       <div className="hidden border-b-[0.5px] border-black md:block">
