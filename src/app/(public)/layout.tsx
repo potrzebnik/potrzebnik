@@ -15,11 +15,6 @@ export default function PublicLayout({
       <main>{children}</main>
 
       <footer className="public-footer">
-        <div className="public-footer__lines" aria-hidden="true">
-          <div />
-          <div />
-        </div>
-
         <div className="public-footer__top">
           <div className="public-footer__brand">
             <span className="public-footer__brand-dot" aria-hidden="true" />
@@ -28,40 +23,57 @@ export default function PublicLayout({
 
           <div className="public-footer__contact">
             <div className="public-footer__contact-group">
-              <p className="public-footer__heading">Skontaktuj się z nami</p>
-              <a
+              <h2 className="public-footer__heading">Skontaktuj się z nami</h2>
+              <Link
                 href="mailto:potrzebnik@mail.com"
                 className="public-footer__mail"
               >
-                <Mail size={24} aria-hidden="true" />
+                <Mail className="hidden lg:block" aria-hidden="true" />
                 <span>potrzebnik@mail.com</span>
-              </a>
+              </Link>
             </div>
 
             <div className="public-footer__social-group">
-              <p className="public-footer__heading">Obserwuj nas</p>
+              <h2 className="public-footer__heading">Obserwuj nas</h2>
               <div className="public-footer__social-links">
-                <a href="#" aria-label="LinkedIn">
-                  <Linkedin size={24} />
-                </a>
-                <a href="#" aria-label="Facebook">
-                  <Facebook size={24} />
-                </a>
+                <Link
+                  href="https://www.linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin aria-hidden="true" />
+                </Link>
+                <Link
+                  href="https://www.facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  <Facebook aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </div>
 
           <nav className="public-footer__nav" aria-label="Nawigacja w stopce">
-            <Link href="/organizations">Zgłoś organizację</Link>
+            <Link
+              href="/organizations"
+              className="public-footer__nav-link--spaced"
+            >
+              Zgłoś organizację
+            </Link>
             <Link href="/about">O nas</Link>
-            <Link href="/faqs">Najczęściej zadawane pytania</Link>
+            <Link href="/faqs" className="public-footer__nav-link--constrained">
+              Najczęściej zadawane pytania
+            </Link>
           </nav>
         </div>
 
-        <div className="public-footer__legal">
+        <nav className="public-footer__legal" aria-label="Informacje prawne">
           <Link href="/privacy-policy">Polityka prywatności</Link>
           <Link href="/terms">Regulamin serwisu</Link>
-        </div>
+        </nav>
       </footer>
     </div>
   );
