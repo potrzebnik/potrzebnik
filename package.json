@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "vitest run --config vitest.node.config.ts --project unit",
+    "test:integration": "vitest run --config vitest.node.config.ts --project integration",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "check": "tsc --noEmit && eslint . && prettier --check .",
