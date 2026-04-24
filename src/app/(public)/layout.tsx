@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import { Facebook, Linkedin, Mail } from 'lucide-react';
+
+import { Link } from '@/components/ui/link';
 
 export default function PublicLayout({
   children,
@@ -57,22 +58,25 @@ export default function PublicLayout({
           </div>
 
           <nav className="public-footer__nav" aria-label="Nawigacja w stopce">
-            <Link
-              href="/organizations"
-              className="public-footer__nav-link--spaced"
-            >
+            <Link href="/organizations" variant="footerNav">
               Zgłoś organizację
             </Link>
-            <Link href="/about">O nas</Link>
-            <Link href="/faqs" className="public-footer__nav-link--constrained">
+            <Link href="/about" variant="footerNav">
+              O nas
+            </Link>
+            <Link href="/faqs" variant="footerNav">
               Najczęściej zadawane pytania
             </Link>
           </nav>
         </div>
 
         <nav className="public-footer__legal" aria-label="Informacje prawne">
-          <Link href="/privacy-policy">Polityka prywatności</Link>
-          <Link href="/terms">Regulamin serwisu</Link>
+          <Link href="/privacy-policy" variant="footerLegal">
+            Polityka prywatności
+          </Link>
+          <Link href="/terms" variant="footerLegal">
+            Regulamin serwisu
+          </Link>
         </nav>
       </footer>
     </div>
