@@ -50,6 +50,17 @@ Open Drizzle Studio:
 pnpm run db:studio
 ```
 
+## Integration Tests
+
+Run integration tests:
+
+```bash
+pnpm test:integration
+```
+
+The Postgres test harness documentation (API and examples) is in
+`src/test/README.md`.
+
 ## Contributing
 
 We welcome contributions! Please follow these guidelines to ensure smooth collaboration.
