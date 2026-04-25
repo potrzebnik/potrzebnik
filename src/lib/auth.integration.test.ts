@@ -3,16 +3,13 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { toNextJsHandler } from 'better-auth/next-js';
 import { convertSetCookieToCookie } from 'better-auth/test';
 
-import { createAuth } from './auth-config';
 import {
-  createGoogleOverrides,
   createAuthRequest,
   signInWithGoogle,
   createGoogleSignInRequestBody,
   TEST_GOOGLE_USER,
 } from '../test/auth-integration/google';
 import { createAuthIntegrationHarness } from '../test/auth-integration/harness';
-import { createIntegrationEnv } from '../test/auth-integration/env';
 
 describe('auth integration', () => {
   let harness: Awaited<ReturnType<typeof createAuthIntegrationHarness>>;
@@ -34,11 +31,7 @@ describe('auth integration', () => {
   });
 
   it('creates one user, one account, and one session on first Google sign-in', async () => {
-    const auth = createAuth({
-      database: harness.db,
-      env: createIntegrationEnv(harness.databaseUrl),
-      googleOverrides: createGoogleOverrides(),
-    });
+    const auth = harness.createTestAuth();
 
     const { data, response } = await signInWithGoogle(auth);
 
@@ -59,11 +52,7 @@ describe('auth integration', () => {
   });
 
   it('reuses the existing user and account on repeated Google sign-in', async () => {
-    const auth = createAuth({
-      database: harness.db,
-      env: createIntegrationEnv(harness.databaseUrl),
-      googleOverrides: createGoogleOverrides(),
-    });
+    const auth = harness.createTestAuth();
 
     const firstSignIn = await signInWithGoogle(auth);
     const secondSignIn = await signInWithGoogle(auth);
@@ -90,11 +79,7 @@ describe('auth integration', () => {
   });
 
   it('returns session data through the Better Auth request handler path', async () => {
-    const auth = createAuth({
-      database: harness.db,
-      env: createIntegrationEnv(harness.databaseUrl),
-      googleOverrides: createGoogleOverrides(),
-    });
+    const auth = harness.createTestAuth();
     const nextHandler = toNextJsHandler(auth);
     const signInResponse = await nextHandler.POST(
       createAuthRequest('/api/auth/sign-in/social', {

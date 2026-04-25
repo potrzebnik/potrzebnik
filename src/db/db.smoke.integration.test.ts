@@ -41,7 +41,11 @@ describe('database integration', () => {
   it('imports the production db and auth singletons after test env setup', async () => {
     vi.resetModules();
 
-    const { dbModule, authModule } = await harness.loadProductionSingletons();
+    const dbModule = await import('./index');
+    const authModule = await import('../lib/auth');
+
+    harness.trackPool(dbModule.db.$client);
+
     const databaseResult = await dbModule.db.$client.query<{ value: number }>(
       'SELECT 1 AS value',
     );

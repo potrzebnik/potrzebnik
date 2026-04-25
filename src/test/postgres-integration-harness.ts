@@ -6,6 +6,11 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
 
 const DEFAULT_MANAGED_ENV_KEYS = ['DATABASE_URL'] as const;
+const DEFAULT_MIGRATIONS_FOLDER = path.resolve(process.cwd(), 'drizzle');
+const DEFAULT_CONTAINER_IMAGE = 'postgres:18.3';
+const DEFAULT_DATABASE_NAME = 'potrzebnik_test';
+const DEFAULT_USERNAME = 'postgres';
+const DEFAULT_PASSWORD = 'postgres';
 
 type ClosablePool = {
   end: () => Promise<void>;
@@ -14,19 +19,16 @@ type ClosablePool = {
 type ManagedEnvSnapshot = Record<string, string | undefined>;
 
 type SchemaDefinition = Record<string, unknown>;
+type StartedPostgresContainer = Awaited<
+  ReturnType<PostgreSqlContainer['start']>
+>;
 
 export type CreatePostgresIntegrationHarnessOptions<
   TSchema extends SchemaDefinition,
 > = {
   schema: TSchema;
-  env?: NodeJS.ProcessEnv;
   envOverrides?: Record<string, string>;
   managedEnvKeys?: readonly string[];
-  migrationsFolder?: string;
-  containerImage?: string;
-  databaseName?: string;
-  username?: string;
-  password?: string;
 };
 
 function snapshotManagedEnv(
@@ -57,35 +59,38 @@ function applyEnvOverrides(
   Object.assign(env, overrides);
 }
 
-export async function createPostgresIntegrationHarness<
-  TSchema extends SchemaDefinition,
->({
-  schema,
-  env = process.env,
-  envOverrides = {},
-  managedEnvKeys = [],
-  migrationsFolder = path.resolve(process.cwd(), 'drizzle'),
-  containerImage = 'postgres:18.3',
-  databaseName = 'potrzebnik_test',
-  username = 'postgres',
-  password = 'postgres',
-}: CreatePostgresIntegrationHarnessOptions<TSchema>) {
-  const allManagedEnvKeys = Array.from(
+function resolveManagedEnvKeys(
+  managedEnvKeys: readonly string[],
+  envOverrides: Record<string, string>,
+) {
+  return Array.from(
     new Set([
       ...DEFAULT_MANAGED_ENV_KEYS,
       ...managedEnvKeys,
       ...Object.keys(envOverrides),
     ]),
   );
-  const previousEnv = snapshotManagedEnv(allManagedEnvKeys, env);
+}
+
+function createResourceLifecycle({
+  env,
+  previousEnv,
+}: {
+  env: NodeJS.ProcessEnv;
+  previousEnv: ManagedEnvSnapshot;
+}) {
   const trackedPools = new Set<ClosablePool>();
-  let container: Awaited<ReturnType<PostgreSqlContainer['start']>> | undefined;
+  let container: StartedPostgresContainer | undefined;
   let disposed = false;
 
   function trackPool<T extends ClosablePool>(pool: T): T {
     trackedPools.add(pool);
 
     return pool;
+  }
+
+  function setContainer(nextContainer: StartedPostgresContainer) {
+    container = nextContainer;
   }
 
   async function dispose() {
@@ -95,12 +100,12 @@ export async function createPostgresIntegrationHarness<
 
     disposed = true;
     const errors: unknown[] = [];
+    const poolsToClose = Array.from(trackedPools);
+    trackedPools.clear();
 
-    for (const trackedPool of trackedPools) {
-      trackedPools.delete(trackedPool);
-
+    for (const pool of poolsToClose) {
       try {
-        await trackedPool.end();
+        await pool.end();
       } catch (error) {
         errors.push(error);
       }
@@ -128,12 +133,90 @@ export async function createPostgresIntegrationHarness<
     }
   }
 
+  return {
+    trackPool,
+    setContainer,
+    dispose,
+  };
+}
+
+async function startContainer() {
+  return new PostgreSqlContainer(DEFAULT_CONTAINER_IMAGE)
+    .withDatabase(DEFAULT_DATABASE_NAME)
+    .withUsername(DEFAULT_USERNAME)
+    .withPassword(DEFAULT_PASSWORD)
+    .start();
+}
+
+function createTableHelpers(pool: Pool) {
+  async function countRows(tableSql: string) {
+    const result = await pool.query<{ count: number }>(
+      `SELECT COUNT(*)::int AS count FROM ${tableSql}`,
+    );
+
+    return result.rows[0]?.count ?? 0;
+  }
+
+  async function listExistingTables(tableNames: readonly string[]) {
+    const result = await pool.query<{ table_name: string }>(
+      `
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = ANY($1::text[])
+        ORDER BY table_name
+      `,
+      [tableNames],
+    );
+
+    return result.rows.map((row) => row.table_name);
+  }
+
+  async function truncateTables(tablesSql: readonly string[]) {
+    if (tablesSql.length === 0) {
+      return;
+    }
+
+    await pool.query(`TRUNCATE TABLE ${tablesSql.join(', ')} CASCADE`);
+  }
+
+  return {
+    countRows,
+    listExistingTables,
+    truncateTables,
+  };
+}
+
+/**
+ * Creates a disposable Postgres integration test harness.
+ *
+ * Usage pattern:
+ * - Call once in `beforeAll`.
+ * - Clean test data in `afterEach` with `truncateTables(...)`.
+ * - Call `dispose()` in `afterAll` to close pools, stop the container, and
+ *   restore managed env variables.
+ *
+ * `countRows` and `truncateTables` accept SQL table identifiers, so pass only
+ * trusted static values (for example `"user"` for reserved names).
+ */
+export async function createPostgresIntegrationHarness<
+  TSchema extends SchemaDefinition,
+>({
+  schema,
+  envOverrides = {},
+  managedEnvKeys = [],
+}: CreatePostgresIntegrationHarnessOptions<TSchema>) {
+  const env = process.env;
+  const allManagedEnvKeys = resolveManagedEnvKeys(managedEnvKeys, envOverrides);
+  // Tests share one process, so process.env is global mutable state.
+  // Snapshot managed keys now and restore them on dispose to prevent env leaks.
+  const previousEnv = snapshotManagedEnv(allManagedEnvKeys, env);
+  const resources = createResourceLifecycle({ env, previousEnv });
+
   try {
-    container = await new PostgreSqlContainer(containerImage)
-      .withDatabase(databaseName)
-      .withUsername(username)
-      .withPassword(password)
-      .start();
+    const container = await startContainer();
+    resources.setContainer(container);
+
     const databaseUrl = container.getConnectionUri();
 
     applyEnvOverrides(
@@ -144,60 +227,28 @@ export async function createPostgresIntegrationHarness<
       env,
     );
 
-    const pool = trackPool(
+    const pool = resources.trackPool(
       new Pool({
         connectionString: databaseUrl,
       }),
     );
     const db = drizzle(pool, { schema });
 
-    await migrate(db, { migrationsFolder });
-
-    async function countRows(tableSql: string) {
-      const result = await pool.query<{ count: number }>(
-        `SELECT COUNT(*)::int AS count FROM ${tableSql}`,
-      );
-
-      return result.rows[0]?.count ?? 0;
-    }
-
-    async function listExistingTables(tableNames: readonly string[]) {
-      const result = await pool.query<{ table_name: string }>(
-        `
-          SELECT table_name
-          FROM information_schema.tables
-          WHERE table_schema = 'public'
-            AND table_name = ANY($1::text[])
-          ORDER BY table_name
-        `,
-        [tableNames],
-      );
-
-      return result.rows.map((row) => row.table_name);
-    }
-
-    async function truncateTables(tablesSql: readonly string[]) {
-      if (tablesSql.length === 0) {
-        return;
-      }
-
-      await pool.query(`TRUNCATE TABLE ${tablesSql.join(', ')} CASCADE`);
-    }
+    await migrate(db, { migrationsFolder: DEFAULT_MIGRATIONS_FOLDER });
+    const tableHelpers = createTableHelpers(pool);
 
     return {
       container,
       databaseUrl,
       db,
       pool,
-      trackPool,
-      countRows,
-      listExistingTables,
-      truncateTables,
-      dispose,
+      trackPool: resources.trackPool,
+      ...tableHelpers,
+      dispose: resources.dispose,
     };
   } catch (error) {
     try {
-      await dispose();
+      await resources.dispose();
     } catch (cleanupError) {
       throw new AggregateError(
         [error, cleanupError],
