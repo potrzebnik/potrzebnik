@@ -16,7 +16,11 @@ Set up environment variables first:
 cp .env.example .env
 ```
 
-If you want Google sign-in locally for testing purposes, set `GOOGLE_CLIENT_ID` and
+Local development startup works without Google OAuth keys. If
+`GOOGLE_CLIENT_ID` or `GOOGLE_CLIENT_SECRET` is missing, Google sign-in is
+disabled.
+
+To enable Google sign-in locally for testing, set `GOOGLE_CLIENT_ID` and
 `GOOGLE_CLIENT_SECRET` in `.env`, then register this redirect URI in Google
 Cloud:
 

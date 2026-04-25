@@ -1,6 +1,4 @@
-import { describe, expect, it } from 'vitest';
-
-import { getAuthEnv } from './auth-config';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 function createEnv(
   overrides: Partial<NodeJS.ProcessEnv> = {},
@@ -24,28 +22,103 @@ function createEnv(
   };
 }
 
+async function loadGetAuthEnv() {
+  vi.resetModules();
+
+  const { getAuthEnv } = await import('./auth-config');
+
+  return getAuthEnv;
+}
+
 describe('getAuthEnv', () => {
-  it('returns the auth environment values', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('returns auth env values with google config when all values exist', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+
     expect(getAuthEnv(createEnv())).toEqual({
       secret: 'test-better-auth-secret-that-is-long-enough',
       baseURL: 'http://127.0.0.1:3000',
-      googleClientId: 'test-google-client-id',
-      googleClientSecret: 'test-google-client-secret',
+      google: {
+        clientId: 'test-google-client-id',
+        clientSecret: 'test-google-client-secret',
+      },
     });
   });
 
+  it.each(['BETTER_AUTH_SECRET', 'BETTER_AUTH_URL'] as const)(
+    'rejects a missing %s value in development',
+    async (key) => {
+      const getAuthEnv = await loadGetAuthEnv();
+      const env = createEnv({ NODE_ENV: 'development' });
+
+      delete env[key];
+
+      expect(() => getAuthEnv(env)).toThrow(
+        `Missing environment variable: ${key}. It is required for authentication.`,
+      );
+    },
+  );
+
   it.each([
-    'BETTER_AUTH_SECRET',
-    'BETTER_AUTH_URL',
-    'GOOGLE_CLIENT_ID',
-    'GOOGLE_CLIENT_SECRET',
-  ] as const)('rejects a missing %s value', (key) => {
-    const env = createEnv();
+    ['GOOGLE_CLIENT_ID', 'test'],
+    ['GOOGLE_CLIENT_SECRET', 'production'],
+  ] as const)(
+    'rejects missing %s outside development (NODE_ENV=%s)',
+    async (missingKey, nodeEnv) => {
+      const getAuthEnv = await loadGetAuthEnv();
+      const env = createEnv({ NODE_ENV: nodeEnv });
 
-    delete env[key];
+      delete env[missingKey];
 
-    expect(() => getAuthEnv(env)).toThrow(
-      `Missing environment variable: ${key}. It is required for authentication.`,
+      expect(() => getAuthEnv(env)).toThrow(
+        `Missing environment variable: ${missingKey}. It is required for authentication.`,
+      );
+    },
+  );
+
+  it('allows development startup when both google keys are missing and warns once', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const env = createEnv({ NODE_ENV: 'development' });
+
+    delete env.GOOGLE_CLIENT_ID;
+    delete env.GOOGLE_CLIENT_SECRET;
+
+    expect(getAuthEnv(env)).toEqual({
+      secret: 'test-better-auth-secret-that-is-long-enough',
+      baseURL: 'http://127.0.0.1:3000',
+      google: undefined,
+    });
+    expect(getAuthEnv(env)).toEqual({
+      secret: 'test-better-auth-secret-that-is-long-enough',
+      baseURL: 'http://127.0.0.1:3000',
+      google: undefined,
+    });
+
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Google OAuth is disabled in development because required environment variable(s) are missing: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.',
+    );
+  });
+
+  it('allows development startup when one google key is missing and disables google', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const env = createEnv({ NODE_ENV: 'development' });
+
+    delete env.GOOGLE_CLIENT_SECRET;
+
+    expect(getAuthEnv(env)).toEqual({
+      secret: 'test-better-auth-secret-that-is-long-enough',
+      baseURL: 'http://127.0.0.1:3000',
+      google: undefined,
+    });
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Google OAuth is disabled in development because required environment variable(s) are missing: GOOGLE_CLIENT_SECRET.',
     );
   });
 });

@@ -34,8 +34,8 @@ Set:
 
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL` (local: `http://localhost:3000`, prod: `https://potrzebnik.pl`)
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (required in production; optional
+  in local development if Google sign-in is not needed)
 - DB vars (`DATABASE_URL` or `POSTGRES_*`)
 
 2. In your OAuth provider settings, add redirect URI:
