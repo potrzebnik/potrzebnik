@@ -60,6 +60,9 @@ export function createAuth({
     database: drizzleAdapter(database, {
       provider: 'pg',
     }),
+    emailAndPassword: {
+      enabled: true,
+    },
     socialProviders: {
       google: {
         ...googleOverrides,
