@@ -1,6 +1,6 @@
 ---
-name: mentor-review
-description: Teaching-mode code review for the potrzebnik repo. Runs code-reviewer and frontend-reviewer in parallel against the current branch's diff vs main, then presents findings as teaching cards (concept · why · code · fix). Two modes — informative (default, just prints) and `--fix` (walks findings one-by-one, Accept spawns a Sonnet sub-agent to apply the fix and shows the diff inline). Use when the user says "mentor review", "review my changes with teaching", "/mentor-review", or invokes the skill with `--fix`.
+description: Teaching-mode code review. Runs code-reviewer + frontend-reviewer in parallel on diff vs main, prints teaching cards. Pass --fix to walk findings interactively.
+argument-hint: '[--fix]'
 ---
 
 # mentor-review
@@ -9,8 +9,8 @@ Pre-PR code review for junior developers. Orchestrates the repo's two reviewer a
 
 ## Modes
 
-- **Informative** — `mentor-review` (no args). Print all findings as teaching cards. No interaction. No edits.
-- **Fix** — `mentor-review --fix`. Show overview, then for each finding: card → Accept/Reject → on Accept, spawn Sonnet sub-agent to apply `fix_proposal`, show resulting `git diff` inline, move on.
+- **Informative** — no args. Print all findings as teaching cards. No interaction. No edits.
+- **Fix** — `--fix`. Show overview, then for each finding: card → Accept/Reject → on Accept, spawn Sonnet sub-agent to apply `fix_proposal`, show resulting `git diff` inline, move on.
 
 Trigger `--fix` mode when `$ARGUMENTS` contains the literal string `--fix`. Anything else → informative.
 
