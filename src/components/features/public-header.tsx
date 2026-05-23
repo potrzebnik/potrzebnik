@@ -17,23 +17,23 @@ export function PublicHeader() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="bg-[#FBFDFF]">
+    <header className="bg-[var(--header-bg)]">
       <div className="relative bg-white md:hidden">
         <div className="relative flex h-[60px] items-center">
           <div className="flex h-9 w-full items-center justify-between px-5">
             <Link
               href="/"
-              className="flex h-9 items-center gap-[18px] text-[#0A0A0A]"
+              className="flex h-9 items-center gap-[20px] text-[var(--header-fg)]"
             >
-              <span className="h-[23px] w-[23px] rounded-full bg-[#0A0A0A]" />
-              <span className="inline-flex h-[23px] items-center text-[18px] leading-none font-semibold">
+              <span className="h-[25px] w-[25px] rounded-full bg-[var(--header-fg)]" />
+              <span className="inline-flex h-[25px] items-center text-[20px] leading-none font-semibold">
                 Potrzebnik
               </span>
             </Link>
             <button
               id="navi-bar-icon-mobile"
               type="button"
-              className="inline-flex h-6 w-6 items-center justify-center text-[#525252]"
+              className="inline-flex h-6 w-6 items-center justify-center text-[var(--header-icon-muted)]"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navbar-panel"
               aria-label={isMobileMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
@@ -46,21 +46,21 @@ export function PublicHeader() {
               )}
             </button>
           </div>
-          <span className="absolute right-0 bottom-0 left-0 border-t-[0.5px] border-black" />
-          <span className="absolute right-0 bottom-1 left-0 border-t-[0.5px] border-black" />
+          <span className="absolute right-0 bottom-0 left-0 border-t border-black" />
+          <span className="absolute right-0 bottom-1 left-0 border-t border-black" />
         </div>
 
         {isMobileMenuOpen ? (
           <div
             id="mobile-navbar-panel"
-            className="flex min-h-[736px] w-full items-start bg-white pt-5 pr-8 pb-0 pl-5"
+            className="flex min-h-[735px] w-full items-start bg-white pt-5 pr-8 pb-0 pl-5"
           >
-            <div className="flex w-full max-w-[349px] flex-col gap-10">
+            <div className="flex w-full max-w-[350px] flex-col gap-10">
               <div className="flex w-full flex-col">
                 <Link
                   href="/about"
                   onClick={closeMobileMenu}
-                  className="inline-flex h-14 w-full items-center border-b-[0.5px] border-[#D4D4D4] px-[10px] py-4 text-base leading-6 font-medium text-black"
+                  className="inline-flex h-14 w-full items-center border-b border-[var(--header-border)] px-[10px] py-4 text-base leading-6 font-medium text-black"
                 >
                   O nas
                 </Link>
@@ -75,18 +75,18 @@ export function PublicHeader() {
               <Link
                 href="/contact"
                 onClick={closeMobileMenu}
-                className="inline-flex h-14 min-h-10 w-full items-center justify-center rounded-lg border-[0.5px] border-black bg-[#FFD73A] px-8 py-2.5 text-[18px] leading-[27px] font-medium text-[#0A0A0A]"
+                className="inline-flex h-14 min-h-10 w-full items-center justify-center rounded-lg border border-black bg-[var(--header-cta)] px-8 py-2.5 text-[20px] leading-[25px] font-medium text-[var(--header-fg)]"
               >
                 Zgłoś organizację
               </Link>
               <button
                 type="button"
-                className="inline-flex h-9 min-h-9 w-[85px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[#404040]"
+                className="inline-flex h-9 min-h-9 w-[85px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[var(--header-fg-muted)]"
                 aria-label="Zmień język"
               >
                 ENG
                 <ChevronDown
-                  className="h-4 w-4 text-[#0A0A0A]"
+                  className="h-4 w-4 text-[var(--header-fg)]"
                   strokeWidth={2}
                 />
               </button>
@@ -95,15 +95,15 @@ export function PublicHeader() {
         ) : null}
       </div>
 
-      <div className="hidden border-b-[0.5px] border-black md:block">
-        <div className="mx-auto flex h-[84px] w-full max-w-[1440px] items-center justify-between gap-4 bg-[#FBFDFF] px-[100px] pt-5 pb-6">
-          <div className="flex h-9 w-[926px] items-center justify-between">
+      <div className="hidden border-b border-black md:block">
+        <div className="mx-auto flex h-[85px] w-full max-w-[1440px] items-center justify-between gap-4 bg-[var(--header-bg)] px-[100px] pt-5 pb-6">
+          <div className="flex h-9 w-[925px] items-center justify-between">
             <Link
               href="/"
-              className="flex h-9 items-center gap-[18px] text-[#0A0A0A]"
+              className="flex h-9 items-center gap-[20px] text-[var(--header-fg)]"
             >
-              <span className="h-[23px] w-[23px] rounded-full bg-[#0A0A0A]" />
-              <span className="text-[18px] leading-[27px] font-semibold">
+              <span className="h-[25px] w-[25px] rounded-full bg-[var(--header-fg)]" />
+              <span className="text-[20px] leading-[25px] font-semibold">
                 Potrzebnik
               </span>
             </Link>
@@ -114,8 +114,8 @@ export function PublicHeader() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`inline-flex h-9 min-h-9 items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[#404040] ${
-                        item.label === 'O nas' ? 'w-[70px]' : 'w-[84px]'
+                      className={`inline-flex h-9 min-h-9 items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-[var(--header-fg-muted)] ${
+                        item.label === 'O nas' ? 'w-[70px]' : 'w-[85px]'
                       }`}
                     >
                       {item.label}
@@ -129,17 +129,20 @@ export function PublicHeader() {
           <div className="flex h-10 w-[260px] items-center gap-3">
             <Link
               href="/contact"
-              className="inline-flex h-9 min-h-9 w-[147px] items-center justify-center gap-[23px] rounded-lg border-[0.5px] border-black bg-[#FFD73A] px-4 py-2 text-sm leading-5 font-medium text-[#0A0A0A]"
+              className="inline-flex h-9 min-h-9 w-[145px] items-center justify-center gap-[25px] rounded-lg border border-black bg-[var(--header-cta)] px-4 py-2 text-sm leading-5 font-medium text-[var(--header-fg)]"
             >
               Zgłoś organizację
             </Link>
             <button
               type="button"
-              className="inline-flex h-10 min-h-10 w-[101px] items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm leading-5 font-medium text-[#404040]"
+              className="inline-flex h-10 min-h-10 w-[100px] items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm leading-5 font-medium text-[var(--header-fg-muted)]"
               aria-label="Zmień język"
             >
               ENG
-              <ChevronDown className="h-4 w-4 text-[#0A0A0A]" strokeWidth={2} />
+              <ChevronDown
+                className="h-4 w-4 text-[var(--header-fg)]"
+                strokeWidth={2}
+              />
             </button>
           </div>
         </div>

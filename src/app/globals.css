@@ -51,6 +51,12 @@
   --footer-fg: var(--foreground);
   --footer-border: oklch(0 0 0);
   --footer-bg: oklch(0.919 0.039 249.4);
+  --header-bg: #fbfdff;
+  --header-fg: #0a0a0a;
+  --header-fg-muted: #404040;
+  --header-icon-muted: #525252;
+  --header-border: #d4d4d4;
+  --header-cta: #ffd73a;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
