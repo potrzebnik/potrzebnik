@@ -152,6 +152,8 @@ sequenceDiagram
     A->>DB: Lookup session by cookie
     DB-->>A: user + session
     A-->>B: {user, session}
+```
+
 ## How it works
 
 1. `src/lib/auth-config.ts` creates Better Auth with Drizzle (`pg`) + Google provider.
