@@ -5,7 +5,13 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
 
-const DEFAULT_MANAGED_ENV_KEYS = ['DATABASE_URL'] as const;
+const DEFAULT_MANAGED_ENV_KEYS = [
+  'POSTGRES_USER',
+  'POSTGRES_PASSWORD',
+  'POSTGRES_DB',
+  'POSTGRES_HOST',
+  'POSTGRES_PORT',
+] as const;
 const DEFAULT_MIGRATIONS_FOLDER = path.resolve(process.cwd(), 'drizzle');
 const DEFAULT_CONTAINER_IMAGE = 'postgres:18.3';
 const DEFAULT_DATABASE_NAME = 'potrzebnik_test';
@@ -70,6 +76,16 @@ function resolveManagedEnvKeys(
       ...Object.keys(envOverrides),
     ]),
   );
+}
+
+function createPostgresEnv(container: StartedPostgresContainer) {
+  return {
+    POSTGRES_USER: container.getUsername(),
+    POSTGRES_PASSWORD: container.getPassword(),
+    POSTGRES_DB: container.getDatabase(),
+    POSTGRES_HOST: container.getHost(),
+    POSTGRES_PORT: container.getPort().toString(),
+  };
 }
 
 function createResourceLifecycle({
@@ -218,11 +234,12 @@ export async function createPostgresIntegrationHarness<
     resources.setContainer(container);
 
     const databaseUrl = container.getConnectionUri();
+    const postgresEnv = createPostgresEnv(container);
 
     applyEnvOverrides(
       {
         ...envOverrides,
-        DATABASE_URL: databaseUrl,
+        ...postgresEnv,
       },
       env,
     );

@@ -8,7 +8,7 @@ Set these values in production environment variables:
 - `BETTER_AUTH_URL` (must be your public HTTPS app URL, for example `https://potrzebnik.pl`)
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
-- DB vars (`DATABASE_URL` or `POSTGRES_*`)
+- DB vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`)
 
 OAuth provider redirect URIs (GCP):
 
@@ -36,7 +36,7 @@ Set:
 - `BETTER_AUTH_URL` (local: `http://localhost:3000`, prod: `https://potrzebnik.pl`)
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (required in production; optional
   in local development if Google sign-in is not needed)
-- DB vars (`DATABASE_URL` or `POSTGRES_*`)
+- DB vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`)
 
 2. In your OAuth provider settings, add redirect URI:
 

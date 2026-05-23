@@ -47,7 +47,7 @@ export async function createAuthIntegrationHarness() {
   const createTestAuth = () =>
     createAuth({
       database: authDb,
-      env: createIntegrationEnv(harness.databaseUrl),
+      env: createIntegrationEnv(),
       googleOverrides: createGoogleOverrides(),
     });
   const getAuthCounts = () => countAuthTableRows(countAuthRows);

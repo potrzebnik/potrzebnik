@@ -60,7 +60,7 @@ const harness = await createPostgresIntegrationHarness({
 
 - `schema`: Drizzle schema object used by `drizzle(pool, { schema })`.
 - `envOverrides` (optional): values assigned to `process.env` before tests run.
-  `DATABASE_URL` is always set to the container URL.
+  Postgres environment variables are always set from the container.
 - `managedEnvKeys` (optional): extra env keys that should be restored on
   `dispose()`.
 

@@ -17,12 +17,10 @@ export function applyBaseIntegrationEnv(env: NodeJS.ProcessEnv = process.env) {
 }
 
 export function createIntegrationEnv(
-  databaseUrl: string,
   env: NodeJS.ProcessEnv = process.env,
 ): NodeJS.ProcessEnv {
   return {
     ...env,
     ...AUTH_TEST_ENV,
-    DATABASE_URL: databaseUrl,
   };
 }
