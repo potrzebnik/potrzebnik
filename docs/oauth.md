@@ -124,6 +124,34 @@ export default async function DashboardLayout({
 }
 ```
 
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant B as Browser (authClient)
+    participant A as Next.js /api/auth/*
+    participant G as Google OAuth
+    participant DB as Postgres (Drizzle)
+
+    U->>B: Click "Continue with Google"
+    B->>A: POST /api/auth/sign-in/social {provider: google}
+    A->>A: Generate state + PKCE
+    A-->>B: 302 Redirect to Google authorize URL
+    B->>G: GET /o/oauth2/v2/auth (client_id, redirect_uri, state, scope)
+    U->>G: Authenticate + consent
+    G-->>B: 302 Redirect to /api/auth/callback/google?code&state
+    B->>A: GET /api/auth/callback/google?code&state
+    A->>A: Verify state + PKCE
+    A->>G: POST /token (code, client_secret)
+    G-->>A: access_token + id_token
+    A->>G: GET userinfo (optional)
+    G-->>A: Profile (sub, email, name)
+    A->>DB: Upsert user + account, create session
+    DB-->>A: session row
+    A-->>B: Set-Cookie session, 302 to callbackURL
+    B->>A: GET /api/auth/get-session
+    A->>DB: Lookup session by cookie
+    DB-->>A: user + session
+    A-->>B: {user, session}
 ## How it works
 
 1. `src/lib/auth-config.ts` creates Better Auth with Drizzle (`pg`) + Google provider.
