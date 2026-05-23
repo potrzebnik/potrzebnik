@@ -51,6 +51,31 @@ describe('auth integration', () => {
     });
   });
 
+  it('rejects Google sign-in when the ID token cannot be verified', async () => {
+    const auth = harness.createTestAuth();
+    const requestBody = createGoogleSignInRequestBody();
+    requestBody.idToken.token = 'invalid-google-id-token';
+
+    const response = await auth.handler(
+      createAuthRequest('/api/auth/sign-in/social', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }),
+    );
+
+    expect(response.status).toBeGreaterThanOrEqual(400);
+    expect(response.status).toBeLessThan(500);
+    await expect(harness.getAuthCounts()).resolves.toEqual({
+      account: 0,
+      session: 0,
+      user: 0,
+      verification: 0,
+    });
+  });
+
   it('reuses the existing user and account on repeated Google sign-in', async () => {
     const auth = harness.createTestAuth();
 
