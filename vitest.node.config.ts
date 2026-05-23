@@ -32,7 +32,7 @@ export default defineConfig({
           maxWorkers: 1,
           hookTimeout: 120_000,
           setupFiles: ['src/test/setup-integration.ts'],
-          testTimeout: 120_000,
+          testTimeout: 30_000,
         },
       },
     ],
