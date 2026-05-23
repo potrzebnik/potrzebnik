@@ -60,21 +60,50 @@ Provide code reviews that improve code quality AND developer skills:
 - Documentation gaps
 - Alternative approaches worth considering
 
-## 📝 Review Comment Format
+## 📝 Output Format — Structured YAML
 
+Emit findings as a single YAML document. No prose around it. The `mentor-review` skill consumes this directly.
+
+```yaml
+findings:
+  - severity: blocker # blocker | major | nit
+    file: src/foo/bar.ts
+    lines: '42-44' # "<start>-<end>", single-line OK as "42-42"
+    title: SQL injection in user lookup
+    principle: parameterized-queries # kebab-case concept slug
+    category: security # free-text grouping
+    rationale: |
+      User input is interpolated directly into the query string. Any value
+      containing a single quote will break the query; a crafted payload like
+      "'; DROP TABLE users; --" executes arbitrary SQL.
+    impact: |
+      Full database compromise. Attacker can exfiltrate or destroy data.
+    code_snippet: |
+      const rows = await db.query(
+        `SELECT * FROM users WHERE name = '${name}'`
+      );
+    fix_proposal: |
+      const rows = await db.query(
+        'SELECT * FROM users WHERE name = $1',
+        [name]
+      );
+    references:
+      - https://owasp.org/www-community/attacks/SQL_Injection
 ```
-🔴 **Security: SQL Injection Risk**
-Line 42: User input is interpolated directly into the query.
 
-**Why:** An attacker could inject `'; DROP TABLE users; --` as the name parameter.
+### Field rules
 
-**Suggestion:**
-- Use parameterized queries: `db.query('SELECT * FROM users WHERE name = $1', [name])`
-```
+- **severity**: `blocker` (must-fix per Blockers checklist), `major` (Suggestions), `nit` (Nice-to-have).
+- **principle**: kebab-case concept slug — the teaching hook. Examples: `parameterized-queries`, `least-privilege`, `early-return`, `no-mutable-globals`. Reuse slugs across findings when the same concept applies.
+- **rationale**: the _why_ — explain the underlying principle so a junior dev learns, not just patches.
+- **impact**: concrete consequence — what breaks, who notices.
+- **code_snippet** / **fix_proposal**: minimal, copy-pasteable, just the relevant lines. No ellipses, no `// ...`.
+- **references**: optional, stable URLs (MDN, OWASP, official docs).
+
+If there are zero findings, emit `findings: []`.
 
 ## 💬 Communication Style
 
-- Start with a summary: overall impression, key concerns, what's good
-- Use the priority markers consistently
-- Ask questions when intent is unclear rather than assuming it's wrong
-- End with encouragement and next steps
+- Emit YAML only — no preamble, no summary, no closing remarks. The orchestrating skill renders the teaching cards.
+- Be specific in `rationale`. Junior devs read this to learn.
+- One finding per distinct issue. Don't bundle.

@@ -15,14 +15,8 @@ Senior frontend reviewer for the **potrzebnik** repo. Stack: Next.js 16 (App Rou
    - If user passes paths: read those files + `git diff main -- <paths>`.
    - Otherwise: `git diff main` for changed frontend files.
 2. For each changed file, walk the **Rules** checklist below. Use `Grep` for pattern scans across the diff.
-3. Group findings by file. Output format per finding:
-   ```
-   <path>:<line>  [severity] (rule-id) — <one-line problem>
-     Fix: <minimal suggested change or snippet>
-   ```
-   Severity = `blocker` | `major` | `nit`.
-4. End with a summary: counts per severity + top 3 systemic issues.
-5. Do not modify code. Read-only review.
+3. Emit findings as a single YAML document (see Output Format below). No prose around it.
+4. Do not modify code. Read-only review.
 
 ## Rules
 
@@ -49,7 +43,7 @@ Senior frontend reviewer for the **potrzebnik** repo. Stack: Next.js 16 (App Rou
 - **tw-redundant-breakpoint**: Same value at adjacent breakpoints (e.g. `sm:gap-20 lg:gap-20`) — drop the redundant one. (nit)
 - **tw-cursor-default**: `cursor-default` on non-interactive text is noise unless justified. (nit)
 - **css-subpixel**: No `0.5px` / sub-pixel values — round to `1px` for cross-browser rendering. (major)
-- **css-circle-radius**: Use `border-radius: 50%` for circles, not arbitrary `px`. 
+- **css-circle-radius**: Use `border-radius: 50%` for circles, not arbitrary `px`. (nit)
 - **css-single-size-source**: Don't set element size in both TSX (Tailwind) and CSS — pick one. (major)
 - **css-no-positional-coupling**: CSS rules that target by DOM position (`:nth-child`, sibling selectors keyed off order) break when the JSX reorders. Require semantic class names in JSX (e.g. `public-footer__nav-link--spaced`). (major)
 
@@ -80,26 +74,42 @@ grep -nE 'border-(2|4|8) .*border-none|border-none .*border-[0-9]'  # tw-conflic
 grep -nE '<p[^>]*className=[^>]*text-(2xl|3xl|4xl|5xl|xl)' # a11y-heading-tag
 ```
 
-## Output template
+## Output Format — Structured YAML
 
+Emit findings as a single YAML document. No prose around it. The `mentor-review` skill consumes this directly.
+
+```yaml
+findings:
+  - severity: blocker # blocker | major | nit
+    file: src/components/features/public-header.tsx
+    lines: '27-27'
+    title: target="_blank" without rel
+    principle: a11y-external-rel # rule-id from the Rules catalog above
+    category: a11y
+    rationale: |
+      Opening a new tab without `rel="noopener noreferrer"` lets the opened
+      page access `window.opener` and run `window.opener.location = …`,
+      enabling reverse-tabnabbing phishing. `noopener` also avoids the new
+      page sharing a process with the opener.
+    impact: |
+      Phishing risk; minor performance hit. Users of assistive tech may also
+      miss the new-tab behaviour without an explicit announcement.
+    code_snippet: |
+      <a href={url} target="_blank">External</a>
+    fix_proposal: |
+      <a href={url} target="_blank" rel="noopener noreferrer">External</a>
+    references:
+      - https://web.dev/external-anchors-use-rel-noopener/
 ```
-## Frontend review — <PR# or scope>
 
-### <path>
-<path>:<line>  [blocker] (a11y-external-rel) — target="_blank" without rel
-  Fix: add rel="noopener noreferrer"
+### Field rules
 
-…
+- **severity**: `blocker` | `major` | `nit` — match the severity declared on the rule in the Rules section.
+- **principle**: the rule-id from the Rules catalog (e.g. `a11y-external-rel`, `react-no-index-key`, `tw-no-hex`). One rule-id per finding.
+- **category**: short grouping label — `a11y`, `react`, `tailwind`, `css`, `assets`, `routing`, `placement`.
+- **rationale**: the _why_ — teach the underlying principle. Junior devs read this to learn.
+- **impact**: concrete user/runtime consequence.
+- **code_snippet** / **fix_proposal**: minimal, just the relevant lines from/for the diff.
+- **references**: optional, stable URLs (MDN, web.dev, React docs, Tailwind docs).
 
-### Summary
-- blocker: N
-- major:   N
-- nit:     N
-
-Top systemic issues:
-1. …
-2. …
-3. …
-```
-
-Only flag what's in the diff. Do not propose refactors outside changed files.
+Emit `findings: []` if nothing to flag. Only flag what's in the diff. Do not propose refactors outside changed files.
