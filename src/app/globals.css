@@ -48,6 +48,9 @@
 
 :root {
   --radius: 0.625rem;
+  --footer-fg: #0a0a0a;
+  --footer-border: #000;
+  --footer-bg: #d1e7fe;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -125,7 +128,7 @@
 }
 
 .public-footer {
-  color: #0a0a0a;
+  color: var(--footer-fg);
   font-family: Geist, sans-serif;
 }
 
@@ -133,12 +136,12 @@
 .public-footer::after {
   display: block;
   content: none;
-  margin: 0 2px;
-  border-top: 1px solid #000;
+  margin: 0;
+  border-top: 1px solid var(--footer-border);
 }
 
 .public-footer::after {
-  margin-top: 14px;
+  margin-top: 15px;
 }
 
 .public-footer a {
@@ -151,29 +154,29 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 65px;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  background: #d1e7fe;
-  padding: 49px 52px 49px 20px;
+  border-top: 1px solid var(--footer-border);
+  border-bottom: 1px solid var(--footer-border);
+  background: var(--footer-bg);
+  padding: 50px 50px 50px 20px;
 }
 
 .public-footer__brand {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
   align-self: stretch;
 }
 
 .public-footer__brand-dot {
   display: inline-block;
-  width: 23px;
-  height: 23px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: var(--footer-fg);
 }
 
 .public-footer__brand-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.5;
 }
@@ -182,8 +185,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 318px;
-  gap: 72px;
+  max-width: 320px;
+  gap: 70px;
 }
 
 .public-footer__contact-group,
@@ -194,16 +197,16 @@
 
 .public-footer__contact-group {
   justify-content: center;
-  gap: 16px;
+  gap: 15px;
 }
 
 .public-footer__social-group {
   justify-content: center;
-  gap: 16px;
+  gap: 15px;
 }
 
 .public-footer__heading {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.5;
 }
@@ -211,8 +214,8 @@
 .public-footer__mail {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: 16px;
+  gap: 10px;
+  font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
 }
@@ -221,7 +224,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 29px;
+  gap: 30px;
 }
 
 .public-footer__social-links a {
@@ -229,18 +232,18 @@
 }
 
 .public-footer__social-links svg {
-  width: 24px;
-  height: 24px;
-  color: #0a0a0a;
+  width: 25px;
+  height: 25px;
+  color: var(--footer-fg);
 }
 
 .public-footer__nav {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 318px;
+  max-width: 320px;
   justify-content: center;
-  gap: 32px;
+  gap: 30px;
   margin-top: 0;
 }
 
@@ -248,13 +251,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
-  padding: 0 52px 0 20px;
+  gap: 25px;
+  padding: 0 50px 0 20px;
 }
 
 .public-footer__legal a {
   width: 100%;
-  max-width: 318px;
+  max-width: 320px;
 }
 
 @media (min-width: 1024px) {
@@ -265,79 +268,47 @@
 
   .public-footer__top {
     display: grid;
-    grid-template-columns: 1fr 253px 253px;
-    gap: 48px;
+    grid-template-columns: 1fr 255px 255px;
+    gap: 50px;
     align-items: start;
-    min-height: 286px;
-    border: 1px solid #000;
+    min-height: 285px;
+    border: 1px solid var(--footer-border);
     border-top: 0;
-    background: #d1e7fe;
-    padding: 36px 104px 62px;
-  }
-
-  .public-footer__brand {
-    gap: 18px;
-  }
-
-  .public-footer__brand-dot {
-    display: inline-block;
-  }
-
-  .public-footer__brand-name {
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.5;
+    background: var(--footer-bg);
+    padding: 35px 105px 60px;
   }
 
   .public-footer__contact {
     max-width: none;
     width: 195px;
     justify-self: center;
-    gap: 32px;
+    gap: 30px;
   }
 
   .public-footer__contact-group,
   .public-footer__social-group {
-    gap: 24px;
-  }
-
-  .public-footer__heading {
-    font-weight: 500;
-    line-height: 1.5;
-  }
-
-  .public-footer__mail {
-    gap: 12px;
-    line-height: 1.5;
+    gap: 25px;
   }
 
   .public-footer__social-links {
     justify-content: flex-start;
-    gap: 29px;
-  }
-
-  .public-footer__social-links svg {
-    width: 24px;
-    height: 24px;
-    color: #0a0a0a;
   }
 
   .public-footer__nav {
-    width: 253px;
+    width: 255px;
     max-width: none;
     justify-self: end;
-    gap: 24px;
-    margin-top: 0;
+    gap: 25px;
   }
 
   .public-footer__legal {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 64px;
+    gap: 65px;
     flex-wrap: nowrap;
     background: transparent;
-    padding: 22px 100px;
+    padding: 20px 100px;
   }
 
   .public-footer__legal a {
