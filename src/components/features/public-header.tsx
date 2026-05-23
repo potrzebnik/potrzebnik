@@ -96,8 +96,8 @@ export function PublicHeader() {
       </div>
 
       <div className="hidden border-b border-black md:block">
-        <div className="mx-auto flex h-[85px] w-full max-w-[1440px] items-center justify-between gap-4 bg-[var(--header-bg)] px-[100px] pt-5 pb-6">
-          <div className="flex h-9 w-[925px] items-center justify-between">
+        <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between gap-[15px] bg-[var(--header-bg)] px-[100px] pt-5 pb-[25px]">
+          <div className="flex h-9 w-[925px] items-center gap-[65px]">
             <Link
               href="/"
               className="flex h-9 items-center gap-[20px] text-[var(--header-fg)]"
@@ -126,10 +126,10 @@ export function PublicHeader() {
             </nav>
           </div>
 
-          <div className="flex h-10 w-[260px] items-center gap-3">
+          <div className="flex h-10 w-[260px] items-center gap-[10px]">
             <Link
               href="/contact"
-              className="inline-flex h-9 min-h-9 w-[145px] items-center justify-center gap-[25px] rounded-lg border border-black bg-[var(--header-cta)] px-4 py-2 text-sm leading-5 font-medium text-[var(--header-fg)]"
+              className="inline-flex h-9 min-h-9 w-[145px] items-center justify-center gap-[25px] rounded-lg border border-black bg-[var(--header-cta)] px-4 py-2 text-sm leading-5 font-medium whitespace-nowrap text-[var(--header-fg)]"
             >
               Zgłoś organizację
             </Link>
