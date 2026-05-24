@@ -39,7 +39,7 @@ export default function HelpCard({
           </CardDescription>
         </div>
       </CardHeader>
-      <div className="h-70">
+      <div className="h-72">
         <Image
           src={image}
           alt={title}
