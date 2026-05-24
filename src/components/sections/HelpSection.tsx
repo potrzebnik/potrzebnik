@@ -1,29 +1,48 @@
 ﻿import HelpCard from '@/components/shared/HelpCard';
 import { Button } from '@/components/ui/button';
-import { BADGES } from '@/stories/HelpCard.stories';
+import { BADGES } from '@/lib/constants';
 
-const helpItems = [
+interface HelpItem {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  badges: { id: number; label: string }[];
+  price: number;
+  currency: string;
+}
+
+const helpItems: HelpItem[] = [
   {
+    id: 'royal-canin-renal',
     title: 'Specjalistyczna karma Royal Canin Renal',
     description: 'Schronisko "Promyk" w Gdańsku',
     image: '/dogs-shelter.jpg',
-    badges: [BADGES[0]],
+    badges: [BADGES.URGENT],
     price: 150.0,
     currency: 'PLN',
   },
   {
+    id: 'acrylic-paints-canvases',
     title: 'Zestaw farb akrylowych i podobrazi',
     description: 'Świetlica Środowiskowa "Przystań"',
     image: '/art-supplies.jpg',
-    badges: [BADGES[1], BADGES[0], BADGES[1], BADGES[2], BADGES[3]],
+    badges: [
+      BADGES.EXPIRING,
+      BADGES.URGENT,
+      BADGES.EXPIRING,
+      BADGES.NEW,
+      BADGES.ONGOING,
+    ],
     price: 70.0,
     currency: 'PLN',
   },
   {
+    id: 'warm-sleeping-bags',
     title: '5 ciepłych śpiworów',
     description: 'Fundacja "Daj Herbatę"',
     image: '/sleeping-bags.jpg',
-    badges: [BADGES[0], BADGES[1], BADGES[2], BADGES[3]],
+    badges: [BADGES.URGENT, BADGES.EXPIRING, BADGES.NEW, BADGES.ONGOING],
     price: 3000.0,
     currency: 'PLN',
   },
@@ -32,13 +51,13 @@ const helpItems = [
 export default function HelpSection() {
   return (
     <section className="container mx-auto px-6 py-14 sm:py-24">
-      <h2 className="mb-14 cursor-default text-center text-2xl font-bold tracking-tight sm:text-3xl md:mb-18">
+      <h2 className="mb-14 text-center text-2xl font-bold tracking-tight sm:text-3xl md:mb-18">
         Zobacz jak możesz pomóc
       </h2>
       <div className="mb-10 grid grid-cols-1 gap-8 md:mb-18 md:grid-cols-2 xl:grid-cols-3">
-        {helpItems.map((item, index) => (
+        {helpItems.map((item) => (
           <HelpCard
-            key={index}
+            key={item.id}
             title={item.title}
             description={item.description}
             image={item.image}
