@@ -5,7 +5,10 @@ export default function OrganizationsSection() {
     <SectionTemplate
       title="Organizacje"
       descriptions={[
-        'Sprawdź, jakie organizacje poszukują wsparcia. To lista zweryfikowanych inicjatyw działających lokalnie i ogólnokrajowo, realnie zmieniając świat na lepsze.',
+        {
+          id: 'organizations-intro',
+          text: 'Sprawdź, jakie organizacje poszukują wsparcia. To lista zweryfikowanych inicjatyw działających lokalnie i ogólnokrajowo, realnie zmieniając świat na lepsze.',
+        },
       ]}
       image={{
         src: '/volunteers.jpg',

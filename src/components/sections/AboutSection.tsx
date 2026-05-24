@@ -5,8 +5,14 @@ export default function AboutSection() {
     <SectionTemplate
       title="O nas"
       descriptions={[
-        'Umożliwiamy darczyńcom realne wsparcie organizacji, oferując łatwy dostęp do ich aktualnych potrzeb.',
-        'Zostań darczyńcą i pomóż społecznościom w trudnej sytuacji — razem możemy więcej.',
+        {
+          id: 'about-support',
+          text: 'Umożliwiamy darczyńcom realne wsparcie organizacji, oferując łatwy dostęp do ich aktualnych potrzeb.',
+        },
+        {
+          id: 'about-donor',
+          text: 'Zostań darczyńcą i pomóż społecznościom w trudnej sytuacji — razem możemy więcej.',
+        },
       ]}
       image={{
         src: '/children.jpg',

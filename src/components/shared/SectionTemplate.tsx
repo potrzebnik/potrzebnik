@@ -2,6 +2,7 @@
 import ImageOverlay, {
   overlayVariants,
 } from '@/components/shared/ImageOverlay';
+import { Button } from '@/components/ui/button';
 
 interface ImageProperties {
   src: string | StaticImageData;
@@ -10,9 +11,14 @@ interface ImageProperties {
   height?: keyof typeof heightVariants;
 }
 
+interface DescriptionItem {
+  id: string;
+  text: string;
+}
+
 interface SectionTemplateProps {
   title: string;
-  descriptions: string[];
+  descriptions: DescriptionItem[];
   image: ImageProperties;
   buttonText: string;
   overlayVariant: keyof typeof overlayVariants;
@@ -35,7 +41,7 @@ const SectionTemplate = ({
 }: SectionTemplateProps) => {
   return (
     <section className="container mx-auto px-6 py-18 sm:py-24">
-      <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 lg:gap-20 xl:gap-25">
+      <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 xl:gap-24">
         <div className={reversed ? 'lg:order-2' : 'lg:order-1'}>
           <div
             className={`relative mx-auto w-11/12 md:max-w-xl lg:mx-0 ${image.frame ? 'rounded-lg bg-white' : ''}`}
@@ -58,20 +64,23 @@ const SectionTemplate = ({
         </div>
         <div className={reversed ? 'lg:order-1' : 'lg:order-2'}>
           <div className="px-3 sm:px-6 xl:px-20">
-            <h2 className="mb-6 cursor-default text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
               {title}
             </h2>
-            {descriptions.map((description, index) => (
+            {descriptions.map((item) => (
               <p
-                className="text-foreground text-md mb-6 cursor-default text-justify leading-relaxed"
-                key={index}
+                className="text-foreground mb-6 text-justify text-base leading-relaxed"
+                key={item.id}
               >
-                {description}
+                {item.text}
               </p>
             ))}
-            <button className="hover:bg-foreground bg-secondary hover:text-background cursor-pointer rounded-lg border-2 border-none px-5 py-3 font-medium transition-colors sm:px-6">
+            <Button
+              variant="secondary"
+              className="hover:bg-foreground hover:text-background h-auto cursor-pointer rounded-lg border-none px-5 py-3 text-base font-medium transition-colors sm:px-6"
+            >
               {buttonText}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
