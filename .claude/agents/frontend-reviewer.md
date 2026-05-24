@@ -31,7 +31,8 @@ Senior frontend reviewer for the **potrzebnik** repo. Stack: Next.js 16 (App Rou
 ### React patterns
 
 - **react-no-index-key**: Never `key={index}`. Use stable id (`key={item.id}`) or a guaranteed-unique string. Flag even on static arrays — anti-pattern. (major)
-- **react-reuse-primitives**: No raw `<button>` / `<a>` in `src/app/**` or `src/components/{features,sections,shared}/**` when `Button` / `Link` exist in `src/components/ui`. Extend the wrapper instead of bypassing it. (major)
+- **react-reuse-primitives**: No raw `<button>`, `<a>`, `<input>`, `<textarea>`, `<select>`, or ad-hoc styled text tags (`<p className="text-...">`, `<span className="font-...">`, `<h*>` with bespoke styles) in `src/app/**` or `src/components/{features,sections,shared}/**` when wrappers exist in `src/components/ui` (`Button`, `Link`, `Input`, `Textarea`, `Select`, `Typography`/`Text`). Extend the wrapper with variants instead of bypassing it. Plain `<div>` and layout primitives are fine. (major)
+- **ui-single-source**: Styling for buttons, links, inputs, and text must have one source of truth — the corresponding `src/components/ui` primitive. If a needed variant is missing, add it to the wrapper rather than restyling at the call site. (major)
 - **react-conditional-render**: Prefer conditional JSX (`{cond && <Icon/>}`) over CSS `display:none` toggles to hide/show elements per breakpoint. (nit)
 - **react-tooltip-no-dup**: Tooltip text must not duplicate the visible label of its trigger. (nit)
 
@@ -46,6 +47,8 @@ Senior frontend reviewer for the **potrzebnik** repo. Stack: Next.js 16 (App Rou
 - **css-circle-radius**: Use `border-radius: 50%` for circles, not arbitrary `px`. (nit)
 - **css-single-size-source**: Don't set element size in both TSX (Tailwind) and CSS — pick one. (major)
 - **css-no-positional-coupling**: CSS rules that target by DOM position (`:nth-child`, sibling selectors keyed off order) break when the JSX reorders. Require semantic class names in JSX (e.g. `public-footer__nav-link--spaced`). (major)
+- **css-magic-numbers**: Flag arbitrary px values off the spacing scale (4/8px grid) — `w-[113px]`, `gap-[17px]`, inline `style={{ padding: '31px 23px 41px 27px' }}`. Asymmetric 4-value padding/margin is almost always an unintended pixel-pushing mistake. Require justification or snap to scale/design tokens. (major)
+- **css-spacing-scale**: Spacing and sizing must use the Tailwind scale or design tokens. Arbitrary `[Npx]` allowed only with an inline comment explaining why the scale doesn't fit. (major)
 
 ### Assets / Storybook
 
@@ -72,6 +75,10 @@ grep -nE '\btext-md\b'                     # tw-invalid-class
 grep -nE '\b0\.5px\b'                      # css-subpixel
 grep -nE 'border-(2|4|8) .*border-none|border-none .*border-[0-9]'  # tw-conflicting-classes
 grep -nE '<p[^>]*className=[^>]*text-(2xl|3xl|4xl|5xl|xl)' # a11y-heading-tag
+grep -nE '<(button|input|textarea|select)[ >]' src/app src/components/{features,sections,shared} # react-reuse-primitives
+grep -nE '\[[0-9]+px(_[0-9]+px){1,3}\]'    # css-magic-numbers (arbitrary multi-value)
+grep -nE '\b(w|h|p|m|gap|top|left|right|bottom|inset)-\[[0-9]+px\]' # css-magic-numbers (single arbitrary px)
+grep -nE 'padding:\s*[0-9]+px\s+[0-9]+px\s+[0-9]+px\s+[0-9]+px' # asymmetric 4-value padding
 ```
 
 ## Output Format — Structured YAML
