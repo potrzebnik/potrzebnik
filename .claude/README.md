@@ -47,10 +47,10 @@ Agents are invoked through Claude Code's `Task` tool. Trigger by mentioning the 
 
 ### Direct invocation
 
-In Claude Code you can force a specific agent via the `Task` tool:
+In Claude Code you can force a specific agent via the `Agent` tool (renamed from `Task` in v2.1.63; `Task(...)` still works as an alias):
 
 ```
-Task(subagent_type="frontend-reviewer", prompt="Review the diff in PR #48")
+Agent(subagent_type="frontend-reviewer", prompt="Review the diff in PR #48")
 Agent(subagent_type="code-reviewer",     prompt="Review src/db/schema/")
 ```
 

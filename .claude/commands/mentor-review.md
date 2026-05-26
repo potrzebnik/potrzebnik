@@ -133,7 +133,7 @@ For each finding 1..N, in order:
 3. **On Accept**:
    - Spawn `Agent` (`subagent_type: "general-purpose"`, `model: "sonnet"`, foreground / NOT background). Prompt:
      ```
-     Apply this single fix to the potrzebnik repo. Do not make unrelated changes.
+     Apply this single fix. Do not make unrelated changes.
 
      File: <file>
      Lines: <lines>
@@ -175,7 +175,7 @@ Review the staged/unstaged changes (`git diff`) and commit when ready.
 ## Notes
 
 - **No persistence.** Findings live only in this session. No reports written to disk. No KB rules promoted.
-- **Self-contained to potrzebnik.** Do not reference general workflow scripts, `$WF_GENERAL_KB`, or `~/.claude/scripts/*` from this skill — those are unrelated infrastructure.
+- **Self-contained.** Do not reference general workflow scripts, `$WF_GENERAL_KB`, or `~/.claude/scripts/*` from this command — those are unrelated infrastructure.
 - **Read-only agents.** Both reviewer agents are forbidden from editing. Only the fix sub-agent in Step 6 edits files.
 - **Sequential fixes.** Each fix runs foreground so the user sees the diff before moving on. Don't parallelise.
 - **No Elaborate option** in this version. If a card is unclear, the user can reject and ask separately.
