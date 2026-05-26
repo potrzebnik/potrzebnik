@@ -51,7 +51,7 @@ In Claude Code you can force a specific agent via the `Task` tool:
 
 ```
 Task(subagent_type="frontend-reviewer", prompt="Review the diff in PR #48")
-Task(subagent_type="Code Reviewer",     prompt="Review src/db/schema/")
+Agent(subagent_type="code-reviewer",     prompt="Review src/db/schema/")
 ```
 
 ## Output
