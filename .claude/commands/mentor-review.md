@@ -31,7 +31,7 @@ Save the file list as `<diff-files>` for the agent prompts.
 
 **Single message, two `Agent` tool calls**:
 
-1. `subagent_type: "Code Reviewer"` — prompt: "Review the following files in this repo against the current diff (`git diff main...HEAD` plus uncommitted changes): `<diff-files>`. Emit findings as YAML per the Output Format in your agent definition. Backend / non-frontend concerns only; skip TSX/CSS files (frontend-reviewer handles those)."
+1. `subagent_type: "code-reviewer"` — prompt: "Review the following files in this repo against the current diff (`git diff main...HEAD` plus uncommitted changes): `<diff-files>`. Emit findings as YAML per the Output Format in your agent definition. Backend / non-frontend concerns only; skip TSX/CSS files (frontend-reviewer handles those)."
 
 2. `subagent_type: "frontend-reviewer"` — prompt: "Review the following files in this repo against `git diff main`: `<diff-files>`. Filter to TSX, CSS, Storybook stories. Emit findings as YAML per the Output Format in your agent definition."
 
