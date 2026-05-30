@@ -16,6 +16,17 @@ Set up environment variables first:
 cp .env.example .env
 ```
 
+Local development startup works without Google OAuth keys when
+`GOOGLE_AUTH_ENABLED=false`.
+
+To enable Google sign-in locally for testing, set `GOOGLE_AUTH_ENABLED=true`,
+`GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` in `.env`, then register this
+redirect URI in Google Cloud:
+
+```text
+http://localhost:3000/api/auth/callback/google
+```
+
 Then start local database and development server:
 
 ```bash
@@ -41,6 +52,17 @@ Open Drizzle Studio:
 ```bash
 pnpm run db:studio
 ```
+
+## Integration Tests
+
+Run integration tests:
+
+```bash
+pnpm test:integration
+```
+
+The Postgres test harness documentation (API and examples) is in
+`src/test/README.md`.
 
 ## Contributing
 
