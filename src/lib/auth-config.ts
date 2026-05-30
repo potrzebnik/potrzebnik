@@ -6,7 +6,12 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type * as schema from '../db/schema';
 
 type RequiredAuthEnvKey = 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL';
+type GoogleAuthEnabledEnvKey = 'GOOGLE_AUTH_ENABLED';
 type GoogleAuthEnvKey = 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET';
+type AuthEnvKey =
+  | RequiredAuthEnvKey
+  | GoogleAuthEnabledEnvKey
+  | GoogleAuthEnvKey;
 
 export type AuthEnv = {
   secret: string;
@@ -25,12 +30,7 @@ export type CreateAuthOptions = {
   googleOverrides?: Partial<GoogleOptions>;
 };
 
-let hasWarnedMissingGoogleEnvInDevelopment = false;
-
-function requireAuthEnv(
-  key: RequiredAuthEnvKey,
-  env: NodeJS.ProcessEnv,
-): string {
+function requireAuthEnv(key: AuthEnvKey, env: NodeJS.ProcessEnv): string {
   const value = env[key];
 
   if (!value) {
@@ -42,55 +42,35 @@ function requireAuthEnv(
   return value;
 }
 
-function warnGoogleOauthDisabledInDevelopment(
-  missingGoogleKeys: GoogleAuthEnvKey[],
-) {
-  if (hasWarnedMissingGoogleEnvInDevelopment) {
-    return;
+function requireBooleanAuthEnv(
+  key: GoogleAuthEnabledEnvKey,
+  env: NodeJS.ProcessEnv,
+): boolean {
+  const value = requireAuthEnv(key, env).toLowerCase();
+
+  if (value === 'true') {
+    return true;
   }
 
-  hasWarnedMissingGoogleEnvInDevelopment = true;
+  if (value === 'false') {
+    return false;
+  }
 
-  console.warn(
-    `Google OAuth is disabled in development because required environment variable(s) are missing: ${missingGoogleKeys.join(', ')}.`,
+  throw new Error(
+    `Invalid environment variable: ${key}. Expected "true" or "false".`,
   );
 }
 
 export function getAuthEnv(env: NodeJS.ProcessEnv = process.env): AuthEnv {
-  const googleConfig = {
-    clientId: env.GOOGLE_CLIENT_ID,
-    clientSecret: env.GOOGLE_CLIENT_SECRET,
-  };
-  const missingGoogleKeys: GoogleAuthEnvKey[] = [];
-
-  if (!googleConfig.clientId) {
-    missingGoogleKeys.push('GOOGLE_CLIENT_ID');
-  }
-
-  if (!googleConfig.clientSecret) {
-    missingGoogleKeys.push('GOOGLE_CLIENT_SECRET');
-  }
-
-  const isDevelopment = env.NODE_ENV === 'development';
-  const hasCompleteGoogleConfig = missingGoogleKeys.length === 0;
-
-  if (!hasCompleteGoogleConfig && !isDevelopment) {
-    throw new Error(
-      `Missing environment variable: ${missingGoogleKeys[0]}. It is required for authentication.`,
-    );
-  }
-
-  if (!hasCompleteGoogleConfig && isDevelopment) {
-    warnGoogleOauthDisabledInDevelopment(missingGoogleKeys);
-  }
+  const isGoogleAuthEnabled = requireBooleanAuthEnv('GOOGLE_AUTH_ENABLED', env);
 
   return {
     secret: requireAuthEnv('BETTER_AUTH_SECRET', env),
     baseURL: requireAuthEnv('BETTER_AUTH_URL', env),
-    google: hasCompleteGoogleConfig
+    google: isGoogleAuthEnabled
       ? {
-          clientId: googleConfig.clientId!,
-          clientSecret: googleConfig.clientSecret!,
+          clientId: requireAuthEnv('GOOGLE_CLIENT_ID', env),
+          clientSecret: requireAuthEnv('GOOGLE_CLIENT_SECRET', env),
         }
       : undefined,
   };

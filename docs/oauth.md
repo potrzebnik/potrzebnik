@@ -6,8 +6,9 @@ Set these values in production environment variables:
 
 - `BETTER_AUTH_SECRET` (strong random secret, example: `openssl rand -base64 32`)
 - `BETTER_AUTH_URL` (must be your public HTTPS app URL, for example `https://potrzebnik.pl`)
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_AUTH_ENABLED` (`true` to enable Google sign-in, `false` to disable it)
+- `GOOGLE_CLIENT_ID` (required when `GOOGLE_AUTH_ENABLED=true`)
+- `GOOGLE_CLIENT_SECRET` (required when `GOOGLE_AUTH_ENABLED=true`)
 - DB vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`)
 
 OAuth provider redirect URIs (GCP):
@@ -34,8 +35,9 @@ Set:
 
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL` (local: `http://localhost:3000`, prod: `https://potrzebnik.pl`)
-- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (required in production; optional
-  in local development if Google sign-in is not needed)
+- `GOOGLE_AUTH_ENABLED=false` if Google sign-in is not needed
+- `GOOGLE_AUTH_ENABLED=true`, `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` to
+  enable Google sign-in
 - DB vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`)
 
 2. In your OAuth provider settings, add redirect URI:
@@ -156,7 +158,7 @@ sequenceDiagram
 
 ## How it works
 
-1. `src/lib/auth-config.ts` creates Better Auth with Drizzle (`pg`) + Google provider.
+1. `src/lib/auth-config.ts` creates Better Auth with Drizzle (`pg`) and the Google provider when `GOOGLE_AUTH_ENABLED=true`.
 2. `src/lib/auth.ts` creates the `auth` singleton using production DB.
 3. `src/app/api/auth/[...all]/route.ts` mounts auth endpoints under `/api/auth/*`.
 4. `src/lib/auth-client.ts` calls those endpoints from the browser.

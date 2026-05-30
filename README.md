@@ -16,13 +16,12 @@ Set up environment variables first:
 cp .env.example .env
 ```
 
-Local development startup works without Google OAuth keys. If
-`GOOGLE_CLIENT_ID` or `GOOGLE_CLIENT_SECRET` is missing, Google sign-in is
-disabled.
+Local development startup works without Google OAuth keys when
+`GOOGLE_AUTH_ENABLED=false`.
 
-To enable Google sign-in locally for testing, set `GOOGLE_CLIENT_ID` and
-`GOOGLE_CLIENT_SECRET` in `.env`, then register this redirect URI in Google
-Cloud:
+To enable Google sign-in locally for testing, set `GOOGLE_AUTH_ENABLED=true`,
+`GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` in `.env`, then register this
+redirect URI in Google Cloud:
 
 ```text
 http://localhost:3000/api/auth/callback/google
