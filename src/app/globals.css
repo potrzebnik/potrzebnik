@@ -48,6 +48,9 @@
 
 :root {
   --radius: 0.625rem;
+  --overlay-yellow: #f6d94f;
+  --overlay-blue: #b6d0f2;
+  --overlay-green: #c8e6c9;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -82,6 +85,9 @@
 }
 
 .dark {
+  --overlay-yellow: #f6d94f;
+  --overlay-blue: #b6d0f2;
+  --overlay-green: #c8e6c9;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
