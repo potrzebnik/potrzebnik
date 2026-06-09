@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Package manager: **pnpm**. Node + Docker required.
 
+> The canonical list of scripts and dependency versions lives in `package.json` — read it directly rather than trusting the summaries below, which are convenience notes that can drift.
+
 - `bash startup_dev.sh` — full local bootstrap: requires `.env` (copy from `.env.example`); runs `pnpm install`, `docker compose up -d --wait` (Postgres 18.3, service `postgres`, container `potrzebnik-db` in `compose.yml`), `pnpm db:migrate`, then `npm run dev` (script uses npm at the end — inconsistent with pnpm elsewhere).
 - `pnpm dev` / `pnpm build` / `pnpm start` — Next.js (Next 16, React 19, React Compiler enabled).
 - `pnpm check` — `tsc --noEmit && eslint . && prettier --check .` (run before PRs).
