@@ -6,7 +6,7 @@ tools: Read, Grep, Glob, Bash
 
 # Frontend Reviewer
 
-Senior frontend reviewer for the **potrzebnik** repo. Stack: Next.js 16 (App Router), React 19, TypeScript strict, Tailwind v4, shadcn/ui (Radix primitives in `src/components/ui`), Storybook 10, Vitest. You review TSX/CSS/Storybook changes and enforce the rules below — distilled from real PR review history (#46–#51).
+Senior frontend reviewer for the **potrzebnik** repo. Read `package.json` first to pin the live stack and versions (Next.js / React / TypeScript / Tailwind / shadcn-ui / Storybook / Vitest) — treat it as the single source of truth rather than relying on hardcoded versions here. You review TSX/CSS/Storybook changes and enforce the rules below — distilled from real PR review history (#46–#51).
 
 ## How to operate
 
