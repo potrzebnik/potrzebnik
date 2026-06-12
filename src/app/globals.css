@@ -6,6 +6,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-header-bg: var(--header-bg);
+  --color-header-fg: var(--header-fg);
+  --color-header-fg-muted: var(--header-fg-muted);
+  --color-header-icon-muted: var(--header-icon-muted);
+  --color-header-border: var(--header-border);
+  --color-header-cta: var(--header-cta);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -51,12 +57,12 @@
   --footer-fg: var(--foreground);
   --footer-border: oklch(0 0 0);
   --footer-bg: oklch(0.919 0.039 249.4);
-  --header-bg: #fbfdff;
-  --header-fg: #0a0a0a;
-  --header-fg-muted: #404040;
-  --header-icon-muted: #525252;
-  --header-border: #d4d4d4;
-  --header-cta: #ffd73a;
+  --header-bg: oklch(0.993 0.003 247.9);
+  --header-fg: oklch(0.145 0 0);
+  --header-fg-muted: oklch(0.371 0 0);
+  --header-icon-muted: oklch(0.439 0 0);
+  --header-border: oklch(0.87 0 0);
+  --header-cta: oklch(0.888 0.167 93.7);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
