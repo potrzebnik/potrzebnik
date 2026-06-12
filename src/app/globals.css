@@ -48,9 +48,9 @@
 
 :root {
   --radius: 0.625rem;
-  --footer-fg: #0a0a0a;
-  --footer-border: #000;
-  --footer-bg: #d1e7fe;
+  --footer-fg: var(--foreground);
+  --footer-border: oklch(0 0 0);
+  --footer-bg: oklch(0.919 0.039 249.4);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -130,7 +130,6 @@
 @layer components {
   .public-footer {
     color: var(--footer-fg);
-    font-family: Geist, sans-serif;
   }
 
   .public-footer::before,
@@ -148,6 +147,17 @@
   .public-footer a {
     color: inherit;
     text-decoration: none;
+  }
+
+  .public-footer a:focus-visible {
+    outline: 2px solid var(--footer-border);
+    outline-offset: 2px;
+  }
+
+  .public-footer__nav a:hover,
+  .public-footer__legal a:hover,
+  .public-footer__mail:hover {
+    text-decoration: underline;
   }
 
   .public-footer__top {
@@ -194,14 +204,6 @@
   .public-footer__social-group {
     display: flex;
     flex-direction: column;
-  }
-
-  .public-footer__contact-group {
-    justify-content: center;
-    gap: 15px;
-  }
-
-  .public-footer__social-group {
     justify-content: center;
     gap: 15px;
   }
