@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel superseded runs for the same ref (e.g. new push to an open PR).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: both jobs only read the checked-out code.
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality (type-check, lint, format, build, unit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm version comes from package.json "packageManager" (single source of truth).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm type-check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Build
+        run: pnpm build
+        # `next build` collects page data for /api/auth/[...all], which loads the
+        # auth + db config at module level and validates these vars are present.
+        # The build never connects anywhere — these are throwaway placeholders, not
+        # secrets. Google auth is disabled so client id/secret aren't needed.
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+          POSTGRES_PORT: '5432'
+          BETTER_AUTH_SECRET: ci-build-placeholder-secret-long-enough
+          BETTER_AUTH_URL: http://localhost:3000
+          GOOGLE_AUTH_ENABLED: 'false'
+
+      - name: Unit tests
+        run: pnpm test
+
+  integration:
+    name: Integration tests (testcontainers Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm version comes from package.json "packageManager" (single source of truth).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Integration tests
+        run: pnpm test:integration
