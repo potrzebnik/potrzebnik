@@ -9,12 +9,6 @@ It is intentionally thin: it **points to** the canonical sources and records onl
 - Scripts and dependency versions: [`package.json`](./package.json) (canonical). Package manager is **pnpm**; Node + Docker required.
 - Local bootstrap and DB migration steps: [`README.md`](./README.md) → _Getting Started_ / _Database Migrations_.
 
-Gotchas not obvious from those files:
-
-- `startup_dev.sh` ends with `npm run dev` — inconsistent with the `pnpm` used everywhere else.
-- No `test` script is defined. Run Vitest directly: `pnpm exec vitest` (all) or `pnpm exec vitest run path/to/file.stories.tsx` (single). Tests come from `*.stories.*` files, not standalone `*.test.ts`.
-- Run `pnpm check` before opening a PR.
-
 ## Architecture
 
 Next.js App Router under `src/app/` with two route groups: `(public)/` and `(dashboard)/dashboard`. Path alias `@/*` → `src/*`. UI primitives live in `src/components/ui/` (shadcn-style, see [`components.json`](./components.json)); feature composites in `src/components/features/`. Tailwind v4 via `@tailwindcss/postcss`.
