@@ -86,8 +86,11 @@ jobs:
 
       # Storybook stories run in a real Chromium browser (vitest browser mode)
       # with the a11y addon, so the browser binary must be installed first.
+      # No `--with-deps`: ubuntu-latest already ships Chromium's shared libs, and
+      # the apt step it triggers hangs on the runner's dpkg lock. A genuinely
+      # missing lib would surface as a test error, not a silent hang.
       - name: Install Chromium for Storybook tests
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
 
       - name: Storybook component + a11y tests
         run: pnpm test:storybook
