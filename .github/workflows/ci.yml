@@ -78,12 +78,13 @@ jobs:
 
       # Storybook stories run in headless Chromium (vitest browser mode) with the
       # a11y addon, so the browser must be installed first. `--only-shell` fetches
-      # just chromium-headless-shell — the single artifact headless mode uses — which
-      # avoids the multi-artifact download that hangs under the runner's Node 24.
-      # No browser cache: the download is ~1s, so caching saves nothing and a
-      # cancelled run can leave a partial cache that wedges the next install.
-      # `timeout` turns any regression into a fast failure instead of a 15m stall.
+      # just chromium-headless-shell — the single artifact headless mode uses.
+      # `--dns-result-order=ipv4first`: Node 24 prefers IPv6, which black-holes the
+      # download from cdn.playwright.dev on the runner and hangs the install; force
+      # IPv4. `timeout` turns any regression into a fast failure, not a 15m stall.
       - name: Install Chromium for Storybook tests
+        env:
+          NODE_OPTIONS: --dns-result-order=ipv4first
         run: timeout 240 pnpm exec playwright install --with-deps --only-shell chromium
 
       - name: Storybook component + a11y tests
