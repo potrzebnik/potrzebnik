@@ -11,7 +11,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# Least privilege: both jobs only read the checked-out code.
+# Least privilege: every job only reads the checked-out code.
 permissions:
   contents: read
 
@@ -24,19 +24,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # pnpm version comes from package.json "packageManager" (single source of truth).
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      # Cheap static checks first so obvious failures stop the job before `build`.
       - name: Type-check
         run: pnpm type-check
 
@@ -45,6 +36,16 @@ jobs:
 
       - name: Format check
         run: pnpm format:check
+
+      # Reuse Next.js compiler artifacts across runs. Key on lockfile + source so a
+      # source change reuses the closest prior cache (restore-key) instead of going cold.
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Build
         run: pnpm build
@@ -64,6 +65,25 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+  storybook:
+    name: Storybook component + a11y tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # Cache the downloaded browser so `playwright install` is a no-op on a hit.
+      # Keyed on the lockfile, which pins the Playwright (and browser) version.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       # Storybook stories run in a real Chromium browser (vitest browser mode)
       # with the a11y addon, so the browser binary must be installed first.
       - name: Install Chromium for Storybook tests
@@ -80,18 +100,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # pnpm version comes from package.json "packageManager" (single source of truth).
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Integration tests
         run: pnpm test:integration

@@ -1,0 +1,21 @@
+name: Setup
+description: Install pnpm + Node (from .nvmrc) and project dependencies.
+
+# Shared prelude for every CI job. Checkout must run in the job before this
+# composite (the local action isn't on disk until the repo is checked out).
+runs:
+  using: composite
+  steps:
+    # pnpm version comes from package.json "packageManager" (single source of truth).
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
