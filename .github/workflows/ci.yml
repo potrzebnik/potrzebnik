@@ -76,21 +76,15 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      # Cache the downloaded browser so `playwright install` is a no-op on a hit.
-      # Keyed on the lockfile, which pins the Playwright (and browser) version.
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-
-      # Storybook stories run in a real Chromium browser (vitest browser mode)
-      # with the a11y addon, so the browser binary must be installed first.
-      # No `--with-deps`: ubuntu-latest already ships Chromium's shared libs, and
-      # the apt step it triggers hangs on the runner's dpkg lock. A genuinely
-      # missing lib would surface as a test error, not a silent hang.
+      # Storybook stories run in headless Chromium (vitest browser mode) with the
+      # a11y addon, so the browser must be installed first. `--only-shell` fetches
+      # just chromium-headless-shell — the single artifact headless mode uses — which
+      # avoids the multi-artifact download that hangs under the runner's Node 24.
+      # No browser cache: the download is ~1s, so caching saves nothing and a
+      # cancelled run can leave a partial cache that wedges the next install.
+      # `timeout` turns any regression into a fast failure instead of a 15m stall.
       - name: Install Chromium for Storybook tests
-        run: pnpm exec playwright install chromium
+        run: timeout 240 pnpm exec playwright install --with-deps --only-shell chromium
 
       - name: Storybook component + a11y tests
         run: pnpm test:storybook
