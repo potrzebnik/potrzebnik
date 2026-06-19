@@ -19,16 +19,10 @@ Gotchas not obvious from those files:
 
 Next.js App Router under `src/app/` with two route groups: `(public)/` and `(dashboard)/dashboard`. Path alias `@/*` → `src/*`. UI primitives live in `src/components/ui/` (shadcn-style, see [`components.json`](./components.json)); feature composites in `src/components/features/`. Tailwind v4 via `@tailwindcss/postcss`.
 
-Non-obvious points worth knowing:
-
-- `needs` exists in **both** route groups (public vs. dashboard).
-- Only `(public)/` has a group-level `layout.tsx`; there is no `(dashboard)/layout.tsx` yet (only a route-level one under `dashboard`).
-
 ### Database
 
 Drizzle ORM + `pg` against Postgres. Config: [`drizzle.config.ts`](./drizzle.config.ts); compose service in [`compose.yml`](./compose.yml); client in `src/db/index.ts`; migrations in `./drizzle`.
 
-- Schema path is configured as `src/db/schema.ts` but that file is **not yet created** — add it before the first `pnpm db:generate`.
 - `src/db/resolve-database-url.ts` is the single source for the connection URL (runtime + `drizzle.config.ts`). It **throws fast** on missing vars — preserve this; do not silently default secrets.
 
 ### Storybook + Vitest
