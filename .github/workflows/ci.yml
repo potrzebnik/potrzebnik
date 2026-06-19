@@ -73,15 +73,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Pin Node 22 (LTS) for this job: Playwright's installer hangs after the
+      # download under the repo's Node 24 (the CLI process never exits). Node 22
+      # is what Playwright is tested against. The browser tests then also run on
+      # 22, which is fine — they don't depend on Node 24.
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          node-version: 22
 
       # Storybook stories run in headless Chromium (vitest browser mode) with the
       # a11y addon, so the browser must be installed first. `--only-shell` fetches
       # just chromium-headless-shell — the single artifact headless mode uses.
-      # `--dns-result-order=ipv4first`: Node 24 prefers IPv6, which black-holes the
-      # download from cdn.playwright.dev on the runner and hangs the install; force
-      # IPv4. `timeout` turns any regression into a fast failure, not a 15m stall.
+      # `--dns-result-order=ipv4first`: the runner's IPv6 route to cdn.playwright.dev
+      # black-holes and stalls the download, so force IPv4. `timeout` turns any
+      # regression into a fast failure, not a 15m stall.
       - name: Install Chromium for Storybook tests
         env:
           NODE_OPTIONS: --dns-result-order=ipv4first
