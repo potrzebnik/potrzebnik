@@ -64,6 +64,14 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+      # Storybook stories run in a real Chromium browser (vitest browser mode)
+      # with the a11y addon, so the browser binary must be installed first.
+      - name: Install Chromium for Storybook tests
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Storybook component + a11y tests
+        run: pnpm test:storybook
+
   integration:
     name: Integration tests (testcontainers Postgres)
     runs-on: ubuntu-latest
