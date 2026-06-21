@@ -8,6 +8,13 @@
       "when": 1773488100956,
       "tag": "0000_glorious_colleen_wing",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781374056251,
+      "tag": "0001_serious_raider",
+      "breakpoints": true
     }
   ]
 }
