@@ -111,6 +111,38 @@ feat: add organizations API endpoint (#18)
 - Add/update tests for behavior changes
 - Update documentation (README, comments)
 
+### Git Hooks
+
+[Husky](https://typicode.github.io/husky/) hooks run automatically — no manual
+setup beyond `pnpm install` (wired via the `prepare` script):
+
+- **pre-commit**: `lint-staged` (ESLint + Prettier on staged files)
+- **commit-msg**: `commitlint` (Conventional Commits)
+- **pre-push**: `pnpm type-check && pnpm lint && pnpm test` — blocks the push if
+  types, lint, or unit tests fail. Integration tests and `build` run in CI, not
+  here, to keep pushes fast.
+
+Bypass in an emergency (use sparingly):
+
+```bash
+git push --no-verify
+```
+
+### Continuous Integration
+
+GitHub Actions runs the **full** verification suite on every PR and push to
+`main`:
+
+- **`quality`** job: `type-check`, `lint`, `format:check`, `build`, unit tests
+- **`integration`** job: integration tests (testcontainers spins up Postgres —
+  no secrets needed)
+
+This is a superset of the pre-push hook: `build`, `format:check`, and the
+integration tests run here rather than locally to keep pushes fast. `main` is
+protected — PRs **cannot merge** until both checks pass (and you have at least
+one approval). The hook is a fast local pre-filter; CI is the authoritative,
+unbypassable gate.
+
 **Questions?** Contact the project coordinator or open a discussion.
 
 ## Learn More
