@@ -10,6 +10,17 @@ import {
 
 import { createAuthIntegrationHarness } from '../test/auth-integration/harness';
 
+const DOMAIN_TABLES = [
+  'address',
+  'donation',
+  'donor',
+  'donor_favourite_need',
+  'need',
+  'need_status_history',
+  'organization',
+  'organization_shipping_address',
+] as const;
+
 describe('database integration', () => {
   let harness: Awaited<ReturnType<typeof createAuthIntegrationHarness>>;
 
@@ -36,6 +47,12 @@ describe('database integration', () => {
       'user',
       'verification',
     ]);
+  });
+
+  it('migrates the container database and creates the domain tables', async () => {
+    await expect(harness.listExistingTables(DOMAIN_TABLES)).resolves.toEqual(
+      DOMAIN_TABLES,
+    );
   });
 
   it('imports the production db and auth singletons after test env setup', async () => {
