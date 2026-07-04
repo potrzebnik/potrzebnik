@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main]
+    branches: [main, 'chore/#59-pre-push-hook-test']
 
 # Cancel superseded runs for the same ref (e.g. new push to an open PR).
 concurrency:
