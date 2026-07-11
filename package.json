@@ -2,12 +2,17 @@
   "name": "potrzebnik",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "test": "vitest run --config vitest.node.config.ts --project unit",
     "test:integration": "vitest run --config vitest.node.config.ts --project integration",
+    "test:storybook": "vitest run --config vitest.config.ts --project storybook",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "check": "tsc --noEmit && eslint . && prettier --check .",
