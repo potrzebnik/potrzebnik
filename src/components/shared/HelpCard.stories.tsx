@@ -1,4 +1,4 @@
-﻿import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import HelpCard from '@/components/shared/HelpCard';
 import { BADGES } from '@/lib/constants';
 
@@ -26,35 +26,42 @@ export const KarmaRenal: Story = {
   },
 };
 
-export const ZestawFarby: Story = {
+export const ArtSupplies: Story = {
   args: {
     title: 'Zestaw farb akrylowych i podobrazi',
     description: 'Świetlica Środowiskowa "Przystań"',
     image: '/art-supplies.jpg',
-    badges: [BADGES.EXPIRING],
+    badges: [BADGES.EXPIRING, BADGES.NEW],
     price: 70,
     currency: 'PLN',
   },
 };
 
-export const Spiwory: Story = {
+export const SleepingBags: Story = {
   args: {
     title: '5 ciepłych śpiworów',
     description: 'Fundacja "Daj Herbatę"',
     image: '/sleeping-bags.jpg',
-    badges: [BADGES.EXPIRING],
-    price: 300,
+    badges: [BADGES.URGENT, BADGES.EXPIRING, BADGES.NEW, BADGES.ONGOING],
+    price: 3000,
     currency: 'PLN',
   },
 };
 
-export const Example: Story = {
+export const ManyBadges: Story = {
   args: {
-    title: 'Example',
-    description: 'Example opis"',
+    title: 'Zestaw artykułów szkolnych',
+    description: 'Szkoła Podstawowa nr 7 w Krakowie',
     image: '/children.jpg',
-    badges: [BADGES.EXPIRING, BADGES.EXPIRING, BADGES.NEW],
-    price: 1700,
+    badges: [
+      BADGES.URGENT,
+      BADGES.EXPIRING,
+      BADGES.NEW,
+      BADGES.ONGOING,
+      BADGES.URGENT,
+      BADGES.EXPIRING,
+    ],
+    price: 450,
     currency: 'PLN',
   },
 };
