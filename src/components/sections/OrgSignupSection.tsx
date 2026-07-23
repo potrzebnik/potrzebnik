@@ -53,20 +53,20 @@ const collageImages: CollageImage[] = [
 
 export default function OrgSignupSection() {
   return (
-    <section className="relative w-full overflow-hidden py-14 sm:py-24">
-      <div className="container mx-auto grid grid-cols-1 items-center gap-14 px-6 lg:grid-cols-2 lg:gap-10">
+    <section className="relative w-full overflow-hidden py-24">
+      <div className="container mx-auto grid grid-cols-2 items-center gap-10 px-6">
         {/* Left: text + CTA on a blue panel that bleeds to the left edge */}
         <div className="relative flex items-center">
           <div
             aria-hidden="true"
             className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[20px] border border-black bg-[#DBEAFE]"
           />
-          <div className="w-full py-6 lg:py-16 lg:pr-12 lg:pl-[100px]">
+          <div className="w-full py-16 pr-12 pl-[100px]">
             <div className="max-w-[462px]">
-              <h2 className="mb-5 text-4xl leading-[1.12] font-semibold tracking-tight text-black lg:text-[48px] lg:leading-[54px] lg:tracking-[-1.5px]">
+              <h2 className="mb-5 text-[48px] leading-[54px] font-semibold tracking-[-1.5px] text-black">
                 Zadbaj o uporządkowanie potrzeb rzeczowych
               </h2>
-              <p className="mb-6 text-base leading-relaxed text-black sm:text-[18px] sm:leading-[27px]">
+              <p className="mb-6 text-[18px] leading-[27px] text-black">
                 Dołącz do Potrzebnika i zacznij profesjonalnie zarządzać darami
                 rzeczowymi. Rejestracja jest całkowicie bezpłatna i zajmie Ci
                 tylko 2 minuty.
@@ -82,7 +82,7 @@ export default function OrgSignupSection() {
         </div>
 
         {/* Right: 5-image collage */}
-        <div className="relative mx-auto aspect-[778/591] w-full max-w-[778px]">
+        <div className="relative aspect-[778/591] w-full max-w-[778px]">
           {collageImages.map((image) => (
             <div
               key={image.id}
@@ -92,7 +92,7 @@ export default function OrgSignupSection() {
                 src={image.src}
                 alt={image.alt}
                 fill
-                sizes="(max-width: 1024px) 45vw, 25vw"
+                sizes="25vw"
                 className={`object-cover ${image.objectPosition ?? ''} ${image.flipped ? '-scale-x-100' : ''}`}
               />
             </div>
