@@ -14,9 +14,7 @@ interface CollageImage {
 }
 
 // Positions/sizes are derived from the Figma frame (778×591) so the collage
-// stays faithful regardless of which images are dropped in. Only the
-// `top-right` slot still points at a repo placeholder (`volunteers.jpg`) —
-// swap its `src` once the final photo lands.
+// stays faithful regardless of which images are dropped in.
 const collageImages: CollageImage[] = [
   {
     id: 'top-wide',
@@ -34,9 +32,10 @@ const collageImages: CollageImage[] = [
   },
   {
     id: 'top-right',
-    src: '/volunteers.jpg',
-    alt: 'Wolontariusze pakujący dary rzeczowe',
+    src: '/volunteers-aid.png',
+    alt: 'Wolontariusze pakujący dary rzeczowe do kartonu',
     className: 'top-[14.6%] left-[58.5%] h-[45.3%] w-[33.9%]',
+    objectPosition: 'object-[62%_center]',
   },
   {
     id: 'bottom-left',
