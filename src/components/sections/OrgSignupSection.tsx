@@ -59,23 +59,25 @@ export default function OrgSignupSection() {
         <div className="relative flex items-center">
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[20px] border border-black bg-[#DBEAFE]"
+            className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[40px] border border-black bg-[#DBEAFE]"
           />
-          <div className="max-w-[462px] py-6 lg:py-16 lg:pr-16 lg:pl-[100px]">
-            <h2 className="mb-5 text-4xl leading-[1.12] font-semibold tracking-tight text-black lg:text-[48px] lg:leading-[54px] lg:tracking-[-1.5px]">
-              Zadbaj o uporządkowanie potrzeb rzeczowych
-            </h2>
-            <p className="mb-6 text-base leading-relaxed text-black sm:text-[18px] sm:leading-[27px]">
-              Dołącz do Potrzebnika i zacznij profesjonalnie zarządzać darami
-              rzeczowymi. Rejestracja jest całkowicie bezpłatna i zajmie Ci
-              tylko 2 minuty.
-            </p>
-            <Button
-              asChild
-              className="h-auto min-h-14 rounded-lg border border-black bg-[#FFD73A] px-8 py-2.5 text-[18px] leading-[27px] font-medium text-black hover:bg-[#F5C800]"
-            >
-              <Link href="/contact">Zgłoś organizację</Link>
-            </Button>
+          <div className="w-full py-6 lg:py-16 lg:pr-12 lg:pl-[100px]">
+            <div className="max-w-[462px]">
+              <h2 className="mb-5 text-4xl leading-[1.12] font-semibold tracking-tight text-black lg:text-[48px] lg:leading-[54px] lg:tracking-[-1.5px]">
+                Zadbaj o uporządkowanie potrzeb rzeczowych
+              </h2>
+              <p className="mb-6 text-base leading-relaxed text-black sm:text-[18px] sm:leading-[27px]">
+                Dołącz do Potrzebnika i zacznij profesjonalnie zarządzać darami
+                rzeczowymi. Rejestracja jest całkowicie bezpłatna i zajmie Ci
+                tylko 2 minuty.
+              </p>
+              <Button
+                asChild
+                className="h-auto min-h-14 rounded-lg border border-black bg-[#FFD73A] px-8 py-2.5 text-[18px] leading-[27px] font-medium text-black hover:bg-[#F5C800]"
+              >
+                <Link href="/contact">Zgłoś organizację</Link>
+              </Button>
+            </div>
           </div>
         </div>
 
