@@ -11,9 +11,10 @@ interface CollageImage {
   flipped?: boolean;
 }
 
-// Placeholder photos from the repo — swap the `src`s for the final assets.
 // Positions/sizes are derived from the Figma frame (778×591) so the collage
-// stays faithful regardless of which images are dropped in.
+// stays faithful regardless of which images are dropped in. The `middle` and
+// `bottom-left` slots use the final assets; the remaining three still point at
+// repo placeholders — swap their `src`s once the final photos land.
 const collageImages: CollageImage[] = [
   {
     id: 'top-wide',
@@ -24,8 +25,8 @@ const collageImages: CollageImage[] = [
   },
   {
     id: 'middle',
-    src: '/art-supplies.jpg',
-    alt: 'Dłonie trzymające drobny dar',
+    src: '/hands-with-flower.png',
+    alt: 'Dłonie trzymające żółty kwiat',
     className: 'top-[29.1%] left-[11.4%] h-[30.7%] w-[45.3%]',
   },
   {
@@ -36,7 +37,7 @@ const collageImages: CollageImage[] = [
   },
   {
     id: 'bottom-left',
-    src: '/dogs-shelter.jpg',
+    src: '/family-embrace.png',
     alt: 'Rodzina przytulająca się razem',
     className: 'top-[62.3%] left-[2%] h-[37.7%] w-[24.3%]',
   },
