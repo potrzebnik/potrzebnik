@@ -9,19 +9,22 @@ interface CollageImage {
   /** Position + size within the collage frame, taken from the Figma layout. */
   className: string;
   flipped?: boolean;
+  /** Optional object-position tweak when object-cover crops an off-centre subject. */
+  objectPosition?: string;
 }
 
 // Positions/sizes are derived from the Figma frame (778×591) so the collage
-// stays faithful regardless of which images are dropped in. The `middle` and
-// `bottom-left` slots use the final assets; the remaining three still point at
-// repo placeholders — swap their `src`s once the final photos land.
+// stays faithful regardless of which images are dropped in. Only the
+// `top-right` slot still points at a repo placeholder (`volunteers.jpg`) —
+// swap its `src` once the final photo lands.
 const collageImages: CollageImage[] = [
   {
     id: 'top-wide',
-    src: '/children.jpg',
-    alt: 'Dziecko trzymające pudełko z darami',
+    src: '/child-gift.jpg',
+    alt: 'Uśmiechnięty chłopiec otwierający pudełko z darem',
     className: 'top-0 left-0 h-[26.6%] w-[56.3%]',
     flipped: true,
+    objectPosition: 'object-[center_28%]',
   },
   {
     id: 'middle',
@@ -43,8 +46,8 @@ const collageImages: CollageImage[] = [
   },
   {
     id: 'bottom-right',
-    src: '/sleeping-bags.jpg',
-    alt: 'Pomocna dłoń podawana osobie potrzebującej',
+    src: '/senior-hands.png',
+    alt: 'Dłoń wspierająca starszą osobę',
     className: 'top-[62.3%] left-[28.5%] h-[29.8%] w-[71.5%]',
   },
 ];
@@ -89,7 +92,7 @@ export default function OrgSignupSection() {
                 alt={image.alt}
                 fill
                 sizes="(max-width: 1024px) 45vw, 25vw"
-                className={`object-cover ${image.flipped ? '-scale-x-100' : ''}`}
+                className={`object-cover ${image.objectPosition ?? ''} ${image.flipped ? '-scale-x-100' : ''}`}
               />
             </div>
           ))}
