@@ -59,7 +59,7 @@ export default function OrgSignupSection() {
         <div className="relative flex items-center">
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[40px] border border-black bg-[#DBEAFE]"
+            className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[20px] border border-black bg-[#DBEAFE]"
           />
           <div className="w-full py-6 lg:py-16 lg:pr-12 lg:pl-[100px]">
             <div className="max-w-[462px]">
