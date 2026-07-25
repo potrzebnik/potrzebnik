@@ -21,7 +21,7 @@ export function PublicHeader() {
 
   return (
     <header className="bg-header-bg">
-      <div className="relative bg-white md:hidden">
+      <div className="bg-header-bg-mobile relative md:hidden">
         <div className="relative flex h-[60px] items-center">
           <div className="flex h-9 w-full items-center justify-between px-5">
             <Link
@@ -51,14 +51,14 @@ export function PublicHeader() {
               )}
             </Button>
           </div>
-          <span className="absolute right-0 bottom-0 left-0 border-t border-black" />
-          <span className="absolute right-0 bottom-1 left-0 border-t border-black" />
+          <span className="border-header-rule absolute right-0 bottom-0 left-0 border-t" />
+          <span className="border-header-rule absolute right-0 bottom-1 left-0 border-t" />
         </div>
 
         {isMobileMenuOpen ? (
           <div
             id="mobile-navbar-panel"
-            className="flex min-h-[735px] w-full items-start bg-white pt-5 pr-8 pb-0 pl-5"
+            className="bg-header-bg-mobile flex min-h-[735px] w-full items-start pt-5 pr-8 pb-0 pl-5"
           >
             <div className="flex w-full max-w-[350px] flex-col gap-10">
               <div className="flex w-full flex-col">
@@ -68,7 +68,7 @@ export function PublicHeader() {
                     href={item.href}
                     onClick={closeMobileMenu}
                     className={cn(
-                      'inline-flex h-14 w-full items-center px-[10px] py-4 text-base leading-6 font-medium text-black',
+                      'text-header-fg-strong inline-flex h-14 w-full items-center px-[10px] py-4 text-base leading-6 font-medium',
                       index < navigationItems.length - 1 &&
                         'border-header-border border-b',
                     )}
@@ -79,7 +79,7 @@ export function PublicHeader() {
               </div>
               <Button
                 asChild
-                className="bg-header-cta text-header-fg hover:bg-header-cta/90 h-14 min-h-10 w-full rounded-lg border border-black px-8 py-2.5 text-[20px] leading-[25px] font-medium"
+                className="bg-header-cta text-header-fg hover:bg-header-cta/90 border-header-rule h-14 min-h-10 w-full rounded-lg border px-8 py-2.5 text-[20px] leading-[25px] font-medium"
               >
                 <Link href="/contact" onClick={closeMobileMenu}>
                   Zgłoś organizację
@@ -102,7 +102,7 @@ export function PublicHeader() {
         ) : null}
       </div>
 
-      <div className="hidden border-b border-black md:block">
+      <div className="border-header-rule hidden border-b md:block">
         <div className="bg-header-bg mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between gap-[15px] px-[100px] pt-5 pb-[25px]">
           <div className="flex h-9 w-[925px] items-center gap-[65px]">
             <Link
@@ -134,7 +134,7 @@ export function PublicHeader() {
           <div className="flex h-10 w-[260px] items-center gap-[10px]">
             <Button
               asChild
-              className="bg-header-cta text-header-fg hover:bg-header-cta/90 h-9 min-h-9 w-[145px] gap-[25px] rounded-lg border border-black px-4 py-2 text-sm leading-5 font-medium whitespace-nowrap"
+              className="bg-header-cta text-header-fg hover:bg-header-cta/90 border-header-rule h-9 min-h-9 w-[145px] gap-[25px] rounded-lg border px-4 py-2 text-sm leading-5 font-medium whitespace-nowrap"
             >
               <Link href="/contact">Zgłoś organizację</Link>
             </Button>
