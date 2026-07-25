@@ -2,9 +2,14 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { GoogleOptions } from 'better-auth/social-providers';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { Resend } from 'resend';
 
 import type * as schema from '../db/schema';
+import {
+  createPasswordResetEmail,
+  createResendEmailSender,
+  createVerificationEmail,
+  type EmailSender,
+} from './emails';
 
 type RequiredAuthEnvKey = 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL';
 type BooleanAuthEnvKey = 'GOOGLE_AUTH_ENABLED' | 'EMAIL_SENDING_ENABLED';
@@ -32,25 +37,11 @@ export type AuthEnv = {
 
 export type AuthDatabase = NodePgDatabase<typeof schema>;
 
-export type AuthEmailPurpose = 'verification' | 'password-reset';
-
-export type AuthEmailMessage = {
-  purpose: AuthEmailPurpose;
-  to: string;
-  url: string;
-  token: string;
-  subject: string;
-  html: string;
-  text: string;
-};
-
-export type AuthEmailSender = (message: AuthEmailMessage) => Promise<void>;
-
 export type CreateAuthOptions = {
   database: AuthDatabase;
   env?: NodeJS.ProcessEnv;
   googleOverrides?: Partial<GoogleOptions>;
-  emailSender?: AuthEmailSender;
+  emailSender?: EmailSender;
 };
 
 function requireAuthEnv(key: AuthEnvKey, env: NodeJS.ProcessEnv): string {
@@ -137,93 +128,6 @@ export function getAuthEnv(env: NodeJS.ProcessEnv = process.env): AuthEnv {
   };
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
-
-function formatFromEmail({
-  fromEmail,
-  fromName,
-}: {
-  fromEmail: string;
-  fromName?: string;
-}) {
-  return fromName ? `${fromName} <${fromEmail}>` : fromEmail;
-}
-
-function createResendEmailSender({
-  resendApiKey,
-  fromEmail,
-  fromName,
-}: NonNullable<AuthEnv['email']>): AuthEmailSender {
-  const resend = new Resend(resendApiKey);
-  const from = formatFromEmail({ fromEmail, fromName });
-
-  return async (message) => {
-    const { error } = await resend.emails.send({
-      from,
-      to: message.to,
-      subject: message.subject,
-      html: message.html,
-      text: message.text,
-    });
-
-    if (error) {
-      throw new Error(
-        `Failed to send ${message.purpose} email through Resend: ${error.message}`,
-      );
-    }
-  };
-}
-
-function createVerificationEmail({
-  to,
-  url,
-  token,
-}: {
-  to: string;
-  url: string;
-  token: string;
-}): AuthEmailMessage {
-  const escapedUrl = escapeHtml(url);
-
-  return {
-    purpose: 'verification',
-    to,
-    url,
-    token,
-    subject: 'Verify your Potrzebnik email',
-    html: `<p>Verify your email address by opening this link:</p><p><a href="${escapedUrl}">${escapedUrl}</a></p>`,
-    text: `Verify your email address by opening this link: ${url}`,
-  };
-}
-
-function createPasswordResetEmail({
-  to,
-  url,
-  token,
-}: {
-  to: string;
-  url: string;
-  token: string;
-}): AuthEmailMessage {
-  const escapedUrl = escapeHtml(url);
-
-  return {
-    purpose: 'password-reset',
-    to,
-    url,
-    token,
-    subject: 'Reset your Potrzebnik password',
-    html: `<p>Reset your password by opening this link:</p><p><a href="${escapedUrl}">${escapedUrl}</a></p>`,
-    text: `Reset your password by opening this link: ${url}`,
-  };
-}
-
 export function createAuth({
   database,
   env = process.env,
@@ -256,7 +160,7 @@ export function createAuth({
           url: string;
           token: string;
         }) =>
-          authEmailSender(
+          authEmailSender.send(
             createPasswordResetEmail({
               to: user.email,
               url,
@@ -288,7 +192,7 @@ export function createAuth({
               url: string;
               token: string;
             }) =>
-              authEmailSender(
+              authEmailSender.send(
                 createVerificationEmail({
                   to: user.email,
                   url,

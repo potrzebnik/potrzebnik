@@ -1,6 +1,7 @@
 import * as schema from '@/db/schema';
+import type { EmailSender } from '@/lib/emails';
 import { createAuth } from '@/lib/auth-config';
-import type { AuthDatabase, AuthEmailSender } from '@/lib/auth-config';
+import type { AuthDatabase } from '@/lib/auth-config';
 import { createPostgresIntegrationHarness } from '../postgres-integration-harness';
 
 import {
@@ -23,7 +24,7 @@ type AuthTable = (typeof AUTH_TABLES)[number];
 type AuthTableCounts = Record<AuthTable, number>;
 type CreateTestAuthOptions = {
   env?: Partial<NodeJS.ProcessEnv>;
-  emailSender?: AuthEmailSender;
+  emailSender?: EmailSender;
 };
 
 const AUTH_TABLE_SQL_LIST = AUTH_TABLES.map((table) => AUTH_TABLE_SQL[table]);
