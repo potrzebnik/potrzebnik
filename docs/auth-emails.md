@@ -1,6 +1,7 @@
 # Auth Emails
 
-Auth email delivery is opt-in and is configured in `src/lib/auth-config.ts`.
+Auth email delivery is opt-in. `src/lib/auth-config.ts` wires it into Better
+Auth, while email subjects and content live in `src/lib/emails/templates`.
 When disabled, local development does not need Resend credentials.
 
 ## Config

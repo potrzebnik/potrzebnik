@@ -10,7 +10,7 @@ import {
   TEST_GOOGLE_USER,
 } from '@/test/auth-integration/google';
 import { createAuthIntegrationHarness } from '@/test/auth-integration/harness';
-import type { AuthEmailMessage, AuthEmailSender } from './auth-config';
+import type { AuthEmailMessage, EmailSender } from './emails';
 
 type AuthHandler = {
   handler: (request: Request) => Promise<Response>;
@@ -30,8 +30,10 @@ const EMAIL_ENABLED_ENV: Partial<NodeJS.ProcessEnv> = {
 
 function createFakeEmailSender() {
   const messages: AuthEmailMessage[] = [];
-  const sender: AuthEmailSender = async (message) => {
-    messages.push(message);
+  const sender: EmailSender = {
+    async send(message) {
+      messages.push(message);
+    },
   };
 
   return {

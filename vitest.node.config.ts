@@ -8,15 +8,18 @@ const dirname =
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      '@': path.resolve(dirname, 'src'),
-    },
+const resolve = {
+  alias: {
+    '@': path.resolve(dirname, 'src'),
   },
+};
+
+export default defineConfig({
+  resolve,
   test: {
     projects: [
       {
+        resolve,
         test: {
           name: 'unit',
           environment: 'node',
@@ -25,6 +28,7 @@ export default defineConfig({
         },
       },
       {
+        resolve,
         test: {
           name: 'integration',
           environment: 'node',
