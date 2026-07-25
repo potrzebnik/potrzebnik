@@ -19,9 +19,9 @@
       }
     ],
     "selector-class-pattern": [
-      "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "^dark$",
       {
-        "message": "Custom component classes are not allowed — use Tailwind utility classes in the component instead of hand-written CSS (see CLAUDE.md)."
+        "message": "Custom CSS classes are not allowed — use Tailwind utility classes in the component instead of hand-written CSS (see CLAUDE.md). If this is a legitimate theming hook like .dark, add it to the allowed pattern explicitly."
       }
     ],
     "hue-degree-notation": null,

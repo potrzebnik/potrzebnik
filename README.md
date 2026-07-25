@@ -118,9 +118,9 @@ setup beyond `pnpm install` (wired via the `prepare` script):
 
 - **pre-commit**: `lint-staged` (ESLint + Prettier on staged files)
 - **commit-msg**: `commitlint` (Conventional Commits)
-- **pre-push**: `pnpm type-check && pnpm lint && pnpm test` — blocks the push if
-  types, lint, or unit tests fail. Integration tests and `build` run in CI, not
-  here, to keep pushes fast.
+- **pre-push**: `pnpm type-check && pnpm lint && pnpm lint:css && pnpm test` —
+  blocks the push if types, lint, CSS lint, or unit tests fail. Integration
+  tests and `build` run in CI, not here, to keep pushes fast.
 
 Bypass in an emergency (use sparingly):
 

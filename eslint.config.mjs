@@ -21,6 +21,19 @@ const eslintConfig = defineConfig([
   ]),
   eslintPluginPrettier,
   ...storybook.configs['flat/recommended'],
+  {
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "JSXAttribute[name.name='className'] Literal[value=/\\[(#|rgb\\(|rgba\\(|hsl\\(|hsla\\(|oklch\\()/]",
+          message:
+            'Raw color literals in Tailwind arbitrary values are not allowed — use a design token (e.g. bg-footer-bg) instead (see CLAUDE.md).',
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;
