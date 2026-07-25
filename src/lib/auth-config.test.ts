@@ -47,6 +47,7 @@ describe('getAuthEnv', () => {
         clientId: 'test-google-client-id',
         clientSecret: 'test-google-client-secret',
       },
+      email: undefined,
     });
   });
 
@@ -99,6 +100,77 @@ describe('getAuthEnv', () => {
       secret: 'test-better-auth-secret-that-is-long-enough',
       baseURL: 'http://127.0.0.1:3000',
       google: undefined,
+      email: undefined,
     });
   });
+
+  it('disables email sending when EMAIL_SENDING_ENABLED is missing', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const env = createEnv();
+
+    delete env.EMAIL_SENDING_ENABLED;
+    delete env.RESEND_API_KEY;
+    delete env.RESEND_FROM_EMAIL;
+
+    expect(getAuthEnv(env)).toMatchObject({
+      email: undefined,
+    });
+  });
+
+  it('disables email sending when EMAIL_SENDING_ENABLED is false', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const env = createEnv({ EMAIL_SENDING_ENABLED: 'false' });
+
+    delete env.RESEND_API_KEY;
+    delete env.RESEND_FROM_EMAIL;
+
+    expect(getAuthEnv(env)).toMatchObject({
+      email: undefined,
+    });
+  });
+
+  it('rejects an invalid EMAIL_SENDING_ENABLED value', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const env = createEnv({ EMAIL_SENDING_ENABLED: 'yes' });
+
+    expect(() => getAuthEnv(env)).toThrow(
+      'Invalid environment variable: EMAIL_SENDING_ENABLED. Expected "true" or "false".',
+    );
+  });
+
+  it('returns resend config when email sending is enabled', async () => {
+    const getAuthEnv = await loadGetAuthEnv();
+    const env = createEnv({
+      EMAIL_SENDING_ENABLED: 'true',
+      RESEND_API_KEY: 'test-resend-api-key',
+      RESEND_FROM_EMAIL: 'noreply@example.com',
+      RESEND_FROM_NAME: 'Potrzebnik',
+    });
+
+    expect(getAuthEnv(env)).toMatchObject({
+      email: {
+        resendApiKey: 'test-resend-api-key',
+        fromEmail: 'noreply@example.com',
+        fromName: 'Potrzebnik',
+      },
+    });
+  });
+
+  it.each([['RESEND_API_KEY'], ['RESEND_FROM_EMAIL']] as const)(
+    'rejects missing %s when email sending is enabled',
+    async (missingKey) => {
+      const getAuthEnv = await loadGetAuthEnv();
+      const env = createEnv({
+        EMAIL_SENDING_ENABLED: 'true',
+        RESEND_API_KEY: 'test-resend-api-key',
+        RESEND_FROM_EMAIL: 'noreply@example.com',
+      });
+
+      delete env[missingKey];
+
+      expect(() => getAuthEnv(env)).toThrow(
+        `Missing environment variable: ${missingKey}. It is required for authentication.`,
+      );
+    },
+  );
 });
