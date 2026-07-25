@@ -27,7 +27,7 @@ function createEnv(
 async function loadGetAuthEnv() {
   vi.resetModules();
 
-  const { getAuthEnv } = await import('./auth-config');
+  const { getAuthEnv } = await import('./auth-env');
 
   return getAuthEnv;
 }
