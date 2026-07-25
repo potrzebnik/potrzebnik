@@ -10,6 +10,7 @@ function createEnv(
     GOOGLE_AUTH_ENABLED = 'true',
     GOOGLE_CLIENT_ID = 'test-google-client-id',
     GOOGLE_CLIENT_SECRET = 'test-google-client-secret',
+    EMAIL_SENDING_ENABLED = 'false',
     ...env
   } = overrides;
 
@@ -21,6 +22,7 @@ function createEnv(
     GOOGLE_AUTH_ENABLED,
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
+    EMAIL_SENDING_ENABLED,
   };
 }
 
@@ -55,6 +57,7 @@ describe('getAuthEnv', () => {
     'BETTER_AUTH_SECRET',
     'BETTER_AUTH_URL',
     'GOOGLE_AUTH_ENABLED',
+    'EMAIL_SENDING_ENABLED',
   ] as const)('rejects a missing %s value', async (key) => {
     const getAuthEnv = await loadGetAuthEnv();
     const env = createEnv({ NODE_ENV: 'development' });
@@ -100,19 +103,6 @@ describe('getAuthEnv', () => {
       secret: 'test-better-auth-secret-that-is-long-enough',
       baseURL: 'http://127.0.0.1:3000',
       google: undefined,
-      email: undefined,
-    });
-  });
-
-  it('disables email sending when EMAIL_SENDING_ENABLED is missing', async () => {
-    const getAuthEnv = await loadGetAuthEnv();
-    const env = createEnv();
-
-    delete env.EMAIL_SENDING_ENABLED;
-    delete env.RESEND_API_KEY;
-    delete env.RESEND_FROM_EMAIL;
-
-    expect(getAuthEnv(env)).toMatchObject({
       email: undefined,
     });
   });

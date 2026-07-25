@@ -12,7 +12,7 @@ Disabled mode, default for local development:
 EMAIL_SENDING_ENABLED=false
 ```
 
-`EMAIL_SENDING_ENABLED` can also be omitted. In disabled mode:
+In disabled mode:
 
 - email/password sign-up works
 - users can sign in without email verification

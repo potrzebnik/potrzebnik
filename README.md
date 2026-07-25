@@ -18,7 +18,7 @@ cp .env.example .env
 
 Local development startup works without Google OAuth keys when
 `GOOGLE_AUTH_ENABLED=false` and without Resend keys when
-`EMAIL_SENDING_ENABLED` is absent or `false`.
+`EMAIL_SENDING_ENABLED=false`.
 
 To enable Google sign-in locally for testing, set `GOOGLE_AUTH_ENABLED=true`,
 `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` in `.env`, then register this
