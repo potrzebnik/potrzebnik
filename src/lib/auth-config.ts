@@ -4,6 +4,7 @@ import type { GoogleOptions } from 'better-auth/social-providers';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import type * as schema from '../db/schema';
+import { getAuthEnv } from './auth-env';
 import {
   createPasswordResetEmail,
   createResendEmailSender,
@@ -11,123 +12,33 @@ import {
   type EmailSender,
 } from './emails';
 
-type RequiredAuthEnvKey = 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL';
-type BooleanAuthEnvKey = 'GOOGLE_AUTH_ENABLED' | 'EMAIL_SENDING_ENABLED';
-type GoogleAuthEnvKey = 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET';
-type EmailSendingEnvKey = 'RESEND_API_KEY' | 'RESEND_FROM_EMAIL';
-type AuthEnvKey =
-  | RequiredAuthEnvKey
-  | BooleanAuthEnvKey
-  | GoogleAuthEnvKey
-  | EmailSendingEnvKey;
-
-export type AuthEnv = {
-  secret: string;
-  baseURL: string;
-  google?: {
-    clientId: string;
-    clientSecret: string;
-  };
-  email?: {
-    resendApiKey: string;
-    fromEmail: string;
-    fromName?: string;
-  };
-};
-
+/**
+ * Drizzle database instance used by the Better Auth adapter.
+ */
 export type AuthDatabase = NodePgDatabase<typeof schema>;
 
+/**
+ * Dependencies and test seams for creating a Better Auth server instance.
+ */
 export type CreateAuthOptions = {
+  /** Database connection backing Better Auth persistence. */
   database: AuthDatabase;
+  /** Environment source used to resolve auth settings. Defaults to `process.env`. */
   env?: NodeJS.ProcessEnv;
+  /** Google provider overrides used by auth integration tests. */
   googleOverrides?: Partial<GoogleOptions>;
+  /** Email sender override used by tests; production defaults to Resend when enabled. */
   emailSender?: EmailSender;
 };
 
-function requireAuthEnv(key: AuthEnvKey, env: NodeJS.ProcessEnv): string {
-  const value = env[key];
-
-  if (!value) {
-    throw new Error(
-      `Missing environment variable: ${key}. It is required for authentication.`,
-    );
-  }
-
-  return value;
-}
-
-function requireBooleanAuthEnv(
-  key: BooleanAuthEnvKey,
-  env: NodeJS.ProcessEnv,
-): boolean {
-  const value = requireAuthEnv(key, env).toLowerCase();
-
-  if (value === 'true') {
-    return true;
-  }
-
-  if (value === 'false') {
-    return false;
-  }
-
-  throw new Error(
-    `Invalid environment variable: ${key}. Expected "true" or "false".`,
-  );
-}
-
-function optionalBooleanAuthEnv(
-  key: BooleanAuthEnvKey,
-  env: NodeJS.ProcessEnv,
-  defaultValue: boolean,
-): boolean {
-  const value = env[key];
-
-  if (value === undefined) {
-    return defaultValue;
-  }
-
-  const normalizedValue = value.toLowerCase();
-
-  if (normalizedValue === 'true') {
-    return true;
-  }
-
-  if (normalizedValue === 'false') {
-    return false;
-  }
-
-  throw new Error(
-    `Invalid environment variable: ${key}. Expected "true" or "false".`,
-  );
-}
-
-export function getAuthEnv(env: NodeJS.ProcessEnv = process.env): AuthEnv {
-  const isGoogleAuthEnabled = requireBooleanAuthEnv('GOOGLE_AUTH_ENABLED', env);
-  const isEmailSendingEnabled = optionalBooleanAuthEnv(
-    'EMAIL_SENDING_ENABLED',
-    env,
-    false,
-  );
-
-  return {
-    secret: requireAuthEnv('BETTER_AUTH_SECRET', env),
-    baseURL: requireAuthEnv('BETTER_AUTH_URL', env),
-    google: isGoogleAuthEnabled
-      ? {
-          clientId: requireAuthEnv('GOOGLE_CLIENT_ID', env),
-          clientSecret: requireAuthEnv('GOOGLE_CLIENT_SECRET', env),
-        }
-      : undefined,
-    email: isEmailSendingEnabled
-      ? {
-          resendApiKey: requireAuthEnv('RESEND_API_KEY', env),
-          fromEmail: requireAuthEnv('RESEND_FROM_EMAIL', env),
-          fromName: env.RESEND_FROM_NAME || undefined,
-        }
-      : undefined,
-  };
-}
-
+/**
+ * Creates the Better Auth server configuration for this app.
+ *
+ * Email/password auth is always enabled. When email sending is configured, the
+ * auth flow also requires email verification and sends verification/reset
+ * messages through the configured sender. Google auth is added only when the
+ * resolved environment enables it.
+ */
 export function createAuth({
   database,
   env = process.env,
