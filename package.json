@@ -15,7 +15,9 @@
     "test:storybook": "vitest run --config vitest.config.ts --project storybook",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "check": "tsc --noEmit && eslint . && prettier --check .",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
+    "check": "tsc --noEmit && eslint . && stylelint \"src/**/*.css\" && prettier --check .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
@@ -30,7 +32,11 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ],
-    "*.{json,md,css}": [
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
       "prettier --write"
     ]
   },
@@ -78,6 +84,8 @@
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "storybook": "^10.2.1",
+    "stylelint": "^17.14.1",
+    "stylelint-config-standard": "^40.0.0",
     "tailwindcss": "^4",
     "testcontainers": "^11.14.0",
     "tsx": "^4.21.0",
