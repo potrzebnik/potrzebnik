@@ -1,6 +1,6 @@
-import * as schema from '../../db/schema';
-import { createAuth } from '../../lib/auth-config';
-import type { AuthDatabase } from '../../lib/auth-config';
+import * as schema from '@/db/schema';
+import { createAuth } from '@/lib/auth-config';
+import type { AuthDatabase, AuthEmailSender } from '@/lib/auth-config';
 import { createPostgresIntegrationHarness } from '../postgres-integration-harness';
 
 import {
@@ -21,6 +21,10 @@ const AUTH_TABLE_SQL = {
 
 type AuthTable = (typeof AUTH_TABLES)[number];
 type AuthTableCounts = Record<AuthTable, number>;
+type CreateTestAuthOptions = {
+  env?: Partial<NodeJS.ProcessEnv>;
+  emailSender?: AuthEmailSender;
+};
 
 const AUTH_TABLE_SQL_LIST = AUTH_TABLES.map((table) => AUTH_TABLE_SQL[table]);
 
@@ -44,11 +48,12 @@ export async function createAuthIntegrationHarness() {
 
   const countAuthRows = (table: AuthTable) =>
     harness.countRows(AUTH_TABLE_SQL[table]);
-  const createTestAuth = () =>
+  const createTestAuth = (options: CreateTestAuthOptions = {}) =>
     createAuth({
       database: authDb,
-      env: createIntegrationEnv(),
+      env: createIntegrationEnv(options.env),
       googleOverrides: createGoogleOverrides(),
+      emailSender: options.emailSender,
     });
   const getAuthCounts = () => countAuthTableRows(countAuthRows);
   const listExistingAuthTables = () => harness.listExistingTables(AUTH_TABLES);
