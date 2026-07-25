@@ -45,6 +45,7 @@
   --color-card: var(--card);
   --color-help-section-btn-bg: var(--help-section-btn-bg);
   --color-help-section-btn-bg-hover: var(--help-section-btn-bg-hover);
+  --color-accent-blue: var(--accent-blue);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -62,6 +63,7 @@
   --footer-fg: var(--foreground);
   --footer-border: oklch(0 0 0);
   --footer-bg: oklch(0.919 0.039 249.4);
+  --accent-blue: oklch(0.919 0.039 249.4);
   --header-bg: oklch(0.993 0.003 247.9);
   --header-fg: oklch(0.145 0 0);
   --header-fg-muted: oklch(0.371 0 0);
