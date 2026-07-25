@@ -1,13 +1,11 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, type BetterAuthOptions } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { GoogleOptions } from 'better-auth/social-providers';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import type * as schema from '../db/schema';
-import { getAuthEnv } from './auth-env';
 import {
   createPasswordResetEmail,
-  createResendEmailSender,
   createVerificationEmail,
   type EmailSender,
 } from './emails';
@@ -23,96 +21,92 @@ export type AuthDatabase = NodePgDatabase<typeof schema>;
 export type CreateAuthOptions = {
   /** Database connection backing Better Auth persistence. */
   database: AuthDatabase;
-  /** Environment source used to resolve auth settings. Defaults to `process.env`. */
-  env?: NodeJS.ProcessEnv;
-  /** Google provider overrides used by auth integration tests. */
-  googleOverrides?: Partial<GoogleOptions>;
-  /** Email sender override used by tests; production defaults to Resend when enabled. */
+  /** Better Auth signing secret. */
+  secret: string;
+  /** Public base URL used by Better Auth. */
+  baseURL: string;
+  /** Fully configured Google provider when Google authentication is enabled. */
+  google?: GoogleOptions;
+  /** Sender used to enable verification and password reset email flows. */
   emailSender?: EmailSender;
 };
+
+type EmailAuthOptions = Pick<
+  BetterAuthOptions,
+  'emailAndPassword' | 'emailVerification'
+>;
+type GoogleAuthOptions = Pick<BetterAuthOptions, 'socialProviders'>;
+
+function createEmailAuthOptions(emailSender?: EmailSender): EmailAuthOptions {
+  if (!emailSender) {
+    return {
+      emailAndPassword: {
+        enabled: true,
+      },
+    };
+  }
+
+  return {
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: true,
+      sendResetPassword: ({ user, url, token }) =>
+        emailSender.send(
+          createPasswordResetEmail({
+            to: user.email,
+            url,
+            token,
+          }),
+        ),
+    },
+    emailVerification: {
+      sendOnSignUp: true,
+      sendVerificationEmail: ({ user, url, token }) =>
+        emailSender.send(
+          createVerificationEmail({
+            to: user.email,
+            url,
+            token,
+          }),
+        ),
+    },
+  };
+}
+
+function createGoogleAuthOptions(google?: GoogleOptions): GoogleAuthOptions {
+  if (!google) {
+    return {};
+  }
+
+  return {
+    socialProviders: {
+      google,
+    },
+  };
+}
 
 /**
  * Creates the Better Auth server configuration for this app.
  *
- * Email/password auth is always enabled. When email sending is configured, the
+ * Email/password auth is always enabled. When an email sender is provided, the
  * auth flow also requires email verification and sends verification/reset
- * messages through the configured sender. Google auth is added only when the
- * resolved environment enables it.
+ * messages through it. Google auth is added only when its provider
+ * configuration is provided.
  */
 export function createAuth({
   database,
-  env = process.env,
-  googleOverrides,
+  secret,
+  baseURL,
+  google,
   emailSender,
 }: CreateAuthOptions) {
-  const authEnv = getAuthEnv(env);
-  const authEmailSender = authEnv.email
-    ? (emailSender ?? createResendEmailSender(authEnv.email))
-    : undefined;
-  const socialProviders = authEnv.google
-    ? {
-        google: {
-          ...googleOverrides,
-          clientId: authEnv.google.clientId,
-          clientSecret: authEnv.google.clientSecret,
-        },
-      }
-    : undefined;
-  const emailAndPassword = authEmailSender
-    ? {
-        enabled: true,
-        requireEmailVerification: true,
-        sendResetPassword: ({
-          user,
-          url,
-          token,
-        }: {
-          user: { email: string };
-          url: string;
-          token: string;
-        }) =>
-          authEmailSender.send(
-            createPasswordResetEmail({
-              to: user.email,
-              url,
-              token,
-            }),
-          ),
-      }
-    : {
-        enabled: true,
-      };
-
   return betterAuth({
-    secret: authEnv.secret,
-    baseURL: authEnv.baseURL,
+    secret,
+    baseURL,
     database: drizzleAdapter(database, {
       provider: 'pg',
     }),
-    emailAndPassword,
-    ...(authEmailSender
-      ? {
-          emailVerification: {
-            sendOnSignUp: true,
-            sendVerificationEmail: ({
-              user,
-              url,
-              token,
-            }: {
-              user: { email: string };
-              url: string;
-              token: string;
-            }) =>
-              authEmailSender.send(
-                createVerificationEmail({
-                  to: user.email,
-                  url,
-                  token,
-                }),
-              ),
-          },
-        }
-      : {}),
-    ...(socialProviders ? { socialProviders } : {}),
+    ...createEmailAuthOptions(emailSender),
+    ...createGoogleAuthOptions(google),
   });
 }

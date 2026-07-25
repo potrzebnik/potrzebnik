@@ -1,7 +1,8 @@
 import * as schema from '@/db/schema';
-import type { EmailSender } from '@/lib/emails';
 import { createAuth } from '@/lib/auth-config';
 import type { AuthDatabase } from '@/lib/auth-config';
+import { getAuthEnv } from '@/lib/auth-env';
+import { createResendEmailSender, type EmailSender } from '@/lib/emails';
 import { createPostgresIntegrationHarness } from '../postgres-integration-harness';
 
 import {
@@ -49,13 +50,24 @@ export async function createAuthIntegrationHarness() {
 
   const countAuthRows = (table: AuthTable) =>
     harness.countRows(AUTH_TABLE_SQL[table]);
-  const createTestAuth = (options: CreateTestAuthOptions = {}) =>
-    createAuth({
+  const createTestAuth = (options: CreateTestAuthOptions = {}) => {
+    const authEnv = getAuthEnv(createIntegrationEnv(options.env));
+
+    return createAuth({
       database: authDb,
-      env: createIntegrationEnv(options.env),
-      googleOverrides: createGoogleOverrides(),
-      emailSender: options.emailSender,
+      secret: authEnv.secret,
+      baseURL: authEnv.baseURL,
+      google: authEnv.google
+        ? {
+            ...createGoogleOverrides(),
+            ...authEnv.google,
+          }
+        : undefined,
+      emailSender: authEnv.email
+        ? (options.emailSender ?? createResendEmailSender(authEnv.email))
+        : undefined,
     });
+  };
   const getAuthCounts = () => countAuthTableRows(countAuthRows);
   const listExistingAuthTables = () => harness.listExistingTables(AUTH_TABLES);
   const resetAuthTables = () => harness.truncateTables(AUTH_TABLE_SQL_LIST);
