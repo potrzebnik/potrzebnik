@@ -61,6 +61,7 @@
   --color-org-signup-fg: var(--org-signup-fg);
   --color-org-signup-btn-bg: var(--org-signup-btn-bg);
   --color-org-signup-btn-bg-hover: var(--org-signup-btn-bg-hover);
+  --color-accent-blue: var(--accent-blue);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -80,6 +81,7 @@
   --footer-fg: var(--foreground);
   --footer-border: oklch(0 0 0);
   --footer-bg: oklch(0.919 0.039 249.4);
+  --accent-blue: oklch(0.919 0.039 249.4);
   --header-bg: oklch(0.993 0.003 247.9);
 
   /* The mobile bar and slide-out panel are pure white, a shade brighter than
