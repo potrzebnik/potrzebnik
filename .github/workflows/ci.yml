@@ -63,6 +63,7 @@ jobs:
           BETTER_AUTH_SECRET: ci-build-placeholder-secret-long-enough
           BETTER_AUTH_URL: http://localhost:3000
           GOOGLE_AUTH_ENABLED: 'false'
+          EMAIL_SENDING_ENABLED: 'false'
 
       - name: Unit tests
         run: pnpm test

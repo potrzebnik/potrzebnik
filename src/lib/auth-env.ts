@@ -60,47 +60,20 @@ function requireBooleanAuthEnv(
   );
 }
 
-function optionalBooleanAuthEnv(
-  key: BooleanAuthEnvKey,
-  env: NodeJS.ProcessEnv,
-  defaultValue: boolean,
-): boolean {
-  const value = env[key];
-
-  if (value === undefined) {
-    return defaultValue;
-  }
-
-  const normalizedValue = value.toLowerCase();
-
-  if (normalizedValue === 'true') {
-    return true;
-  }
-
-  if (normalizedValue === 'false') {
-    return false;
-  }
-
-  throw new Error(
-    `Invalid environment variable: ${key}. Expected "true" or "false".`,
-  );
-}
-
 /**
  * Reads and validates authentication environment variables.
  *
- * `GOOGLE_AUTH_ENABLED` is required so OAuth is explicitly enabled or disabled.
- * `EMAIL_SENDING_ENABLED` defaults to `false`; when enabled, Resend settings
- * become required.
+ * Auth feature flags are required so Google OAuth and email sending are
+ * explicitly enabled or disabled. When email sending is enabled, Resend
+ * settings become required.
  *
  * @throws When a required variable is missing or a boolean flag is invalid.
  */
 export function getAuthEnv(env: NodeJS.ProcessEnv = process.env): AuthEnv {
   const isGoogleAuthEnabled = requireBooleanAuthEnv('GOOGLE_AUTH_ENABLED', env);
-  const isEmailSendingEnabled = optionalBooleanAuthEnv(
+  const isEmailSendingEnabled = requireBooleanAuthEnv(
     'EMAIL_SENDING_ENABLED',
     env,
-    false,
   );
 
   return {
