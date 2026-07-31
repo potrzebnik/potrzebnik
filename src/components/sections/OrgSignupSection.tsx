@@ -54,13 +54,27 @@ const collageImages: CollageImage[] = [
 export default function OrgSignupSection() {
   return (
     <section className="relative w-full overflow-hidden py-24">
-      <div className="container mx-auto grid grid-cols-2 items-center gap-10 px-6">
-        {/* Left: text + CTA on a blue panel that bleeds to the left edge */}
+      <div className="container mx-auto grid grid-cols-2 gap-10 px-6">
+        {/* Left: text + CTA on a blue panel (Figma "Rectangle 272" shape) that
+            bleeds off the left edge; the left side of the path is extended so it
+            runs past the viewport and is clipped by the section overflow. */}
         <div className="relative flex items-center">
-          <div
+          <svg
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 left-[-9999px] -z-10 rounded-r-[20px] border border-black bg-[#DBEAFE]"
-          />
+            className="pointer-events-none absolute top-0 right-[-40px] -z-10 h-full w-auto"
+            viewBox="-1500 0 2229 591"
+            fill="none"
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M-1500 0.25H616.5C627.408 0.25 636.25 9.09238 636.25 20V164C636.25 175.184 645.316 184.25 656.5 184.25H709C719.908 184.25 728.75 193.092 728.75 204V322C728.75 332.908 719.908 341.75 709 341.75H691.5C680.316 341.75 671.25 350.816 671.25 362V571C671.25 581.908 662.408 590.75 651.5 590.75H-1500V0.25Z"
+              fill="#DBEAFE"
+              stroke="black"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
           <div className="w-full py-16 pr-12 pl-[100px]">
             <div className="max-w-[462px]">
               <h2 className="mb-5 text-[48px] leading-[54px] font-semibold tracking-[-1.5px] text-black">
