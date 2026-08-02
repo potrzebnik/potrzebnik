@@ -21,3 +21,10 @@ export const Desktop: Story = {
     viewport: { value: '1280-800' },
   },
 };
+
+// Widok wąski — panel z tekstem na górze, pionowy stos zdjęć pod spodem (< 1024px).
+export const Mobile: Story = {
+  globals: {
+    viewport: { value: '390-844' },
+  },
+};
