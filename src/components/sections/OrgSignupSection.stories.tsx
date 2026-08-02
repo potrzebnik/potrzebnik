@@ -13,16 +13,18 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// Widok szeroki — dwie kolumny (tekst + kolaż obok siebie).
-// Viewport przypięty JAWNIE (≥ 1024px), bo globalny viewport w UI jest "sticky"
-// między stories i inaczej sekcja odziedziczyłaby wąski viewport z innej story.
+// Wide view — two columns (text + collage side by side).
+// Viewport pinned EXPLICITLY (>= 1024px): the global viewport in the UI is
+// "sticky" between stories, so otherwise this section would inherit a narrow
+// viewport left over from another story.
 export const Desktop: Story = {
   globals: {
     viewport: { value: '1280-800' },
   },
 };
 
-// Widok wąski — panel z tekstem na górze, pionowy stos zdjęć pod spodem (< 1024px).
+// Narrow view — stepped text panel on top, notched vertical photo stack
+// below (< 1024px).
 export const Mobile: Story = {
   globals: {
     viewport: { value: '390-844' },

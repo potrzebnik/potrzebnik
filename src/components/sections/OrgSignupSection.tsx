@@ -79,11 +79,42 @@ const BODY =
 export default function OrgSignupSection() {
   return (
     <section className="relative w-full overflow-hidden py-12 lg:py-24">
-      {/* ---------- Mobile (< lg): stacked panel + vertical collage ---------- */}
+      {/* ---------- Mobile (< lg): stepped panel + notched collage ---------- */}
       <div className="lg:hidden">
-        {/* Blue panel (Figma #D1E7FE, ~13px radius), near full-bleed width */}
-        <div className="mx-3 rounded-[13px] border border-black bg-[#D1E7FE] px-6 py-8">
-          <div className="flex flex-col gap-6">
+        {/* Normalized clip-path for the child photo's top notch (Figma boy card).
+            objectBoundingBox units so it scales with the responsive photo width.
+            The panel's stepped tab above drops into this notch. */}
+        <svg aria-hidden="true" className="absolute h-0 w-0">
+          <defs>
+            <clipPath
+              id="orgSignupChildNotch"
+              clipPathUnits="objectBoundingBox"
+            >
+              <path d="M0.897857 0C0.885234 0 0.875 0.028654 0.875 0.064V0.072367C0.875 0.107712 0.864766 0.136367 0.852143 0.136367L0.632717 0.136367C0.62009 0.136366 0.60986 0.107711 0.60986 0.072367V0.064C0.60986 0.028654 0.599626 0 0.587003 0L0.022857 0C0.010234 0 0 0.028654 0 0.064V0.936C0 0.971344 0.010234 1 0.022857 1H0.977143C0.989766 1 1 0.971344 1 0.936V0.064C1 0.028654 0.989766 0 0.977143 0L0.897857 0Z" />
+            </clipPath>
+          </defs>
+        </svg>
+
+        {/* Blue panel with the stepped bottom-right tab (Figma #D1E7FE),
+            full-bleed. The SVG background stretches to the text-driven height;
+            the tab drops through the notch of the child photo below it. */}
+        <div className="relative w-full">
+          <svg
+            aria-hidden="true"
+            viewBox="-10.75 0.25 409.5 374.5"
+            preserveAspectRatio="none"
+            className="absolute inset-0 -z-10 h-full w-full"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M398.75 12.7197L398.75 333.825C398.75 340.712 393.167 346.295 386.28 346.295H333.72C326.557 346.295 320.75 352.102 320.75 359.265V362.28C320.75 369.167 315.167 374.75 308.28 374.75H255.72C248.833 374.75 243.25 369.167 243.25 362.28V360.283C243.25 353.12 237.443 347.313 230.28 347.313L1.71973 347.313C-5.16697 347.313 -10.75 341.73 -10.75 334.844L-10.75 12.7197C-10.75 5.83303 -5.16697 0.25 1.71973 0.25L386.28 0.25C393.167 0.25 398.75 5.83303 398.75 12.7197Z"
+              fill="#D1E7FE"
+              stroke="black"
+              strokeWidth="0.5"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+          <div className="flex flex-col gap-6 px-8 pt-9 pb-20">
             <h2 className="text-[20px] leading-[24px] font-semibold text-[#0A0A0A]">
               {HEADING}
             </h2>
@@ -97,9 +128,11 @@ export default function OrgSignupSection() {
           </div>
         </div>
 
-        {/* Collage: vertical stack with a two-up row in the middle */}
-        <div className="mt-6 flex flex-col gap-[10px] px-5">
-          <div className="relative h-[125px] w-full overflow-hidden rounded-lg shadow-md">
+        {/* Collage: the child photo's notched top mirrors the panel's stepped
+            tab across a constant 17px white channel (Figma spacing), then the
+            vertical stack with a two-up row in the middle. */}
+        <div className="mt-[17px] flex flex-col gap-[10px] px-5">
+          <div className="relative h-[125px] w-full [clip-path:url(#orgSignupChildNotch)]">
             <Photo asset={photos.child} sizes="100vw" />
           </div>
           <div className="relative h-[124px] w-full overflow-hidden rounded-lg shadow-md">
