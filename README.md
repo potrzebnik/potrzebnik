@@ -17,7 +17,8 @@ cp .env.example .env
 ```
 
 Local development startup works without Google OAuth keys when
-`GOOGLE_AUTH_ENABLED=false`.
+`GOOGLE_AUTH_ENABLED=false` and without Resend keys when
+`EMAIL_SENDING_ENABLED=false`.
 
 To enable Google sign-in locally for testing, set `GOOGLE_AUTH_ENABLED=true`,
 `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` in `.env`, then register this
@@ -26,6 +27,10 @@ redirect URI in Google Cloud:
 ```text
 http://localhost:3000/api/auth/callback/google
 ```
+
+To enable auth emails locally, set `EMAIL_SENDING_ENABLED=true`,
+`RESEND_API_KEY`, and `RESEND_FROM_EMAIL` in `.env`. `RESEND_FROM_NAME` is
+optional.
 
 Then start local database and development server:
 

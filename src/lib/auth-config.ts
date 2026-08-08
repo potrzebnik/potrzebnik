@@ -1,106 +1,112 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, type BetterAuthOptions } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { GoogleOptions } from 'better-auth/social-providers';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import type * as schema from '../db/schema';
+import {
+  createPasswordResetEmail,
+  createVerificationEmail,
+  type EmailSender,
+} from './emails';
 
-type RequiredAuthEnvKey = 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL';
-type GoogleAuthEnabledEnvKey = 'GOOGLE_AUTH_ENABLED';
-type GoogleAuthEnvKey = 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET';
-type AuthEnvKey =
-  | RequiredAuthEnvKey
-  | GoogleAuthEnabledEnvKey
-  | GoogleAuthEnvKey;
-
-export type AuthEnv = {
-  secret: string;
-  baseURL: string;
-  google?: {
-    clientId: string;
-    clientSecret: string;
-  };
-};
-
+/**
+ * Drizzle database instance used by the Better Auth adapter.
+ */
 export type AuthDatabase = NodePgDatabase<typeof schema>;
 
+/**
+ * Dependencies and test seams for creating a Better Auth server instance.
+ */
 export type CreateAuthOptions = {
+  /** Database connection backing Better Auth persistence. */
   database: AuthDatabase;
-  env?: NodeJS.ProcessEnv;
-  googleOverrides?: Partial<GoogleOptions>;
+  /** Better Auth signing secret. */
+  secret: string;
+  /** Public base URL used by Better Auth. */
+  baseURL: string;
+  /** Fully configured Google provider when Google authentication is enabled. */
+  google?: GoogleOptions;
+  /** Sender used to enable verification and password reset email flows. */
+  emailSender?: EmailSender;
 };
 
-function requireAuthEnv(key: AuthEnvKey, env: NodeJS.ProcessEnv): string {
-  const value = env[key];
+type EmailAuthOptions = Pick<
+  BetterAuthOptions,
+  'emailAndPassword' | 'emailVerification'
+>;
+type GoogleAuthOptions = Pick<BetterAuthOptions, 'socialProviders'>;
 
-  if (!value) {
-    throw new Error(
-      `Missing environment variable: ${key}. It is required for authentication.`,
-    );
+function createEmailAuthOptions(emailSender?: EmailSender): EmailAuthOptions {
+  if (!emailSender) {
+    return {
+      emailAndPassword: {
+        enabled: true,
+      },
+    };
   }
-
-  return value;
-}
-
-function requireBooleanAuthEnv(
-  key: GoogleAuthEnabledEnvKey,
-  env: NodeJS.ProcessEnv,
-): boolean {
-  const value = requireAuthEnv(key, env).toLowerCase();
-
-  if (value === 'true') {
-    return true;
-  }
-
-  if (value === 'false') {
-    return false;
-  }
-
-  throw new Error(
-    `Invalid environment variable: ${key}. Expected "true" or "false".`,
-  );
-}
-
-export function getAuthEnv(env: NodeJS.ProcessEnv = process.env): AuthEnv {
-  const isGoogleAuthEnabled = requireBooleanAuthEnv('GOOGLE_AUTH_ENABLED', env);
 
   return {
-    secret: requireAuthEnv('BETTER_AUTH_SECRET', env),
-    baseURL: requireAuthEnv('BETTER_AUTH_URL', env),
-    google: isGoogleAuthEnabled
-      ? {
-          clientId: requireAuthEnv('GOOGLE_CLIENT_ID', env),
-          clientSecret: requireAuthEnv('GOOGLE_CLIENT_SECRET', env),
-        }
-      : undefined,
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: true,
+      sendResetPassword: ({ user, url, token }) =>
+        emailSender.send(
+          createPasswordResetEmail({
+            to: user.email,
+            url,
+            token,
+          }),
+        ),
+    },
+    emailVerification: {
+      sendOnSignUp: true,
+      sendVerificationEmail: ({ user, url, token }) =>
+        emailSender.send(
+          createVerificationEmail({
+            to: user.email,
+            url,
+            token,
+          }),
+        ),
+    },
   };
 }
 
+function createGoogleAuthOptions(google?: GoogleOptions): GoogleAuthOptions {
+  if (!google) {
+    return {};
+  }
+
+  return {
+    socialProviders: {
+      google,
+    },
+  };
+}
+
+/**
+ * Creates the Better Auth server configuration for this app.
+ *
+ * Email/password auth is always enabled. When an email sender is provided, the
+ * auth flow also requires email verification and sends verification/reset
+ * messages through it. Google auth is added only when its provider
+ * configuration is provided.
+ */
 export function createAuth({
   database,
-  env = process.env,
-  googleOverrides,
+  secret,
+  baseURL,
+  google,
+  emailSender,
 }: CreateAuthOptions) {
-  const authEnv = getAuthEnv(env);
-  const socialProviders = authEnv.google
-    ? {
-        google: {
-          ...googleOverrides,
-          clientId: authEnv.google.clientId,
-          clientSecret: authEnv.google.clientSecret,
-        },
-      }
-    : undefined;
-
   return betterAuth({
-    secret: authEnv.secret,
-    baseURL: authEnv.baseURL,
+    secret,
+    baseURL,
     database: drizzleAdapter(database, {
       provider: 'pg',
     }),
-    emailAndPassword: {
-      enabled: true,
-    },
-    ...(socialProviders ? { socialProviders } : {}),
+    ...createEmailAuthOptions(emailSender),
+    ...createGoogleAuthOptions(google),
   });
 }
