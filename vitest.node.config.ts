@@ -8,18 +8,19 @@ const dirname =
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
-const resolve = {
-  alias: {
-    '@': path.resolve(dirname, 'src'),
-  },
-};
-
 export default defineConfig({
-  resolve,
+  resolve: {
+    alias: {
+      '@': path.resolve(dirname, 'src'),
+    },
+  },
   test: {
+    // Vitest 4 inline projects do not inherit root options by default.
+    // `extends` makes shared options such as the `@` alias available to them.
+    // https://vitest.dev/guide/projects.html#configuration
     projects: [
       {
-        resolve,
+        extends: true,
         test: {
           name: 'unit',
           environment: 'node',
@@ -28,7 +29,7 @@ export default defineConfig({
         },
       },
       {
-        resolve,
+        extends: true,
         test: {
           name: 'integration',
           environment: 'node',
