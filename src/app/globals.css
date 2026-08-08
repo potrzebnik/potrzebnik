@@ -55,6 +55,12 @@
   --color-footer-fg: var(--footer-fg);
   --color-footer-bg: var(--footer-bg);
   --color-footer-border: var(--footer-border);
+  --color-org-signup-panel-bg: var(--org-signup-panel-bg);
+  --color-org-signup-panel-bg-mobile: var(--org-signup-panel-bg-mobile);
+  --color-org-signup-border: var(--org-signup-border);
+  --color-org-signup-fg: var(--org-signup-fg);
+  --color-org-signup-btn-bg: var(--org-signup-btn-bg);
+  --color-org-signup-btn-bg-hover: var(--org-signup-btn-bg-hover);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -126,6 +132,15 @@
   --help-section-btn-bg: #f6d94f;
   --help-section-btn-bg-hover: #e5c842;
   --help-section-btn-fg: oklch(0 0 0);
+
+  /* Org-signup CTA section. Two panel blues (mobile is a touch deeper than the
+     desktop Rectangle 272), a shared black outline, and the yellow button. */
+  --org-signup-panel-bg: #dbeafe;
+  --org-signup-panel-bg-mobile: #d1e7fe;
+  --org-signup-border: oklch(0 0 0);
+  --org-signup-fg: #0a0a0a;
+  --org-signup-btn-bg: #ffd73a;
+  --org-signup-btn-bg-hover: #f5c800;
 }
 
 .dark {

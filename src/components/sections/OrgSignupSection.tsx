@@ -108,20 +108,19 @@ export default function OrgSignupSection() {
           >
             <path
               d="M398.75 12.7197L398.75 333.825C398.75 340.712 393.167 346.295 386.28 346.295H333.72C326.557 346.295 320.75 352.102 320.75 359.265V362.28C320.75 369.167 315.167 374.75 308.28 374.75H255.72C248.833 374.75 243.25 369.167 243.25 362.28V360.283C243.25 353.12 237.443 347.313 230.28 347.313L1.71973 347.313C-5.16697 347.313 -10.75 341.73 -10.75 334.844L-10.75 12.7197C-10.75 5.83303 -5.16697 0.25 1.71973 0.25L386.28 0.25C393.167 0.25 398.75 5.83303 398.75 12.7197Z"
-              fill="#D1E7FE"
-              stroke="black"
+              className="fill-org-signup-panel-bg-mobile stroke-org-signup-border"
               strokeWidth="0.5"
               vectorEffect="non-scaling-stroke"
             />
           </svg>
           <div className="flex flex-col gap-6 px-8 pt-9 pb-20">
-            <h2 className="text-[20px] leading-[24px] font-semibold text-[#0A0A0A]">
+            <h2 className="text-org-signup-fg text-[20px] leading-[24px] font-semibold">
               {HEADING}
             </h2>
-            <p className="text-[16px] leading-[24px] text-[#171717]">{BODY}</p>
+            <p className="text-foreground text-[16px] leading-[24px]">{BODY}</p>
             <Button
               asChild
-              className="h-auto min-h-[47px] w-fit rounded-lg border border-black bg-[#FFD73A] px-6 py-2.5 text-[14px] leading-[20px] font-medium text-[#0A0A0A] hover:bg-[#F5C800]"
+              className="border-org-signup-border bg-org-signup-btn-bg text-org-signup-fg hover:bg-org-signup-btn-bg-hover h-auto min-h-[47px] w-fit rounded-lg border px-6 py-2.5 text-[14px] leading-[20px] font-medium"
             >
               <Link href="/contact">Zgłoś organizację</Link>
             </Button>
@@ -131,18 +130,18 @@ export default function OrgSignupSection() {
         {/* Collage: the child photo's notched top mirrors the panel's stepped
             tab across a constant 17px white channel (Figma spacing), then the
             vertical stack with a two-up row in the middle. */}
-        <div className="mt-[17px] flex flex-col gap-[10px] px-5">
+        <div className="mt-[17px] flex flex-col gap-2.5 px-5">
           <div className="relative h-[125px] w-full [clip-path:url(#orgSignupChildNotch)]">
             <Photo asset={photos.child} sizes="100vw" />
           </div>
           <div className="relative h-[124px] w-full overflow-hidden rounded-lg shadow-md">
             <Photo asset={photos.flower} sizes="100vw" />
           </div>
-          <div className="flex gap-[11px]">
-            <div className="relative h-[176px] grow-[187] basis-0 overflow-hidden rounded-lg shadow-md">
+          <div className="flex h-44 gap-[11px]">
+            <div className="relative h-full grow-[187] basis-0 overflow-hidden rounded-lg shadow-md">
               <Photo asset={photos.volunteers} sizes="55vw" />
             </div>
-            <div className="relative h-[176px] grow-[152] basis-0 overflow-hidden rounded-lg shadow-md">
+            <div className="relative h-full grow-[152] basis-0 overflow-hidden rounded-lg shadow-md">
               <Photo asset={photos.family} sizes="45vw" />
             </div>
           </div>
@@ -160,7 +159,7 @@ export default function OrgSignupSection() {
         <div className="relative flex items-center">
           <svg
             aria-hidden="true"
-            className="pointer-events-none absolute top-0 right-[-40px] -z-10 h-full w-auto"
+            className="pointer-events-none absolute top-0 -right-10 -z-10 h-full w-auto"
             viewBox="-1500 0 2229 591"
             fill="none"
             preserveAspectRatio="none"
@@ -168,23 +167,22 @@ export default function OrgSignupSection() {
           >
             <path
               d="M-1500 0.25H616.5C627.408 0.25 636.25 9.09238 636.25 20V164C636.25 175.184 645.316 184.25 656.5 184.25H709C719.908 184.25 728.75 193.092 728.75 204V322C728.75 332.908 719.908 341.75 709 341.75H691.5C680.316 341.75 671.25 350.816 671.25 362V571C671.25 581.908 662.408 590.75 651.5 590.75H-1500V0.25Z"
-              fill="#DBEAFE"
-              stroke="black"
+              className="fill-org-signup-panel-bg stroke-org-signup-border"
               strokeWidth="1"
               vectorEffect="non-scaling-stroke"
             />
           </svg>
-          <div className="w-full py-16 pr-12 pl-[100px]">
+          <div className="w-full py-16 pr-12 pl-25">
             <div className="max-w-[462px]">
-              <h2 className="mb-5 text-[48px] leading-[54px] font-semibold tracking-[-1.5px] text-black">
+              <h2 className="text-org-signup-fg mb-5 text-[48px] leading-[54px] font-semibold tracking-[-1.5px]">
                 {HEADING}
               </h2>
-              <p className="mb-6 text-[18px] leading-[27px] text-black">
+              <p className="text-foreground mb-6 text-[18px] leading-[27px]">
                 {BODY}
               </p>
               <Button
                 asChild
-                className="h-auto min-h-14 rounded-lg border border-black bg-[#FFD73A] px-8 py-2.5 text-[18px] leading-[27px] font-medium text-black hover:bg-[#F5C800]"
+                className="border-org-signup-border bg-org-signup-btn-bg text-org-signup-fg hover:bg-org-signup-btn-bg-hover h-auto min-h-14 rounded-lg border px-8 py-2.5 text-[18px] leading-[27px] font-medium"
               >
                 <Link href="/contact">Zgłoś organizację</Link>
               </Button>
