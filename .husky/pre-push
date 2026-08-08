@@ -1,1 +1,1 @@
-pnpm type-check && pnpm lint && pnpm test
+pnpm type-check && pnpm lint && pnpm lint:css && pnpm test

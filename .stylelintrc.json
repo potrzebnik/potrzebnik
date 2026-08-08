@@ -1,0 +1,41 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "theme",
+          "custom-variant",
+          "apply",
+          "tailwind",
+          "layer",
+          "plugin",
+          "config",
+          "utility",
+          "variant",
+          "reference"
+        ]
+      }
+    ],
+    "selector-class-pattern": [
+      "^dark$",
+      {
+        "message": "Custom CSS classes are not allowed — use Tailwind utility classes in the component instead of hand-written CSS (see CLAUDE.md). If this is a legitimate theming hook like .dark, add it to the allowed pattern explicitly."
+      }
+    ],
+    "hue-degree-notation": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "lightness-notation": null,
+    "import-notation": null,
+    "rule-empty-line-before": null,
+    "declaration-property-value-disallowed-list": {
+      "/^(background|background-color|color|border|border-color|border-top-color|border-bottom-color|outline|outline-color)$/": [
+        "/^#/",
+        "/^rgb/",
+        "/^oklch\\(\\s*[\\d.]/"
+      ]
+    }
+  }
+}

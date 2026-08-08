@@ -13,6 +13,8 @@ It is intentionally thin: it **points to** the canonical sources and records onl
 
 Next.js App Router under `src/app/` with two route groups: `(public)/` and `(dashboard)/dashboard`. Path alias `@/*` → `src/*`. UI primitives live in `src/components/ui/` (shadcn-style, see [`components.json`](./components.json)); feature composites in `src/components/features/`. Tailwind v4 via `@tailwindcss/postcss`.
 
+Styling is Tailwind utility classes co-located in JSX — no hand-written component CSS/BEM classes or raw color literals; enforced by [`.stylelintrc.json`](./.stylelintrc.json).
+
 ### Database
 
 Drizzle ORM + `pg` against Postgres. Config: [`drizzle.config.ts`](./drizzle.config.ts); compose service in [`compose.yml`](./compose.yml); client in `src/db/index.ts`; migrations in `./drizzle`.

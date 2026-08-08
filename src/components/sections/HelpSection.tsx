@@ -68,7 +68,7 @@ export default function HelpSection() {
         ))}
       </div>
       <div className="flex justify-end">
-        <Button className="bg-help-section-btn-bg hover:bg-help-section-btn-bg-hover cursor-pointer rounded-md border border-black px-6 py-5 font-medium text-black transition-colors">
+        <Button className="bg-help-section-btn-bg hover:bg-help-section-btn-bg-hover border-help-section-btn-fg text-help-section-btn-fg cursor-pointer rounded-md border px-6 py-5 font-medium transition-colors">
           Zobacz wszystkie potrzeby
         </Button>
       </div>
