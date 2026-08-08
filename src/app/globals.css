@@ -70,9 +70,6 @@
   --overlay-blue: #b6d0f2;
   --overlay-green: #c8e6c9;
   --overlay-border: oklch(0 0 0);
-
-  /* Photo frames sit behind theme-invariant overlay shapes, so the frame
-     stays white in both themes — --background would flip it to near-black. */
   --image-frame-bg: oklch(1 0 0);
   --footer-fg: var(--foreground);
   --footer-border: oklch(0 0 0);
@@ -128,18 +125,10 @@
   --sidebar-ring: oklch(0.708 0 0);
   --help-section-btn-bg: #f6d94f;
   --help-section-btn-bg-hover: #e5c842;
-
-  /* The button fill is theme-invariant, so its foreground must be too —
-     --foreground would flip to near-white on yellow in dark mode. */
   --help-section-btn-fg: oklch(0 0 0);
 }
 
 .dark {
-  --overlay-yellow: #f6d94f;
-  --overlay-blue: #b6d0f2;
-  --overlay-green: #c8e6c9;
-  --overlay-border: oklch(0 0 0);
-  --image-frame-bg: oklch(1 0 0);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -155,7 +144,6 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(1 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
