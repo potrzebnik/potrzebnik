@@ -1,0 +1,127 @@
+---
+title: Architecture
+description: Where the code lives and why it is arranged that way.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+import architectureSvg from '../../assets/architecture.svg?raw';
+
+## Request path
+
+The app is a single Next.js App Router project. A browser request lands on one of two route
+groups under <RepoFile path="src/app" />: <RepoFile path="src/app/(public)" /> for the
+unauthenticated marketing and needs pages, and <RepoFile path="src/app/(dashboard)" /> for the
+authenticated area. Route handlers under <RepoFile path="src/app/api" /> serve everything that
+isn't a rendered page, including the Better Auth mount point. Grouping by route group rather than
+by feature keeps the auth boundary visible in the file tree instead of only in middleware.
+
+<div set:html={architectureSvg} />
+
+## Component layers
+
+Route pages compose from four layers under <RepoFile path="src/components" />, ordered from most
+to least reusable:
+
+- <RepoFile path="src/components/ui" />: shadcn-style primitives (see
+  <RepoFile path="components.json" />
+  ), generic and product-agnostic.
+- <RepoFile path="src/components/shared" />: small composites reused across more
+  than one feature or section (cards, overlays).
+- <RepoFile path="src/components/features" />: page chrome such as the public
+  header and footer.
+- <RepoFile path="src/components/sections" />: page-specific sections assembled
+  from the layers above.
+
+A component only moves down this list (toward `ui`) once a second call site needs it. Promoting
+speculatively is what turns `shared` into a dumping ground.
+
+## Storybook as the component test harness
+
+<RepoFile path=".storybook" /> configures Storybook against the same component
+tree; no product component source lives under <RepoFile path="docs/site" /> or
+anywhere else - the only component there is
+<RepoFile path="docs/site/src/components/RepoFile.astro" />, a docs authoring
+helper. Every `*.stories.*` file doubles as that component's test, exercised by
+Vitest's browser project (see the [Testing](/potrzebnik/testing/) page). This is
+why the diagram above draws Storybook as a dashed box beside the component layer
+rather than as a separate app: it observes the same code, it does not fork it.
+
+## Domain model
+
+<RepoFile path="src/write/domain" /> holds the write-side domain model:
+
+- <RepoFile path="src/write/domain/entities" />: the entities - organization,
+  need, need status history, donor, donation, user.
+- <RepoFile path="src/write/domain/value-objects" />: the value objects.
+- <RepoFile path="src/write/domain/shared" />: the shared branded-id and `Brand`
+  helpers.
+
+It is pure TypeScript with no imports outside itself, and nothing in `src/app`,
+`src/lib` or `src/db` calls it yet; it is the shape the write side is being
+built toward, not a layer requests currently pass through. The diagram draws it
+as a dashed box for that reason.
+
+Keeping it under `src/write/` rather than folding it into `src/db/schema` is the
+point: the Drizzle schema describes rows, the domain model describes invariants,
+and collapsing the two is what makes persistence concerns leak into business
+rules.
+
+## Data layer
+
+Three modules make up the data layer:
+
+- <RepoFile path="src/db/index.ts" />: the Drizzle client.
+- <RepoFile path="src/db/schema" />: the table definitions.
+- <RepoFile path="src/db/resolve-database-url.ts" />: the single source for the
+  connection URL, shared by the runtime and by
+  <RepoFile path="drizzle.config.ts" />.
+
+See the [Database](/potrzebnik/database/) page for how to add a migration.
+
+Very little reaches it so far. The only non-auth route handler is <RepoFile path="src/app/api/orgs/route.ts" />, which still returns an in-memory
+fixture, and no server component under <RepoFile path="src/app" /> imports the
+client. Today the real database traffic is Better Auth's own tables plus the
+integration tests, and it all flows through <RepoFile path="src/lib/auth.ts" />.
+The diagram draws that as the one solid path to Postgres; the dashed arrow from
+the component layer is the intended path, not a description of current call
+sites.
+
+## Types and test support
+
+Three directories exist outside the layers above.
+
+<RepoFile path="src/lib" /> is the one that carries weight today. It holds:
+
+- the Better Auth server instance and its configuration
+  (<RepoFile path="src/lib/auth.ts" />, <RepoFile path="src/lib/auth-config.ts" />),
+- the browser auth client (<RepoFile path="src/lib/auth-client.ts" />),
+- shared constants and helpers.
+
+It is also the only module that imports the
+Drizzle client, which makes `src/app/api/auth/[...all]/route.ts` →
+`src/lib/auth.ts` → `src/db` the single live path from a request to Postgres.
+
+<RepoFile path="src/types" /> is a single barrel of hand-written view-model
+types (`Organization`, `Need`) describing the shape the UI reads; like the
+domain model, nothing imports it yet. <RepoFile path="src/test" /> holds test
+*support*, not tests: the Testcontainers-backed Postgres harness, the
+integration setup file, and <RepoFile path="src/test/auth-integration" />, which
+fakes the Google provider and the environment an auth integration test needs.
+Tests themselves sit next to the code they cover, so this directory stays
+limited to machinery more than one test file needs; see the
+[Testing](/potrzebnik/testing/) page.
+
+## Config that shapes the tree
+
+A handful of root config files decide how the layers above are built and tested rather than what
+they contain:
+
+- <RepoFile path="next.config.ts" />
+- <RepoFile path="drizzle.config.ts" />
+- <RepoFile path="vitest.config.ts" />
+- <RepoFile path="vitest.node.config.ts" />
+- <RepoFile path="components.json" />
+
+Read them directly rather than trusting a
+paraphrase here; this page states why the tree is shaped this way, not what each
+file currently contains.

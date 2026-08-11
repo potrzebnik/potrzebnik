@@ -1,0 +1,74 @@
+---
+title: Getting started
+description: Clone, install, and run potrzebnik locally.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Prerequisites
+
+Install these before touching the repo:
+
+- Node.js, at the version pinned in <RepoFile path=".nvmrc" />
+- [pnpm](https://pnpm.io/installation)
+- Docker with Docker Compose
+
+## Clone and install
+
+```bash
+git clone https://github.com/potrzebnik/potrzebnik.git
+cd potrzebnik
+pnpm install
+```
+
+Installing dependencies also wires up the git hooks described on the
+Contributing page.
+
+## Configure environment variables
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+The defaults work without Google OAuth keys; local development runs with
+`GOOGLE_AUTH_ENABLED=false`. To exercise Google sign-in locally, set
+`GOOGLE_AUTH_ENABLED=true` along with `GOOGLE_CLIENT_ID` and
+`GOOGLE_CLIENT_SECRET` in `.env`, and register the local redirect URI in
+Google Cloud. See the Auth & OAuth page for the full flow.
+
+## Start the database and dev server
+
+```bash
+bash startup_dev.sh
+```
+
+This installs dependencies, brings up the local Postgres instance defined in <RepoFile path="compose.yml" />, applies the Drizzle migrations (`pnpm run
+db:migrate`), and then starts the Next.js dev server. Migrations are already
+handled; you only run them by hand when you add one mid-session. See the
+Database page for that workflow.
+
+## Run Storybook
+
+Storybook is the primary component test harness. Start it locally with:
+
+```bash
+pnpm storybook:dev
+```
+
+See the Testing page for how stories fit into the wider test suite.
+
+## Read these docs locally
+
+This site and the component gallery build and serve together with one
+command:
+
+```bash
+pnpm docs:serve
+```
+
+It serves at `http://localhost:4321/potrzebnik/`, the same subpath the site
+is published under. It serves a static build, so an edit shows up only after
+rerunning the command; the Contributing page covers the dev server to use
+instead while writing.

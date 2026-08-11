@@ -1,0 +1,38 @@
+/* Starlight pads every content panel equally, which leaves a large gap between
+   the header and the page title. Tighten the first panel only. */
+.content-panel:first-of-type {
+  padding-top: 1rem;
+}
+
+/* On wide screens Starlight centres the content column inside the main pane,
+   which opens a large empty gutter next to the sidebar and pushes the table of
+   contents away from the prose. Left-align the column, give it a wider measure
+   so it reaches the table of contents, and breathe a little off the sidebar. */
+:root {
+  --sl-content-width: 60rem;
+}
+
+@media (min-width: 72rem) {
+  .main-pane .sl-container {
+    margin-inline: 0;
+  }
+
+  .main-pane .content-panel {
+    padding-inline-start: 3rem;
+  }
+}
+
+/* Starlight's default heading scale is very large for reference documentation,
+   and inline code inside a heading is rendered at full heading size, which
+   makes a path in a heading dominate the page. Tone both down. */
+:root {
+  --sl-text-h1: 2rem;
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.25rem;
+  --sl-text-h4: 1.125rem;
+  --sl-text-h5: 1rem;
+}
+
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) code {
+  font-size: 0.9em;
+}

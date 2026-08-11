@@ -28,17 +28,21 @@
     "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
     "prepare": "husky",
     "storybook:dev": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "storybook:build:docs": "storybook build --output-dir docs/site/public/storybook && node scripts/rewrite-storybook-asset-paths.mjs docs/site/public/storybook",
+    "docs:serve": "pnpm storybook:build:docs && pnpm --filter docs build && pnpm --filter docs preview"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ],
+    "src/**/*.css": [
+      "stylelint --fix"
+    ],
     "*.css": [
-      "stylelint --fix",
       "prettier --write"
     ],
-    "*.{json,md}": [
+    "*.{json,md,mdx,yml,yaml}": [
       "prettier --write"
     ]
   },
