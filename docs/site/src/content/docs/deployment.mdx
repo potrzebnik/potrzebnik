@@ -24,6 +24,7 @@ one deployment.
 
 The application itself — the Next.js app under this repository's root — runs
 its own checks on every PR and push to `main` through
+
 <RepoFile path=".github/workflows/ci.yml" />. That workflow verifies the
 application; it does not deploy it.
 
@@ -31,3 +32,20 @@ application; it does not deploy it.
 
 The application has no deploy target yet. There is no hosting environment,
 no production database, and no release process beyond the CI checks above.
+
+## Repository settings this depends on
+
+Two things live in the repository's settings rather than in
+
+<RepoFile path=".github/workflows/docs.yml" />, so neither is visible in a diff.
+If deployments stop working after a settings change, a fork, or a repo restore,
+check these first:
+
+- **Pages source** must be set to **GitHub Actions**, not a branch. The
+  workflow publishes an artifact; it never pushes a `gh-pages` branch.
+- **Branch protection** on `main` must mark the docs build a required check,
+  so a broken link or a missing repository path blocks the merge rather than
+  landing and failing after the fact.
+
+The deploy job binds to the `github-pages` environment, so any protection
+rules configured on that environment apply to it too.

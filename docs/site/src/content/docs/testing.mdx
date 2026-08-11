@@ -34,16 +34,20 @@ Tests run as three separate Vitest projects across two config files rather than 
   ```
 
 Both `unit` and `integration` resolve the `@` path alias to `src/`, matching the app's
+
 <RepoFile path="tsconfig.json" /> alias.
 
 ## Integration test harnesses
 
 Integration suites do not open a database connection by hand — they use a shared harness under
-<RepoFile path="src/test/postgres-integration-harness.ts" />. `createPostgresIntegrationHarness`
-starts a fresh Postgres Testcontainers instance, runs Drizzle migrations against it, and returns a
-`db` client plus helpers for counting, listing, and truncating tables. `createAuthIntegrationHarness`
-in <RepoFile path="src/test/auth-integration/harness.ts" /> wraps that base harness with
-auth-specific helpers on top.
+
+<RepoFile path="src/test/postgres-integration-harness.ts" />.
+`createPostgresIntegrationHarness` starts a fresh Postgres Testcontainers
+instance, runs Drizzle migrations against it, and returns a `db` client plus
+helpers for counting, listing, and truncating tables.
+`createAuthIntegrationHarness` in
+<RepoFile path="src/test/auth-integration/harness.ts" /> wraps that base harness
+with auth-specific helpers on top.
 
 The typical lifecycle: create the harness once in `beforeAll`, reset the tables it touches in
 `afterEach`, and dispose of it once in `afterAll`.
@@ -81,10 +85,8 @@ suite runs, which applies base auth test environment settings shared by every in
 ## Images in stories
 
 Route every image through `next/image`, never a raw `{'<img>'}` tag or a CSS `url(/…)` reference.
-Storybook is published as a static site under `/potrzebnik/storybook/`, and only `next/image` goes
-through the loader path that resolves correctly at that subpath — a raw `{'<img>'}` or `url(/…)`
-resolves against the site origin instead and breaks once deployed. See the Tokens & styling rules
-page for where this is wired in.
+A story that breaks this rule renders fine locally and 404s on the published gallery. The Tokens &
+styling rules page states the rule and why the published subpath makes it load-bearing.
 
 ## Type-checking, linting, and formatting
 

@@ -20,10 +20,11 @@ duplication.
 
 ## The connection URL
 
-<RepoFile path="src/db/resolve-database-url.ts" /> is the single source of the Postgres connection
-URL, used at both runtime and by <RepoFile path="drizzle.config.ts" />. It builds the URL from the
-`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, and `POSTGRES_PORT`
-environment variables.
+<RepoFile path="src/db/resolve-database-url.ts" /> is the single source of the
+Postgres connection URL, used at both runtime and by
+<RepoFile path="drizzle.config.ts" />. It builds the URL from the
+`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, and
+`POSTGRES_PORT` environment variables.
 
 It **throws fast** when a required variable is missing, rather than falling back to a default.
 This is deliberate: a silently-defaulted connection string is how a local script ends up pointed

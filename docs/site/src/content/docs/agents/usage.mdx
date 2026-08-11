@@ -7,29 +7,30 @@ import RepoFile from '../../../components/RepoFile.astro';
 
 ## What lives under `.claude/`
 
-<RepoFile path=".claude" /> holds agents, a command, and a skill scoped to this repository, loaded
-automatically whenever Claude Code runs from the project root. This page explains what they're
-for and when to reach for them; the [Agent & skill index](/potrzebnik/agents/index-generated/)
-lists what's defined right now.
+<RepoFile path=".claude" /> holds agents, a command, and a skill scoped to this
+repository, loaded automatically whenever Claude Code runs from the project
+root. This page explains what they're for and when to reach for them; the [Agent
+& skill index](/potrzebnik/agents/index-generated/) lists what's defined right
+now.
 
 ## Reviewer agents
 
 Two agents under <RepoFile path=".claude/agents" /> read a diff and return structured findings —
 neither edits code. Pick the general one for backend, config, or cross-cutting changes, and the
-frontend-aware one for anything under `src/app`, `src/components`, or Storybook stories, where it
+frontend-aware one for anything under <RepoFile path="src/app" />, <RepoFile path="src/components" />, or Storybook stories, where it
 enforces conventions distilled from past PR review history.
 
 Invoke either directly through the `Agent` tool, or trigger by describing the task in natural
 language and let the matching agent's description pick it up:
 
-```
-Review PR #50 with the frontend-reviewer
+```text
+Review the open pull request with the frontend-reviewer
 code-reviewer: review the diff against main
 ```
 
 For a mixed change, split the request explicitly:
 
-```
+```text
 Review the current branch — code-reviewer for backend files, frontend-reviewer for src/app and src/components
 ```
 
@@ -38,10 +39,11 @@ lines, rationale, and a fix proposal.
 
 ## The `mentor-review` skill
 
-<RepoFile path=".claude/commands/mentor-review.md" /> orchestrates both reviewer agents in
-parallel against `git diff main...HEAD` plus uncommitted changes, then presents each finding as a
-teaching card: concept, why it matters, impact, the offending code, the fix, and references. Reach
-for it before opening a pull request, not as a replacement for a human reviewer.
+<RepoFile path=".claude/commands/mentor-review.md" /> orchestrates both reviewer
+agents in parallel against `git diff main...HEAD` plus uncommitted changes, then
+presents each finding as a teaching card: concept, why it matters, impact, the
+offending code, the fix, and references. Reach for it before opening a pull
+request, not as a replacement for a human reviewer.
 
 Two modes:
 
@@ -55,10 +57,11 @@ afterward.
 ## The architecture-regeneration skill
 
 <RepoFile path=".claude/skills/regenerate-architecture-page" /> rewrites the
-[Architecture](/potrzebnik/architecture/) page and its diagram from the current shape of the
-repository. Run it by hand whenever a change reshapes the codebase enough that the diagram or its
-prose would go stale — it is deliberately not wired into the docs build, so the resulting diff
-lands in the same pull request as the change that prompted it.
+[Architecture](/potrzebnik/architecture/) page and its diagram from the current
+shape of the repository. Run it by hand whenever a change reshapes the codebase
+enough that the diagram or its prose would go stale — it is deliberately not
+wired into the docs build, so the resulting diff lands in the same pull request
+as the change that prompted it.
 
 ## Adding a new agent
 

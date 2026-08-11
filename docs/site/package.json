@@ -4,14 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "pnpm generate:agents-index && astro dev",
     "generate:agents-index": "node ./scripts/generate-agents-index.mjs",
-    "build": "pnpm generate:agents-index && astro build",
-    "preview": "astro preview"
+    "build": "pnpm generate:agents-index && astro check && astro build",
+    "preview": "pnpm generate:agents-index && astro preview",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/starlight": "0.41.7",
     "astro": "7.2.0",
     "starlight-links-validator": "0.25.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "5.9.3"
   }
 }

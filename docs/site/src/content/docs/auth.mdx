@@ -25,7 +25,8 @@ Copy the example environment file to get started:
 cp .env.example .env
 ```
 
-<RepoFile path=".env.example" /> lists every variable the app reads. For auth specifically:
+<RepoFile path=".env.example" /> lists every variable the app reads. For auth
+specifically:
 
 - `BETTER_AUTH_SECRET` — a strong random secret. Generate one with `openssl rand -base64 32`.
 - `BETTER_AUTH_URL` — the public URL the app is served from (locally, `http://localhost:3000`).
@@ -34,8 +35,9 @@ cp .env.example .env
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` — required only when `GOOGLE_AUTH_ENABLED=true`.
 - The Postgres variables described on the [Database](/potrzebnik/database/) page.
 
-<RepoFile path="src/lib/auth-config.ts" /> validates these at startup and throws on a missing or
-malformed value, the same fail-fast contract as the database connection URL — do not weaken it.
+<RepoFile path="src/lib/auth-config.ts" /> validates these at startup and throws
+on a missing or malformed value, the same fail-fast contract as the database
+connection URL — do not weaken it.
 
 ## Google Cloud redirect URIs
 

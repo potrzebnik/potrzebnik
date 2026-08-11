@@ -27,9 +27,6 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Generate agents & skills index
-        run: pnpm --filter docs generate:agents-index
-
       - name: Build Storybook into the docs site
         run: pnpm storybook:build:docs
 
@@ -45,6 +42,11 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    # Superseded builds are safe to cancel; a deployment already talking to
+    # Pages is not.
+    concurrency:
+      group: docs-pages
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write

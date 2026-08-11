@@ -2,7 +2,7 @@
 // Import from a content page as:
 //   import RepoFile from '../../components/RepoFile.astro';
 import { existsSync, statSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, sep } from 'node:path';
 
 interface Props {
   path: string;
@@ -22,7 +22,12 @@ function findRepoRoot(from: string): string {
   return current;
 }
 
-const absolute = resolve(findRepoRoot(process.cwd()), path);
+const repoRoot = findRepoRoot(process.cwd());
+const absolute = resolve(repoRoot, path);
+
+if (!absolute.startsWith(repoRoot + sep)) {
+  throw new Error(`<RepoFile path="${path}" /> escapes the repository root.`);
+}
 
 if (!existsSync(absolute)) {
   throw new Error(
@@ -31,7 +36,13 @@ if (!existsSync(absolute)) {
 }
 
 const kind = statSync(absolute).isDirectory() ? 'tree' : 'blob';
-const href = `https://github.com/potrzebnik/potrzebnik/${kind}/main/${path.replace(/^\.?\//, '').replace(/\/$/, '')}`;
+const slug = path
+  .replace(/^\.?\//, '')
+  .replace(/\/$/, '')
+  .split('/')
+  .map(encodeURIComponent)
+  .join('/');
+const href = `https://github.com/potrzebnik/potrzebnik/${kind}/main/${slug}`;
 ---
 
-<a href={href} rel="noopener"><code>{path}</code></a>
+<a href={href}><code>{path}</code></a>
