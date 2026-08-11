@@ -61,7 +61,7 @@ One command builds everything and serves it exactly as it is published,
 component gallery included:
 
 ```bash
-pnpm docs
+pnpm docs:serve
 ```
 
 It builds Storybook into the site, builds the site, and serves the result at
@@ -77,7 +77,7 @@ pnpm --filter docs dev
 One trap comes with it: the dev server serves static files by exact path
 only, so the sidebar's Component gallery link 404s there. Open
 `/potrzebnik/storybook/index.html` directly if you need the gallery, or use
-`pnpm docs`. The published site resolves the directory URL normally.
+`pnpm docs:serve`. The published site resolves the directory URL normally.
 
 ## Adding a page to this site
 
