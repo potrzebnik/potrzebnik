@@ -55,6 +55,30 @@ unbypassable gate. See <RepoFile path="package.json" /> for the exact scripts
 each stage runs, and <RepoFile path=".github/workflows/ci.yml" /> for the CI
 job definitions.
 
+## Running this site locally
+
+One command builds everything and serves it exactly as it is published,
+component gallery included:
+
+```bash
+pnpm docs
+```
+
+It builds Storybook into the site, builds the site, and serves the result at
+`http://localhost:4321/potrzebnik/`. Note the `/potrzebnik/` path — the site
+is published under a subpath, so the bare root is a 404 by design.
+
+While writing prose, prefer the dev server for its live reload:
+
+```bash
+pnpm --filter docs dev
+```
+
+One trap comes with it: the dev server serves static files by exact path
+only, so the sidebar's Component gallery link 404s there. Open
+`/potrzebnik/storybook/index.html` directly if you need the gallery, or use
+`pnpm docs`. The published site resolves the directory URL normally.
+
 ## Adding a page to this site
 
 1. Create `docs/site/src/content/docs/<section>/<slug>.mdx`. Always `.mdx`,
