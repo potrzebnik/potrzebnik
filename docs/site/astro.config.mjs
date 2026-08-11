@@ -11,6 +11,7 @@ export default defineConfig({
       title: 'potrzebnik',
       description: 'Contributor documentation for the potrzebnik repository.',
       lastUpdated: true,
+      customCss: ['./src/styles/custom.css'],
       plugins: [starlightLinksValidator()],
       social: [
         {
@@ -48,11 +49,13 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Decisions',
+          label: 'ADRs',
           items: [
+            { label: 'What ADRs are', link: '/adrs/' },
+            { label: 'ADR template', link: '/adrs/template/' },
             {
-              label: '0001 — Initial stack and tooling',
-              link: '/decisions/0001-initial-stack-and-tooling/',
+              label: '0001: Initial stack and tooling',
+              link: '/adrs/0001-initial-stack-and-tooling/',
             },
           ],
         },

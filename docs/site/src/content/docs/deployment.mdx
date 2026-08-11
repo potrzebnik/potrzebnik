@@ -22,22 +22,39 @@ one deployment.
 
 ## Application CI
 
-The application itself — the Next.js app under this repository's root — runs
-its own checks on every PR and push to `main` through
+The application itself, the Next.js app under this repository's root, runs
+its own checks on every PR and push to `main` through <RepoFile path=".github/workflows/ci.yml" />. That workflow verifies the
+application; it does not deploy it. It splits into three parallel jobs:
 
-<RepoFile path=".github/workflows/ci.yml" />. That workflow verifies the
-application; it does not deploy it.
+- **Quality**: static checks, the production `build`, and unit tests.
+- **Storybook component + a11y tests**: installs Playwright Chromium
+  (`playwright install --with-deps --only-shell chromium`) before running
+  `pnpm test:storybook`, so this job needs a browser download that the other
+  two do not.
+- **Integration tests**: `pnpm test:integration`, which starts real Postgres
+  containers through Testcontainers on the runner.
+
+One ops detail is easy to trip over: `pnpm build` needs a resolvable database
+URL and auth configuration even though CI never connects to a database, because <RepoFile path="src/db/resolve-database-url.ts" /> throws fast on missing
+environment variables. The quality job therefore passes placeholder values for
+`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT`,
+`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `GOOGLE_AUTH_ENABLED` to the build
+step. Adding a new required environment variable means adding it there too, or
+the build breaks in CI while passing locally.
 
 ## Application deployment
 
-The application has no deploy target yet. There is no hosting environment,
-no production database, and no release process beyond the CI checks above.
+The application has no deploy target yet. There is no hosting environment, no
+production database, and no release process beyond the CI checks above; the
+repository carries no `Dockerfile` and no hosting-provider configuration.
+
+The only container definition in the repository is <RepoFile path="compose.yml" />, which provides the local development Postgres
+that `startup_dev.sh` brings up. It is a developer convenience, not a deployment
+artefact.
 
 ## Repository settings this depends on
 
-Two things live in the repository's settings rather than in
-
-<RepoFile path=".github/workflows/docs.yml" />, so neither is visible in a diff.
+Two things live in the repository's settings rather than in <RepoFile path=".github/workflows/docs.yml" />, so neither is visible in a diff.
 If deployments stop working after a settings change, a fork, or a repo restore,
 check these first:
 

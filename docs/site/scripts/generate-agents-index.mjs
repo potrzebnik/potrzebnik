@@ -63,10 +63,26 @@ function collect(kind) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
+// Two definitions sharing a name render as indistinguishable rows, and the
+// index is documented as the source of truth for what exists. Fail instead.
+function assertUniqueNames(items, kind) {
+  const seen = new Map();
+  for (const item of items) {
+    const previous = seen.get(item.name);
+    if (previous) {
+      throw new Error(
+        `agents index: duplicate ${kind} name "${item.name}" in ${previous} and ${item.path}.`,
+      );
+    }
+    seen.set(item.name, item.path);
+  }
+  return items;
+}
+
 const index = {
-  agents: collect('agents'),
-  commands: collect('commands'),
-  skills: collect('skills'),
+  agents: assertUniqueNames(collect('agents'), 'agent'),
+  commands: assertUniqueNames(collect('commands'), 'command'),
+  skills: assertUniqueNames(collect('skills'), 'skill'),
 };
 
 mkdirSync(dirname(outFile), { recursive: true });

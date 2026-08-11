@@ -9,8 +9,10 @@ import RepoFile from '../../components/RepoFile.astro';
 
 Tests run as three separate Vitest projects across two config files rather than one flat suite:
 
-- **`storybook`** — configured in <RepoFile path="vitest.config.ts" />, runs every `*.stories.*`
-  file in a real Chromium browser via `@vitest/browser-playwright`. Stories are the primary
+- **`storybook`**: configured in <RepoFile path="vitest.config.ts" />, runs every story
+  Storybook picks up in a real Chromium browser via `@vitest/browser-playwright`. The globs live
+  in <RepoFile path=".storybook/main.ts" />: `src/**/*.stories.@(js|jsx|mjs|ts|tsx)` plus
+  `src/**/*.mdx`, so docs pages authored as MDX are part of the same run. Stories are the primary
   component test harness in this repo: write a story to cover a component's states, and that story
   doubles as its test. Run with:
 
@@ -18,14 +20,14 @@ Tests run as three separate Vitest projects across two config files rather than 
   pnpm test:storybook
   ```
 
-- **`unit`** — configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
+- **`unit`**: configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
   (excluding integration tests) under Node. Run with:
 
   ```bash
   pnpm test
   ```
 
-- **`integration`** — also configured in <RepoFile path="vitest.node.config.ts" />, runs
+- **`integration`**: also configured in <RepoFile path="vitest.node.config.ts" />, runs
   `*.integration.test.ts` files, capped at a single worker with extended hook and test timeouts
   because each suite spins up real infrastructure. Run with:
 
@@ -33,21 +35,20 @@ Tests run as three separate Vitest projects across two config files rather than 
   pnpm test:integration
   ```
 
-Both `unit` and `integration` resolve the `@` path alias to `src/`, matching the app's
-
-<RepoFile path="tsconfig.json" /> alias.
+Both `unit` and `integration` resolve the `@` path alias to `src/`, matching the app's <RepoFile
+path="tsconfig.json" /> alias. It is declared once, in the top-level `resolve.alias` of <RepoFile
+path="vitest.node.config.ts" />, and inherited by both projects, not repeated per project. The
+`storybook` project in <RepoFile path="vitest.config.ts" /> declares no alias of its own; it gets
+module resolution from the Storybook Vite setup instead.
 
 ## Integration test harnesses
 
-Integration suites do not open a database connection by hand — they use a shared harness under
-
-<RepoFile path="src/test/postgres-integration-harness.ts" />.
-`createPostgresIntegrationHarness` starts a fresh Postgres Testcontainers
-instance, runs Drizzle migrations against it, and returns a `db` client plus
-helpers for counting, listing, and truncating tables.
-`createAuthIntegrationHarness` in
-<RepoFile path="src/test/auth-integration/harness.ts" /> wraps that base harness
-with auth-specific helpers on top.
+Integration suites do not open a database connection by hand; they use a shared harness under <RepoFile
+path="src/test/postgres-integration-harness.ts" />. `createPostgresIntegrationHarness` starts a
+fresh Postgres Testcontainers instance, runs Drizzle migrations against it, and returns a `db`
+client plus helpers for counting, listing, and truncating tables. `createAuthIntegrationHarness` in <RepoFile
+path="src/test/auth-integration/harness.ts" /> wraps that base harness with auth-specific helpers on
+top.
 
 The typical lifecycle: create the harness once in `beforeAll`, reset the tables it touches in
 `afterEach`, and dispose of it once in `afterAll`.
@@ -92,4 +93,6 @@ styling rules page states the rule and why the published subpath makes it load-b
 
 `pnpm check` runs the full local gate in one command: type-checking, ESLint, Stylelint, Prettier's
 check mode, and the duplicate-arbitrary-value scan (see the Tokens & styling rules page). Run it
-before opening a pull request; it mirrors what CI enforces.
+before opening a pull request. It is a subset of what CI enforces, not a mirror: CI's Quality job
+also runs `pnpm build` and the unit tests, and the Storybook, Integration, and docs jobs run on top
+of that.

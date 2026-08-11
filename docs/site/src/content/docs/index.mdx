@@ -32,7 +32,7 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-The defaults work without Google OAuth keys — local development runs with
+The defaults work without Google OAuth keys; local development runs with
 `GOOGLE_AUTH_ENABLED=false`. To exercise Google sign-in locally, set
 `GOOGLE_AUTH_ENABLED=true` along with `GOOGLE_CLIENT_ID` and
 `GOOGLE_CLIENT_SECRET` in `.env`, and register the local redirect URI in
@@ -44,11 +44,10 @@ Google Cloud. See the Auth & OAuth page for the full flow.
 bash startup_dev.sh
 ```
 
-This brings up the local Postgres instance defined in <RepoFile path="compose.yml" /> and starts
-the Next.js dev server.
-
-Once the database is running, apply migrations as described on the Database
-page.
+This installs dependencies, brings up the local Postgres instance defined in <RepoFile path="compose.yml" />, applies the Drizzle migrations (`pnpm run
+db:migrate`), and then starts the Next.js dev server. Migrations are already
+handled; you only run them by hand when you add one mid-session. See the
+Database page for that workflow.
 
 ## Run Storybook
 
@@ -69,6 +68,7 @@ command:
 pnpm docs:serve
 ```
 
-It serves at `http://localhost:4321/potrzebnik/` — the same subpath the site
-is published under. The Contributing page covers editing pages with live
-reload.
+It serves at `http://localhost:4321/potrzebnik/`, the same subpath the site
+is published under. It serves a static build, so an edit shows up only after
+rerunning the command; the Contributing page covers the dev server to use
+instead while writing.

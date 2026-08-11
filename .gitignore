@@ -48,3 +48,9 @@ docs/site/dist/
 docs/site/.astro/
 docs/site/public/storybook/
 docs/site/src/generated/
+
+# Local agent planning scratch
+.wayfinder/
+
+# Playwright MCP scratch output (page snapshots, console logs, screenshots)
+.playwright-mcp/

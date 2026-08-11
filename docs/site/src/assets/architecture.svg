@@ -1,11 +1,11 @@
-<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-title" color="var(--sl-color-text)">
-<title id="architecture-title">potrzebnik architecture: browser talks to the Next.js App Router, which renders route-group pages built from layered components and calls the database through Drizzle; Storybook exercises the same component layer in isolation.</title>
+<svg viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-title" color="var(--sl-color-text)">
+<title id="architecture-title">potrzebnik architecture: the browser talks to the Next.js App Router, whose route-group pages are built from layered components; the auth route handler reaches Postgres through src/lib and Drizzle, while a direct path from pages to the database is intended but not yet wired. Storybook exercises the same component layer in isolation, and a domain model under src/write sits alongside, with no call site yet.</title>
 <rect x="20" y="20" width="720" height="70" rx="6" fill="none" stroke="currentColor" stroke-width="2" />
 <text x="380" y="50" text-anchor="middle" fill="currentColor" font-size="16">Browser</text>
 <text x="380" y="72" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="12">requests pages, submits forms, runs client components</text>
 <line x1="380" y1="90" x2="380" y2="120" stroke="currentColor" stroke-width="2" />
 <rect x="20" y="120" width="720" height="90" rx="6" fill="none" stroke="var(--sl-color-accent)" stroke-width="2" />
-<text x="380" y="146" text-anchor="middle" fill="currentColor" font-size="16">Next.js App Router — src/app</text>
+<text x="380" y="146" text-anchor="middle" fill="currentColor" font-size="16">Next.js App Router: src/app</text>
 <rect x="45" y="160" width="210" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
 <text x="150" y="182" text-anchor="middle" fill="currentColor" font-size="12">(public) route group</text>
 <rect x="275" y="160" width="210" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
@@ -14,26 +14,32 @@
 <text x="610" y="182" text-anchor="middle" fill="currentColor" font-size="12">api route handlers</text>
 <line x1="150" y1="210" x2="150" y2="240" stroke="currentColor" stroke-width="2" />
 <line x1="380" y1="210" x2="380" y2="240" stroke="currentColor" stroke-width="2" />
-<line x1="610" y1="210" x2="610" y2="240" stroke="currentColor" stroke-width="2" />
 <rect x="20" y="240" width="490" height="90" rx="6" fill="none" stroke="var(--sl-color-accent)" stroke-width="2" />
-<text x="265" y="266" text-anchor="middle" fill="currentColor" font-size="16">Component layers — src/components</text>
+<text x="265" y="266" text-anchor="middle" fill="currentColor" font-size="16">Component layers: src/components</text>
 <rect x="40" y="280" width="100" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
 <text x="90" y="302" text-anchor="middle" fill="currentColor" font-size="11">ui</text>
 <rect x="150" y="280" width="100" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
 <text x="200" y="302" text-anchor="middle" fill="currentColor" font-size="11">shared</text>
 <rect x="260" y="280" width="100" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
-<text x="310" y="302" text-anchor="middle" fill="currentColor" font-size="11">sections</text>
+<text x="310" y="302" text-anchor="middle" fill="currentColor" font-size="11">features</text>
 <rect x="370" y="280" width="120" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
-<text x="430" y="302" text-anchor="middle" fill="currentColor" font-size="11">features</text>
-<line x1="580" y1="210" x2="580" y2="240" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" />
-<rect x="530" y="240" width="210" height="90" rx="6" fill="none" stroke="var(--sl-color-gray-5)" stroke-width="2" stroke-dasharray="4 4" />
-<text x="635" y="266" text-anchor="middle" fill="currentColor" font-size="14">Storybook</text>
-<text x="635" y="286" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">.storybook/</text>
-<text x="635" y="302" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">exercises the same</text>
-<text x="635" y="316" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">component layer in isolation</text>
-<line x1="265" y1="330" x2="265" y2="360" stroke="currentColor" stroke-width="2" />
-<line x1="610" y1="330" x2="610" y2="360" stroke="currentColor" stroke-width="2" />
-<line x1="610" y1="210" x2="610" y2="360" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" />
-<rect x="20" y="360" width="720" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="2" />
-<text x="380" y="385" text-anchor="middle" fill="currentColor" font-size="14">Postgres, via Drizzle ORM — src/db</text>
+<text x="430" y="302" text-anchor="middle" fill="currentColor" font-size="11">sections</text>
+<line x1="530" y1="210" x2="530" y2="240" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" />
+<rect x="530" y="240" width="170" height="90" rx="6" fill="none" stroke="var(--sl-color-gray-5)" stroke-width="2" stroke-dasharray="4 4" />
+<text x="615" y="266" text-anchor="middle" fill="currentColor" font-size="14">Storybook</text>
+<text x="615" y="286" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">.storybook/</text>
+<text x="615" y="302" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">exercises the same</text>
+<text x="615" y="318" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">components in isolation</text>
+<line x1="712" y1="210" x2="712" y2="350" stroke="currentColor" stroke-width="2" />
+<rect x="505" y="350" width="210" height="50" rx="6" fill="none" stroke="currentColor" stroke-width="2" />
+<text x="610" y="372" text-anchor="middle" fill="currentColor" font-size="14">Auth server: src/lib</text>
+<text x="610" y="390" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">the only importer of src/db</text>
+<line x1="610" y1="400" x2="610" y2="420" stroke="currentColor" stroke-width="2" />
+<line x1="265" y1="330" x2="265" y2="420" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" />
+<text x="277" y="378" fill="var(--sl-color-gray-3)" font-size="11">intended; no call site yet</text>
+<rect x="20" y="420" width="720" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="2" />
+<text x="380" y="445" text-anchor="middle" fill="currentColor" font-size="14">Postgres, via Drizzle ORM: src/db</text>
+<rect x="20" y="490" width="720" height="50" rx="6" fill="none" stroke="var(--sl-color-gray-5)" stroke-width="2" stroke-dasharray="4 4" />
+<text x="380" y="512" text-anchor="middle" fill="currentColor" font-size="14">Domain model: src/write/domain</text>
+<text x="380" y="530" text-anchor="middle" fill="var(--sl-color-gray-3)" font-size="11">entities, value objects, branded ids, no call site yet</text>
 </svg>

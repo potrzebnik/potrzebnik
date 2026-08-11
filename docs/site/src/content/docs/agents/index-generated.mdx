@@ -9,7 +9,7 @@ import agentsIndex from '../../../generated/agents-index.json';
 `.claude/` stays the canonical source for every agent, command, and skill definition. This index
 is regenerated on every docs build straight from that directory's frontmatter, so it cannot drift
 out of date the way a hand-maintained list would. Full agent bodies are deliberately not
-republished here — open the linked file for the actual system prompt or skill steps.
+republished here; open the linked file for the actual system prompt or skill steps.
 
 {[
 ['Agents', 'agents'],
@@ -34,7 +34,7 @@ republished here — open the linked file for the actual system prompt or skill 
         </thead>
         <tbody>
           {agentsIndex[key].map((entry) => (
-            <tr>
+            <tr key={entry.path}>
               <td>{entry.name}</td>
               <td>{entry.description}</td>
               <td>

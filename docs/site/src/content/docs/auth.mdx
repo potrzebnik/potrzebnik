@@ -4,15 +4,16 @@ description: How authentication and Google OAuth sign-in are wired.
 ---
 
 import RepoFile from '../../components/RepoFile.astro';
+import authOauthFlowSvg from '../../assets/auth-oauth-flow.svg?raw';
 
 ## Stack
 
 Authentication runs on Better Auth, backed by the same Drizzle/Postgres database as the rest of
 the app. <RepoFile path="src/lib/auth-config.ts" /> builds the Better Auth instance with the
-Drizzle adapter and, when enabled, the Google social provider. <RepoFile path="src/lib/auth.ts" />
-exposes the singleton `auth` instance used by the app. <RepoFile path="src/app/api/auth/[...all]/route.ts" />
-mounts every Better Auth endpoint under `/api/auth/*`. <RepoFile path="src/lib/auth-client.ts" />
-is the browser-side client that calls those endpoints.
+Drizzle adapter, email/password sign-in, and (when enabled) the Google social provider. The
+singleton `auth` instance used by the app is exposed by <RepoFile path="src/lib/auth.ts" />, every
+Better Auth endpoint is mounted under `/api/auth/*` by <RepoFile path="src/app/api/auth/[...all]/route.ts" />,
+and the browser-side client that calls those endpoints is <RepoFile path="src/lib/auth-client.ts" />.
 
 Sessions, users, accounts, and verification tokens are persisted in the `user`, `account`,
 `session`, and `verification` tables under <RepoFile path="src/db/schema" />.
@@ -28,16 +29,17 @@ cp .env.example .env
 <RepoFile path=".env.example" /> lists every variable the app reads. For auth
 specifically:
 
-- `BETTER_AUTH_SECRET` — a strong random secret. Generate one with `openssl rand -base64 32`.
-- `BETTER_AUTH_URL` — the public URL the app is served from (locally, `http://localhost:3000`).
-- `GOOGLE_AUTH_ENABLED` — `true` or `false`. Local development works without Google credentials
+- `BETTER_AUTH_SECRET`: a strong random secret. Generate one with `openssl rand -base64 32`.
+- `BETTER_AUTH_URL`: the public URL the app is served from (locally, `http://localhost:3000`).
+- `GOOGLE_AUTH_ENABLED`: `true` or `false`. Local development works without Google credentials
   when this is `false`.
-- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` — required only when `GOOGLE_AUTH_ENABLED=true`.
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`: required only when `GOOGLE_AUTH_ENABLED=true`.
 - The Postgres variables described on the [Database](/potrzebnik/database/) page.
 
-<RepoFile path="src/lib/auth-config.ts" /> validates these at startup and throws
-on a missing or malformed value, the same fail-fast contract as the database
-connection URL — do not weaken it.
+`getAuthEnv` in <RepoFile path="src/lib/auth-config.ts" /> reads and validates these, and throws
+on a missing or malformed value. It runs lazily rather than at process startup: `createAuth` calls
+it, and `createAuth` runs when <RepoFile path="src/lib/auth.ts" /> is first imported. It is still
+the same fail-fast contract as the database connection URL: do not weaken it.
 
 ## Google Cloud redirect URIs
 
@@ -62,15 +64,47 @@ Do not keep localhost origins in a production `trustedOrigins` list.
 
 ## Local setup
 
-1. Set up the environment variables above, then start the database and app:
+1. Set up the environment variables above, then start everything:
 
    ```bash
    bash startup_dev.sh
-   pnpm run db:migrate
-   pnpm run dev
    ```
 
-2. Trigger Google sign-in from a client component:
+   That script, <RepoFile path="startup_dev.sh" />, installs dependencies, brings the Postgres
+   container up with `docker compose up -d --wait`, runs `pnpm run db:migrate`, and then starts
+   `pnpm run dev`. Run those steps individually only if the container is already up.
+
+2. Sign up or sign in with email and password from a client component:
+
+   ```tsx
+   'use client';
+
+   import { authClient } from '@/lib/auth-client';
+
+   export function SignUpForm() {
+     return (
+       <button
+         onClick={() =>
+           authClient.signUp.email({
+             email: 'someone@example.com',
+             password: 'a-strong-password',
+             name: 'Someone',
+             callbackURL: '/dashboard',
+           })
+         }
+       >
+         Create account
+       </button>
+     );
+   }
+   ```
+
+   `authClient.signIn.email({ email, password })` signs an existing user back in. Email and
+   password sign-in is always on; `emailAndPassword: { enabled: true }` is unconditional in
+   `createAuth`, unlike the Google provider, which is only registered when
+   `GOOGLE_AUTH_ENABLED=true`.
+
+3. Trigger Google sign-in from a client component:
 
    ```tsx
    'use client';
@@ -93,7 +127,10 @@ Do not keep localhost origins in a production `trustedOrigins` list.
    }
    ```
 
-3. Read the session on the client:
+   A Google sign-in whose email matches an existing email/password user links the new `account`
+   row to that user rather than creating a second one.
+
+4. Read the session on the client:
 
    ```tsx
    'use client';
@@ -107,7 +144,7 @@ Do not keep localhost origins in a production `trustedOrigins` list.
    }
    ```
 
-4. Sign out:
+5. Sign out:
 
    ```tsx
    'use client';
@@ -119,28 +156,58 @@ Do not keep localhost origins in a production `trustedOrigins` list.
    }
    ```
 
-5. Protect a server route or layout by checking the session server-side:
+The snippets above are reference usage, not a tour of existing screens. The `authClient` exported
+by <RepoFile path="src/lib/auth-client.ts" /> has no callers today: nothing under `src/app` or
+`src/components` calls `signIn`, `signOut`, or `useSession`. Sign-in UI still has to be built.
 
-   ```tsx
-   import { auth } from '@/lib/auth';
-   import { headers } from 'next/headers';
-   import { redirect } from 'next/navigation';
+## Route protection is not wired up yet
 
-   export default async function DashboardLayout({
-     children,
-   }: {
-     children: React.ReactNode;
-   }) {
-     const session = await auth.api.getSession({
-       headers: new Headers(await headers()),
-     });
+**Known gap: no route in this app is gated.** The auth endpoints work and sessions are issued and
+persisted, but nothing consumes them to guard a page:
 
-     if (!session) redirect('/');
-     return <>{children}</>;
-   }
-   ```
+- The layout at <RepoFile path="src/app/(dashboard)/dashboard/layout.tsx" /> renders its children
+  with no session check at all.
+- There is no `middleware.ts` anywhere in the repo.
+- Nothing in `src/` calls `auth.api.getSession` at all. The only place a session is read is
+  <RepoFile path="src/lib/auth.integration.test.ts" />, and it does so over HTTP
+  against the `/api/auth/get-session` route rather than through the server-side
+  API.
+
+So `/dashboard` and everything beneath it is currently reachable by an anonymous visitor. Treat any
+dashboard page as public until this is closed.
+
+When it is closed, the intended shape is a server-side check in the `(dashboard)` layout. This is
+the target, **not** what the file contains today:
+
+```tsx
+// Not yet implemented; illustrative only.
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth.api.getSession({
+    headers: new Headers(await headers()),
+  });
+
+  if (!session) redirect('/');
+  return <>{children}</>;
+}
+```
 
 ## Request flow
+
+An email/password sign-up follows this sequence:
+
+1. The browser calls `POST /api/auth/sign-up/email` with an email, password, and name.
+2. The route hashes the password, inserts the `user` and credential `account` rows, creates a
+   session, and sets the session cookie.
+3. `POST /api/auth/sign-in/email` verifies a later attempt against the stored hash and issues a
+   fresh session the same way. A bad password returns a 401 and no cookie.
 
 A Google sign-in follows this sequence:
 
@@ -153,15 +220,28 @@ A Google sign-in follows this sequence:
    optionally fetches the user's profile.
 6. The route upserts the `user`/`account` rows, creates a session, sets the session cookie, and
    redirects to `callbackURL`.
-7. Subsequent requests call `GET /api/auth/get-session`, which looks the session up by cookie and
-   returns the user and session, or `null`.
 
-Signing out calls `POST /api/auth/sign-out`, which revokes the session and clears the cookie.
+Either path converges on the same session handling: subsequent requests call
+`GET /api/auth/get-session`, which looks the session up by cookie and returns the user and session,
+or `null`. Signing out calls `POST /api/auth/sign-out`, which revokes the session and clears the
+cookie.
+
+The Google path in full:
+
+<figure>
+  <Fragment set:html={authOauthFlowSvg} />
+</figure>
+
+The diagram is generated from <RepoFile path="docs/site/src/assets/auth-oauth-flow.mmd" />, a
+Mermaid sequence diagram kept as the editable source. Nothing in the docs build renders Mermaid
+today, so the committed SVG next to it is what the page embeds; regenerate both together if the
+flow changes.
 
 ## Further reading
 
 The Better Auth documentation covers the parts of this integration that are not
-potrzebnik-specific: the [Google provider](https://better-auth.com/docs/authentication/google),
+potrzebnik-specific: [email and password](https://better-auth.com/docs/authentication/email-password),
+the [Google provider](https://better-auth.com/docs/authentication/google),
 [core options](https://better-auth.com/docs/reference/options),
 [security model](https://better-auth.com/docs/reference/security),
 [dynamic base URL](https://better-auth.com/docs/guides/dynamic-base-url), and

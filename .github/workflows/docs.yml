@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build docs site
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,6 +43,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     # Superseded builds are safe to cancel; a deployment already talking to
     # Pages is not.
     concurrency:

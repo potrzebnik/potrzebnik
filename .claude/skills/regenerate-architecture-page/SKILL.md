@@ -1,6 +1,6 @@
 ---
 name: regenerate-architecture-page
-description: Regenerate the Architecture docs page and its SVG diagram from the current repository layout. Run this by hand whenever the shape of the codebase changes — it is deliberately not part of the docs build.
+description: Regenerate the Architecture docs page and its SVG diagram from the current repository layout. Run this by hand whenever the shape of the codebase changes; it is deliberately not part of the docs build.
 ---
 
 # Regenerate the architecture page

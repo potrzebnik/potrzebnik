@@ -1,6 +1,6 @@
 ---
 name: frontend-reviewer
-description: Repo-aware frontend code reviewer for the potrzebnik Next.js 16 / React 19 / Tailwind v4 / shadcn-ui / Storybook codebase. Invoke on PR diffs or when reviewing changes under `src/app/**`, `src/components/**`, `src/stories/**`, or `src/app/globals.css`. Enforces the conventions surfaced in past PR reviews so reviewers don't repeat the same comments.
+description: Repo-aware frontend code reviewer for the potrzebnik Next.js 16 / React 19 / Tailwind v4 / shadcn-ui / Storybook codebase. Invoke on PR diffs or when reviewing changes under `src/app/**`, `src/components/**` (including co-located `*.stories.tsx`), or `src/app/globals.css`. Enforces the conventions surfaced in past PR reviews so reviewers don't repeat the same comments.
 tools: Read, Grep, Glob, Bash
 ---
 

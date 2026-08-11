@@ -15,10 +15,14 @@ now.
 
 ## Reviewer agents
 
-Two agents under <RepoFile path=".claude/agents" /> read a diff and return structured findings —
-neither edits code. Pick the general one for backend, config, or cross-cutting changes, and the
-frontend-aware one for anything under <RepoFile path="src/app" />, <RepoFile path="src/components" />, or Storybook stories, where it
-enforces conventions distilled from past PR review history.
+Two agents under <RepoFile path=".claude/agents" /> read a diff and return structured findings.
+Pick the general one for backend, config, or cross-cutting changes, and the frontend-aware one for
+anything under <RepoFile path="src/app" />, <RepoFile path="src/components" />, Storybook stories, or the design-token file <RepoFile path="src/app/globals.css" />, where it enforces conventions distilled from past PR review history.
+
+Only frontend-reviewer is read-only by construction: its frontmatter pins `tools: Read, Grep,
+Glob, Bash`, so it cannot edit. code-reviewer declares no `tools` key and therefore inherits the
+full toolset, including `Edit` and `Write`; its read-only behaviour is a convention its prompt
+asks for, not a guarantee the harness enforces.
 
 Invoke either directly through the `Agent` tool, or trigger by describing the task in natural
 language and let the matching agent's description pick it up:
@@ -31,13 +35,13 @@ code-reviewer: review the diff against main
 For a mixed change, split the request explicitly:
 
 ```text
-Review the current branch — code-reviewer for backend files, frontend-reviewer for src/app and src/components
+Review the current branch: code-reviewer for backend files, frontend-reviewer for src/app and src/components
 ```
 
 Both agents emit findings as severity-ranked YAML (blocker / major / nit), each with a file,
 lines, rationale, and a fix proposal.
 
-## The `mentor-review` skill
+## The `mentor-review` command
 
 <RepoFile path=".claude/commands/mentor-review.md" /> orchestrates both reviewer
 agents in parallel against `git diff main...HEAD` plus uncommitted changes, then
@@ -47,8 +51,8 @@ request, not as a replacement for a human reviewer.
 
 Two modes:
 
-- Informative — prints every finding as a teaching card, makes no edits.
-- Interactive fix mode — walks findings one at a time; accepting one spawns a sub-agent that
+- Informative: prints every finding as a teaching card, makes no edits.
+- Interactive fix mode: walks findings one at a time; accepting one spawns a sub-agent that
   applies the fix and shows the resulting diff before moving to the next finding.
 
 Findings are session-scoped: nothing is written to disk, so there's no report file to clean up
@@ -59,13 +63,13 @@ afterward.
 <RepoFile path=".claude/skills/regenerate-architecture-page" /> rewrites the
 [Architecture](/potrzebnik/architecture/) page and its diagram from the current
 shape of the repository. Run it by hand whenever a change reshapes the codebase
-enough that the diagram or its prose would go stale — it is deliberately not
+enough that the diagram or its prose would go stale; it is deliberately not
 wired into the docs build, so the resulting diff lands in the same pull request
 as the change that prompted it.
 
 ## Adding a new agent
 
 Create a new file under <RepoFile path=".claude/agents" /> with `name`, `description`, and
-optionally `tools` in its frontmatter, and a system prompt as the body. Commit it — it becomes
+optionally `tools` in its frontmatter, and a system prompt as the body. Commit it; it becomes
 available on the next Claude Code session, and the next docs build picks it up in the generated
 index automatically.

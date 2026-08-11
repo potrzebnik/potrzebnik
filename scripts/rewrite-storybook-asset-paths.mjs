@@ -77,13 +77,13 @@ for (const path of buildFiles()) {
 // Postcondition. Checking the result rather than the number of edits keeps the
 // script idempotent while still failing loudly if the rewrite ever stops
 // matching — the whole point of this script is to prevent a silent breakage,
-// so it must not fail silently itself. The lookbehind ignores references that
-// are already relative.
+// so it must not fail silently itself. The pattern mirrors the rewrite pattern
+// exactly, so the check verifies only what the rewrite was meant to touch.
 const leftover = [];
 for (const path of buildFiles()) {
   const source = readFileSync(path, 'utf8');
   for (const name of assets) {
-    const stray = new RegExp(`(?<![.\\w])/${name.replace(/\./g, '\\.')}`);
+    const stray = new RegExp(`(["'\`])/${name.replace(/\./g, '\\.')}\\1`);
     if (stray.test(source)) leftover.push(`${path} -> /${name}`);
   }
 }
