@@ -28,7 +28,8 @@
     "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
     "prepare": "husky",
     "storybook:dev": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "storybook:build:docs": "storybook build --output-dir docs/site/public/storybook && node scripts/rewrite-storybook-asset-paths.mjs docs/site/public/storybook"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

@@ -1,0 +1,59 @@
+---
+title: Architecture
+description: Where the code lives and why it is arranged that way.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+import architectureSvg from '../../assets/architecture.svg?raw';
+
+## Request path
+
+The app is a single Next.js App Router project. A browser request lands on one of two route
+groups under <RepoFile path="src/app" />: <RepoFile path="src/app/(public)" /> for the
+unauthenticated marketing and needs pages, and <RepoFile path="src/app/(dashboard)" /> for the
+authenticated area. Route handlers under <RepoFile path="src/app/api" /> serve everything that
+isn't a rendered page, including the Better Auth mount point. Grouping by route group rather than
+by feature keeps the auth boundary visible in the file tree instead of only in middleware.
+
+<div set:html={architectureSvg} />
+
+## Component layers
+
+Route pages compose from four layers under <RepoFile path="src/components" />, ordered from most
+to least reusable:
+
+- <RepoFile path="src/components/ui" /> — shadcn-style primitives (see
+  <RepoFile path="components.json" />), generic and product-agnostic.
+- <RepoFile path="src/components/shared" /> — small composites reused across more than one
+  feature or section (cards, overlays).
+- <RepoFile path="src/components/features" /> — page chrome such as the public header and footer.
+- <RepoFile path="src/components/sections" /> — page-specific sections assembled from the layers
+  above.
+
+A component only moves down this list (toward `ui`) once a second call site needs it. Promoting
+speculatively is what turns `shared` into a dumping ground.
+
+## Storybook as the component test harness
+
+<RepoFile path=".storybook" /> configures Storybook against the same component tree — no separate
+component source lives under `docs/site` or anywhere else. Every `*.stories.*` file doubles as
+that component's test, exercised by Vitest's browser project (see the
+[Testing](/potrzebnik/testing/) page). This is why the diagram above draws Storybook as a dashed
+box beside the component layer rather than as a separate app: it observes the same code, it does
+not fork it.
+
+## Data layer
+
+Server components and route handlers reach Postgres through Drizzle ORM. <RepoFile path="src/db/index.ts" />
+is the client; <RepoFile path="src/db/schema" /> defines the tables; and
+<RepoFile path="src/db/resolve-database-url.ts" /> is the single source for the connection URL,
+shared by the runtime and by <RepoFile path="drizzle.config.ts" />. See the
+[Database](/potrzebnik/database/) page for how to add a migration.
+
+## Config that shapes the tree
+
+A handful of root config files decide how the layers above are built and tested rather than what
+they contain: <RepoFile path="next.config.ts" />, <RepoFile path="drizzle.config.ts" />,
+<RepoFile path="vitest.config.ts" />, <RepoFile path="vitest.node.config.ts" />, and
+<RepoFile path="components.json" />. Read them directly rather than trusting a paraphrase here —
+this page states why the tree is shaped this way, not what each file currently contains.

@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -42,3 +42,9 @@ next-env.d.ts
 # storybook
 *storybook.log
 storybook-static
+
+# docs site
+docs/site/dist/
+docs/site/.astro/
+docs/site/public/storybook/
+docs/site/src/generated/

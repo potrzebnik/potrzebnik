@@ -1,0 +1,54 @@
+---
+title: Database
+description: Schema, migrations, and the connection URL contract.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Stack
+
+The database is Postgres, run in Docker via <RepoFile path="compose.yml" />. The app talks to it
+through Drizzle ORM on top of `pg`, configured in <RepoFile path="drizzle.config.ts" />. The
+Drizzle client lives at <RepoFile path="src/db/index.ts" />.
+
+## Schema
+
+The schema is defined under <RepoFile path="src/db/schema" />, one file per table plus a barrel
+export. Read that directory for the current tables and columns — this page does not duplicate
+them, and a generated schema page is deliberately out of scope: machine-made duplication is still
+duplication.
+
+## The connection URL
+
+<RepoFile path="src/db/resolve-database-url.ts" /> is the single source of the Postgres connection
+URL, used at both runtime and by <RepoFile path="drizzle.config.ts" />. It builds the URL from the
+`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, and `POSTGRES_PORT`
+environment variables.
+
+It **throws fast** when a required variable is missing, rather than falling back to a default.
+This is deliberate: a silently-defaulted connection string is how a local script ends up pointed
+at the wrong database, or a secret ends up hard-coded. Do not add a silent default here — fix a
+missing variable at its source (your `.env` file) instead.
+
+## Migration flow
+
+Start the database container, then apply pending migrations:
+
+```bash
+pnpm run db:migrate
+```
+
+After changing a file under <RepoFile path="src/db/schema" />, generate the matching migration:
+
+```bash
+pnpm run db:generate
+```
+
+To inspect the database interactively, open Drizzle Studio:
+
+```bash
+pnpm run db:studio
+```
+
+All three commands read the connection URL through <RepoFile path="src/db/resolve-database-url.ts" />,
+so they need the same Postgres environment variables set as the running app.

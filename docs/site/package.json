@@ -1,0 +1,17 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "generate:agents-index": "node ./scripts/generate-agents-index.mjs",
+    "build": "pnpm generate:agents-index && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.41.7",
+    "astro": "7.2.0",
+    "starlight-links-validator": "0.25.2"
+  }
+}

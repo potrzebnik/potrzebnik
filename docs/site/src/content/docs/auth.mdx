@@ -1,0 +1,166 @@
+---
+title: Auth & OAuth
+description: How authentication and Google OAuth sign-in are wired.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Stack
+
+Authentication runs on Better Auth, backed by the same Drizzle/Postgres database as the rest of
+the app. <RepoFile path="src/lib/auth-config.ts" /> builds the Better Auth instance with the
+Drizzle adapter and, when enabled, the Google social provider. <RepoFile path="src/lib/auth.ts" />
+exposes the singleton `auth` instance used by the app. <RepoFile path="src/app/api/auth/[...all]/route.ts" />
+mounts every Better Auth endpoint under `/api/auth/*`. <RepoFile path="src/lib/auth-client.ts" />
+is the browser-side client that calls those endpoints.
+
+Sessions, users, accounts, and verification tokens are persisted in the `user`, `account`,
+`session`, and `verification` tables under <RepoFile path="src/db/schema" />.
+
+## Required environment variables
+
+Copy the example environment file to get started:
+
+```bash
+cp .env.example .env
+```
+
+<RepoFile path=".env.example" /> lists every variable the app reads. For auth specifically:
+
+- `BETTER_AUTH_SECRET` — a strong random secret. Generate one with `openssl rand -base64 32`.
+- `BETTER_AUTH_URL` — the public URL the app is served from (locally, `http://localhost:3000`).
+- `GOOGLE_AUTH_ENABLED` — `true` or `false`. Local development works without Google credentials
+  when this is `false`.
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` — required only when `GOOGLE_AUTH_ENABLED=true`.
+- The Postgres variables described on the [Database](/potrzebnik/database/) page.
+
+<RepoFile path="src/lib/auth-config.ts" /> validates these at startup and throws on a missing or
+malformed value, the same fail-fast contract as the database connection URL — do not weaken it.
+
+## Google Cloud redirect URIs
+
+Register the callback URI that matches the environment in the Google Cloud OAuth client
+configuration:
+
+- Local development: `http://localhost:3000/api/auth/callback/google`
+- Production: `https://potrzebnik.pl/api/auth/callback/google`
+
+If the auth base path ever moves away from `/api/auth`, update the registered redirect URI to
+match.
+
+## Multi-domain production setups
+
+If the app is served from more than one origin in production, choose one of the following instead
+of hard-coding a single `BETTER_AUTH_URL`:
+
+- Configure Better Auth's dynamic `baseURL` together with `allowedHosts`.
+- List every allowed frontend origin in `trustedOrigins`.
+
+Do not keep localhost origins in a production `trustedOrigins` list.
+
+## Local setup
+
+1. Set up the environment variables above, then start the database and app:
+
+   ```bash
+   bash startup_dev.sh
+   pnpm run db:migrate
+   pnpm run dev
+   ```
+
+2. Trigger Google sign-in from a client component:
+
+   ```tsx
+   'use client';
+
+   import { authClient } from '@/lib/auth-client';
+
+   export function SignInWithGoogleButton() {
+     return (
+       <button
+         onClick={() =>
+           authClient.signIn.social({
+             provider: 'google',
+             callbackURL: '/dashboard',
+           })
+         }
+       >
+         Continue with Google
+       </button>
+     );
+   }
+   ```
+
+3. Read the session on the client:
+
+   ```tsx
+   'use client';
+
+   import { authClient } from '@/lib/auth-client';
+
+   export function AuthStatus() {
+     const { data, isPending } = authClient.useSession();
+     if (isPending) return <span>Loading...</span>;
+     return data ? <span>{data.user.email}</span> : <span>Not signed in</span>;
+   }
+   ```
+
+4. Sign out:
+
+   ```tsx
+   'use client';
+
+   import { authClient } from '@/lib/auth-client';
+
+   export function SignOutButton() {
+     return <button onClick={() => authClient.signOut()}>Sign out</button>;
+   }
+   ```
+
+5. Protect a server route or layout by checking the session server-side:
+
+   ```tsx
+   import { auth } from '@/lib/auth';
+   import { headers } from 'next/headers';
+   import { redirect } from 'next/navigation';
+
+   export default async function DashboardLayout({
+     children,
+   }: {
+     children: React.ReactNode;
+   }) {
+     const session = await auth.api.getSession({
+       headers: new Headers(await headers()),
+     });
+
+     if (!session) redirect('/');
+     return <>{children}</>;
+   }
+   ```
+
+## Request flow
+
+A Google sign-in follows this sequence:
+
+1. The browser calls `POST /api/auth/sign-in/social` with `provider: "google"`.
+2. The route generates OAuth state and a PKCE challenge, then redirects the browser to Google's
+   authorization endpoint.
+3. The user authenticates and consents on Google's side.
+4. Google redirects back to `/api/auth/callback/google` with a code and the original state.
+5. The route verifies the state and PKCE challenge, exchanges the code for tokens with Google, and
+   optionally fetches the user's profile.
+6. The route upserts the `user`/`account` rows, creates a session, sets the session cookie, and
+   redirects to `callbackURL`.
+7. Subsequent requests call `GET /api/auth/get-session`, which looks the session up by cookie and
+   returns the user and session, or `null`.
+
+Signing out calls `POST /api/auth/sign-out`, which revokes the session and clears the cookie.
+
+## Further reading
+
+The Better Auth documentation covers the parts of this integration that are not
+potrzebnik-specific: the [Google provider](https://better-auth.com/docs/authentication/google),
+[core options](https://better-auth.com/docs/reference/options),
+[security model](https://better-auth.com/docs/reference/security),
+[dynamic base URL](https://better-auth.com/docs/guides/dynamic-base-url), and
+[cookies](https://better-auth.com/docs/concepts/cookies).

@@ -1,0 +1,79 @@
+---
+title: Tokens & styling rules
+description: Tailwind v4 tokens and the styling rules enforced in CI.
+---
+
+import RepoFile from '../../../components/RepoFile.astro';
+
+## Styling model
+
+Style components with Tailwind utility classes co-located directly in JSX. The repository has no
+hand-written component CSS and no BEM-style class names — a component's styling lives next to its
+markup, not in a sibling stylesheet. Tailwind v4 is wired in through the PostCSS plugin at
+<RepoFile path="postcss.config.mjs" />, not a `tailwind.config.js`.
+
+## Design tokens, not raw colours
+
+Every colour used in a component must resolve through a design token, never a literal `#hex`,
+`rgb()`, or `oklch()` value written inline. Tokens are declared once in
+<RepoFile path="src/app/globals.css" /> under the `@theme inline` block, which maps each
+`--color-*` custom property to a CSS variable such as `--background` or `--header-bg`. Add a new
+colour by declaring the variable there, then reference it with the matching Tailwind utility (for
+example `bg-header-bg`) — never by pasting the raw value into a component.
+
+<RepoFile path=".stylelintrc.json" /> enforces both rules mechanically:
+
+- `selector-class-pattern` rejects any hand-written CSS class name that is not the `.dark` theming
+  hook, catching BEM-style classes before they land.
+- `declaration-property-value-disallowed-list` rejects hex, `rgb()`, and `oklch()` literals on
+  colour-related properties (`background`, `color`, `border*`, `outline*`), catching raw colour
+  literals even inside the handful of files that still carry plain CSS.
+
+Run `pnpm lint:css` to check `src/**/*.css` locally; the same command runs in CI.
+
+## Arbitrary Tailwind values
+
+A repeated Tailwind arbitrary value (`px-[25px]` used in several places, for example) is a token
+that has not been named yet. <RepoFile path="scripts/check-duplicate-arbitrary-values.mjs" />
+scans the codebase for spacing and sizing arbitrary values, compares the tally against a committed
+baseline, and fails only when a value's count grows past that baseline — pre-existing debt does not
+block CI, but new duplication does. Run it directly:
+
+```bash
+pnpm check:duplicate-values
+```
+
+If a growth is intentional (you are about to promote the value to a real token anyway), accept the
+new count explicitly:
+
+```bash
+pnpm check:duplicate-values:update-baseline
+```
+
+## UI primitives vs feature composites
+
+Two tiers of component live under `src/components/`:
+
+- <RepoFile path="src/components/ui" /> holds shadcn-style primitives (`button`, `card`, `badge`,
+  `popover`, …) generated and configured through <RepoFile path="components.json" />. Treat these
+  as the base vocabulary — extend them rather than reinventing a primitive inline.
+- `src/components/features/` and `src/components/shared/` hold composites built out of those
+  primitives for a specific part of the product (the public header and footer, help cards, section
+  templates).
+
+<RepoFile path="components.json" /> pins the shadcn style (`new-york`), the base colour, the CSS
+entry point (<RepoFile path="src/app/globals.css" />), and the import aliases (`@/components`,
+`@/components/ui`, `@/lib`, `@/hooks`) that new primitives are generated against. Regenerate or add
+a primitive through the shadcn CLI so it stays consistent with these settings, instead of
+hand-authoring a component under `ui/`.
+
+## Images always go through `next/image`
+
+Route every image through `next/image` — never a raw `<img>` tag and never a CSS `url(/…)`
+background reference. The two components that currently render images,
+<RepoFile path="src/components/shared/HelpCard.tsx" /> and
+<RepoFile path="src/components/shared/SectionTemplate.tsx" />, both import `Image` from
+`next/image` for this reason. Storybook's Next framework intercepts that import to resolve assets
+correctly under the published `/potrzebnik/storybook/` subpath; a raw `<img src="/…">` bypasses that
+resolution and 404s once the gallery is deployed. See the Testing page for how this is exercised in
+stories.

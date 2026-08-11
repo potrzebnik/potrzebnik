@@ -1,0 +1,41 @@
+---
+title: 0001 — Initial stack and tooling
+description: Back-filled record of the stack the project started on.
+---
+
+import RepoFile from '../../../components/RepoFile.astro';
+
+## Context
+
+This decision log did not exist when the project started, so there is no contemporaneous record
+of why its foundational stack was chosen. This entry back-fills that gap: it records what was
+already true by the time genuine per-decision entries begin at `0002`, so later ADRs have a
+starting point to diff against instead of an unexplained pile of dependencies.
+
+## Decision
+
+The app is a single Next.js App Router project, using React and TypeScript, styled with Tailwind
+CSS utility classes co-located in JSX rather than hand-written component CSS — enforced via
+Stylelint so raw colour literals cannot reappear. UI primitives follow the shadcn-style pattern
+recorded in <RepoFile path="components.json" />. Persistence goes through Drizzle ORM against
+Postgres, with a single fail-fast module owning the database connection URL. Storybook, run
+through Vitest's browser project, is the primary test harness for the component layer; plain
+Vitest projects cover unit and integration tests. Package management runs on pnpm, dependency
+versions pinned in <RepoFile path="package.json" />. Continuous integration and a pre-push hook
+gate merges to `main`.
+
+## Consequences
+
+Choosing Storybook-as-test-harness over a separate component test suite means a component without
+a story is a component without a test — writing the story is not optional busywork. Enforcing
+styling through Stylelint instead of code review convention means a raw colour literal fails the
+build rather than surviving until someone notices it in a PR. Centralizing the database URL in one
+fail-fast module means a missing environment variable surfaces immediately at startup instead of
+as a confusing runtime error deeper in the app. None of these choices were free: they trade a
+small amount of upfront rigidity for removing an entire class of drift that a purely conventional
+approach would eventually let back in.
+
+## Status
+
+Accepted. In effect for the entire lifetime of the project prior to this decision log; not
+revisited by this entry.

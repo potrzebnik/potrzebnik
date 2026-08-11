@@ -1,0 +1,37 @@
+---
+// Import from a content page as:
+//   import RepoFile from '../../components/RepoFile.astro';
+import { existsSync, statSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+
+// Walk up from the docs package to the workspace root. `import.meta.url` is
+// not usable here: Astro bundles this component into `dist/.prerender/`.
+function findRepoRoot(from: string): string {
+  let current = from;
+  while (!existsSync(resolve(current, 'pnpm-workspace.yaml'))) {
+    const parent = dirname(current);
+    if (parent === current) throw new Error('RepoFile: could not locate the workspace root.');
+    current = parent;
+  }
+  return current;
+}
+
+const absolute = resolve(findRepoRoot(process.cwd()), path);
+
+if (!existsSync(absolute)) {
+  throw new Error(
+    `<RepoFile path="${path}" /> points at a path that does not exist in the repository.`
+  );
+}
+
+const kind = statSync(absolute).isDirectory() ? 'tree' : 'blob';
+const href = `https://github.com/potrzebnik/potrzebnik/${kind}/main/${path.replace(/^\.?\//, '').replace(/\/$/, '')}`;
+---
+
+<a href={href} rel="noopener"><code>{path}</code></a>

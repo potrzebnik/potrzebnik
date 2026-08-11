@@ -1,0 +1,33 @@
+---
+title: Deployment & ops
+description: Where potrzebnik and its documentation run.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## This documentation site
+
+This site is built with Astro Starlight and published to GitHub Pages at
+`https://potrzebnik.github.io/potrzebnik/`. The build and deploy steps live
+in <RepoFile path=".github/workflows/docs.yml" />:
+
+- A pull request against `main` triggers a build-only run, which acts as a
+  required check.
+- A push to `main` builds and then deploys.
+- The workflow can also be triggered manually.
+
+The component gallery is built separately by Storybook and copied into this
+same site at `/potrzebnik/storybook/`, so the two are published together as
+one deployment.
+
+## Application CI
+
+The application itself — the Next.js app under this repository's root — runs
+its own checks on every PR and push to `main` through
+<RepoFile path=".github/workflows/ci.yml" />. That workflow verifies the
+application; it does not deploy it.
+
+## Application deployment
+
+The application has no deploy target yet. There is no hosting environment,
+no production database, and no release process beyond the CI checks above.

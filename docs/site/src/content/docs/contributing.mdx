@@ -1,0 +1,81 @@
+---
+title: Contributing
+description: Branches, commits, PRs, and adding a docs page.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Getting assigned
+
+Tickets are assigned by maintainers. Comment on an existing ticket on the
+project board, or contact the project coordinator, before starting work.
+Do not start work on a ticket you have not been assigned.
+
+## Branch naming
+
+Create branches using the pattern `type/#ticket_number-short-description`,
+where `type` is one of `feat`, `fix`, `docs`, `refactor`, `test`, or `chore`.
+
+## Commit messages
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Include the ticket number in at least one commit on the branch, since PRs are
+squash-merged and only one commit needs to carry it through to the final
+squashed commit.
+
+## Opening a pull request
+
+Every change goes through a PR — there are no direct pushes to `main`. Use
+the title format `type: description (#ticket)` and keep each PR small and
+focused on a single logical change.
+
+Before requesting review, run:
+
+```bash
+pnpm run check
+pnpm run lint:fix
+pnpm run format
+```
+
+A PR needs at least one approval before it can merge, and merges are
+squashed unless there is a strong reason not to. The PR template includes a
+`Docs updated, or not needed` checkbox — tick it consciously rather than
+reflexively; leaving stale prose behind is worse than a page that still says
+"TODO."
+
+## Code-quality gates
+
+Git hooks (installed automatically by `pnpm install` via Husky) enforce
+formatting, linting, commit style, and a pre-push suite of type-checking,
+linting, and unit tests. Integration tests and the production build run in
+CI instead, to keep pushes fast. CI runs the full verification suite —
+covering everything the hooks cover plus the build, `format:check`, and
+integration tests — on every PR and push to `main`; it is the authoritative,
+unbypassable gate. See <RepoFile path="package.json" /> for the exact scripts
+each stage runs, and <RepoFile path=".github/workflows/ci.yml" /> for the CI
+job definitions.
+
+## Adding a page to this site
+
+1. Create `docs/site/src/content/docs/<section>/<slug>.mdx`. Always `.mdx`,
+   even for plain prose.
+2. Add frontmatter with exactly `title` and `description`. The description
+   is one line — it doubles as the search snippet.
+3. Write the body starting at `##`. Never write an H1; the page title
+   already renders as one.
+4. Reference every repo path with `<RepoFile path="..." />` rather than a
+   bare backtick path or a relative link.
+5. Add the page to the `sidebar` array in <RepoFile path="docs/site/astro.config.mjs" />,
+   in reading order. A page left out of that array is unreachable, and the
+   build gives no warning that it happened.
+6. Run `pnpm --filter docs build` locally. The internal-links validator
+   fails the build on a broken link or anchor, and `RepoFile` fails it on a
+   path that does not exist.
+7. Tick the `Docs updated, or not needed` checkbox in the PR template.
+
+## Page freshness
+
+Each page footer shows a `lastUpdated` date, sourced from git history. That
+date reflects when the file was last touched, not when its facts were last
+verified — treat an old date as a hint to double-check content, not as proof
+it is still accurate.

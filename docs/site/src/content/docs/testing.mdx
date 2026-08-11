@@ -1,0 +1,93 @@
+---
+title: Testing
+description: The three test projects and how to write tests here.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Three Vitest projects
+
+Tests run as three separate Vitest projects across two config files rather than one flat suite:
+
+- **`storybook`** — configured in <RepoFile path="vitest.config.ts" />, runs every `*.stories.*`
+  file in a real Chromium browser via `@vitest/browser-playwright`. Stories are the primary
+  component test harness in this repo: write a story to cover a component's states, and that story
+  doubles as its test. Run with:
+
+  ```bash
+  pnpm test:storybook
+  ```
+
+- **`unit`** — configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
+  (excluding integration tests) under Node. Run with:
+
+  ```bash
+  pnpm test
+  ```
+
+- **`integration`** — also configured in <RepoFile path="vitest.node.config.ts" />, runs
+  `*.integration.test.ts` files, capped at a single worker with extended hook and test timeouts
+  because each suite spins up real infrastructure. Run with:
+
+  ```bash
+  pnpm test:integration
+  ```
+
+Both `unit` and `integration` resolve the `@` path alias to `src/`, matching the app's
+<RepoFile path="tsconfig.json" /> alias.
+
+## Integration test harnesses
+
+Integration suites do not open a database connection by hand — they use a shared harness under
+<RepoFile path="src/test/postgres-integration-harness.ts" />. `createPostgresIntegrationHarness`
+starts a fresh Postgres Testcontainers instance, runs Drizzle migrations against it, and returns a
+`db` client plus helpers for counting, listing, and truncating tables. `createAuthIntegrationHarness`
+in <RepoFile path="src/test/auth-integration/harness.ts" /> wraps that base harness with
+auth-specific helpers on top.
+
+The typical lifecycle: create the harness once in `beforeAll`, reset the tables it touches in
+`afterEach`, and dispose of it once in `afterAll`.
+
+```ts
+import { afterAll, afterEach, beforeAll, describe, it } from 'vitest';
+
+import { createAuthIntegrationHarness } from '../test/auth-integration/harness';
+
+describe('example integration suite', () => {
+  let harness: Awaited<ReturnType<typeof createAuthIntegrationHarness>>;
+
+  beforeAll(async () => {
+    harness = await createAuthIntegrationHarness();
+  });
+
+  afterEach(async () => {
+    await harness.resetAuthTables();
+  });
+
+  afterAll(async () => {
+    await harness.dispose();
+  });
+
+  it('uses migrated db', async () => {
+    const counts = await harness.getAuthCounts();
+    // assertions...
+  });
+});
+```
+
+The `integration` Vitest project loads <RepoFile path="src/test/setup-integration.ts" /> before any
+suite runs, which applies base auth test environment settings shared by every integration test.
+
+## Images in stories
+
+Route every image through `next/image`, never a raw `{'<img>'}` tag or a CSS `url(/…)` reference.
+Storybook is published as a static site under `/potrzebnik/storybook/`, and only `next/image` goes
+through the loader path that resolves correctly at that subpath — a raw `{'<img>'}` or `url(/…)`
+resolves against the site origin instead and breaks once deployed. See the Tokens & styling rules
+page for where this is wired in.
+
+## Type-checking, linting, and formatting
+
+`pnpm check` runs the full local gate in one command: type-checking, ESLint, Stylelint, Prettier's
+check mode, and the duplicate-arbitrary-value scan (see the Tokens & styling rules page). Run it
+before opening a pull request; it mirrors what CI enforces.
