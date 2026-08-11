@@ -42,10 +42,11 @@ the formatting that `lint:fix` and `format` are about to repair. Fix and format,
 
 A PR needs at least one approval before it can merge, and merges are
 squashed unless there is a strong reason not to. The PR template has a
-`Testing` section: say how the change was verified beyond CI, since CI proves
-only that the suite passed, not that the case you fixed is covered. Update the
-prose the change invalidates in the same PR; leaving stale prose behind is
-worse than a page that still says "TODO."
+`Testing` section: say how the change was verified beyond CI, and name what
+covers it - the stories or tests added or updated, and anything left uncovered
+and why. CI proves only that the suite passed, not that the new behaviour is
+in it. Update the prose the change invalidates in the same PR; leaving stale
+prose behind is worse than a page that still says "TODO."
 
 ## Code-quality gates
 
