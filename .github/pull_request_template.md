@@ -1,7 +1,8 @@
 ## What
 
-<!-- One paragraph: what changes and why. -->
+<!-- One paragraph: what changes and why. Closes #<ticket>. -->
 
-## Checklist
+## Testing
 
-- [ ] Docs updated, or not needed
+<!-- How this was verified beyond CI: commands run, cases exercised, what was
+     checked by hand and where. -->

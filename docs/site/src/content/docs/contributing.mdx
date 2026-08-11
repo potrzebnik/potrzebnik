@@ -41,10 +41,11 @@ Order matters. `pnpm run check` includes `prettier --check`, so running it first
 the formatting that `lint:fix` and `format` are about to repair. Fix and format, then verify.
 
 A PR needs at least one approval before it can merge, and merges are
-squashed unless there is a strong reason not to. The PR template includes a
-`Docs updated, or not needed` checkbox: tick it consciously rather than
-reflexively; leaving stale prose behind is worse than a page that still says
-"TODO."
+squashed unless there is a strong reason not to. The PR template has a
+`Testing` section: say how the change was verified beyond CI, since CI proves
+only that the suite passed, not that the case you fixed is covered. Update the
+prose the change invalidates in the same PR; leaving stale prose behind is
+worse than a page that still says "TODO."
 
 ## Code-quality gates
 
@@ -120,7 +121,7 @@ only, so the sidebar's Component gallery link 404s there. Open
 check` and regenerates the agents index, so a frontmatter or type error
    fails it too. The internal-links validator fails the build on a broken link
    or anchor, and `RepoFile` fails it on a path that does not exist.
-7. Tick the `Docs updated, or not needed` checkbox in the PR template.
+7. Note the docs build in the PR's `Testing` section.
 
 ## Page freshness
 
