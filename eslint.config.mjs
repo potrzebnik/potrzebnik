@@ -20,6 +20,8 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
     '.storybook/**',
     'storybook-static/**',
+    // The docs site is a separate workspace package with its own toolchain.
+    'docs/site/**',
   ]),
   eslintPluginPrettier,
   ...storybook.configs['flat/recommended'],

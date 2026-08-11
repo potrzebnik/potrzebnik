@@ -30,7 +30,9 @@ export default defineConfig({
             { label: 'Tokens & styling rules', link: '/design-system/tokens/' },
             {
               label: 'Component gallery',
-              link: '/potrzebnik/storybook/',
+              // Starlight prepends `base`, so this must not repeat it. Resolves
+              // to /potrzebnik/storybook/, where the Storybook build is copied.
+              link: '/storybook/',
               attrs: { target: '_blank' },
               badge: { text: 'Storybook', variant: 'note' },
             },

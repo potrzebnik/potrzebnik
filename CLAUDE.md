@@ -1,34 +1,38 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) when working in this repository.
 
-It is intentionally thin: it **points to** the canonical sources and records only the gotchas you can't infer from them. Read the linked files directly — do not duplicate their contents here, so there is only one thing to keep up to date.
+This file is deliberately thin. It records only the gotchas that are cheap to violate and
+expensive to catch, and points at the canonical sources for everything else. Do not duplicate
+their contents here.
 
-## Commands
+## Gotchas — do not violate these
 
-- Scripts and dependency versions: [`package.json`](./package.json) (canonical). Package manager is **pnpm**; Node + Docker required.
-- Local bootstrap and DB migration steps: [`README.md`](./README.md) → _Getting Started_ / _Database Migrations_.
+- `src/db/resolve-database-url.ts` is the single source of the database connection URL, for both
+  runtime and `drizzle.config.ts`. It **throws fast** on missing environment variables. Preserve
+  that; never silently default a secret.
+- No raw colour literals in styles. Styling is Tailwind utility classes co-located in JSX — no
+  hand-written component CSS, no BEM classes. `.stylelintrc.json` enforces it.
+- Stories are the primary component test harness. A change to a component is tested by its
+  `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
+- Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
+  Storybook, which is served under a URL subpath.
+- Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and
+  `./README.md` are the only exceptions, because a tool reads each at a fixed path.
 
-## Architecture
+## Where to look
 
-Next.js App Router under `src/app/` with two route groups: `(public)/` and `(dashboard)/dashboard`. Path alias `@/*` → `src/*`. UI primitives live in `src/components/ui/` (shadcn-style, see [`components.json`](./components.json)); feature composites in `src/components/features/`. Tailwind v4 via `@tailwindcss/postcss`.
+Documentation source, by topic:
 
-Styling is Tailwind utility classes co-located in JSX — no hand-written component CSS/BEM classes or raw color literals; enforced by [`.stylelintrc.json`](./.stylelintrc.json).
+- Running the project locally: `./docs/site/src/content/docs/index.mdx`
+- Code layout and why: `./docs/site/src/content/docs/architecture.mdx`
+- Schema and migrations: `./docs/site/src/content/docs/database.mdx`
+- Authentication: `./docs/site/src/content/docs/auth.mdx`
+- Tokens and styling rules: `./docs/site/src/content/docs/design-system/tokens.mdx`
+- Tests and the three vitest projects: `./docs/site/src/content/docs/testing.mdx`
+- Branches, commits, PRs, and quality gates: `./docs/site/src/content/docs/contributing.mdx`
+- Repo-local agents and skills: `./docs/site/src/content/docs/agents/usage.mdx`
+- Deployment: `./docs/site/src/content/docs/deployment.mdx`
 
-### Database
-
-Drizzle ORM + `pg` against Postgres. Config: [`drizzle.config.ts`](./drizzle.config.ts); compose service in [`compose.yml`](./compose.yml); client in `src/db/index.ts`; migrations in `./drizzle`.
-
-- `src/db/resolve-database-url.ts` is the single source for the connection URL (runtime + `drizzle.config.ts`). It **throws fast** on missing vars — preserve this; do not silently default secrets.
-
-### Storybook + Vitest
-
-Storybook (`.storybook/`) is the test surface. See [`vitest.config.ts`](./vitest.config.ts): one project (`storybook`) runs every `*.stories.*` in a real Chromium browser via `@vitest/browser-playwright`. Treat stories as the primary component test harness.
-
-### Repo-local agents
-
-`.claude/agents/` ships `code-reviewer.md` and `frontend-reviewer.md` — invoke via the Agent tool when reviewing diffs. See [`.claude/README.md`](./.claude/README.md).
-
-## Contribution rules
-
-Branch naming, commit conventions, PR rules, and code-quality gates: [`README.md`](./README.md) → _Contributing_.
+Scripts and dependency versions are canonical in `./package.json`. Agent and skill definitions are
+canonical in `./.claude/`.
