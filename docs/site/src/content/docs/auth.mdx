@@ -34,12 +34,20 @@ specifically:
 - `GOOGLE_AUTH_ENABLED`: `true` or `false`. Local development works without Google credentials
   when this is `false`.
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`: required only when `GOOGLE_AUTH_ENABLED=true`.
+- `EMAIL_SENDING_ENABLED`: `true` or `false`. Local development works without Resend credentials
+  when this is `false`.
+- `RESEND_API_KEY` and `RESEND_FROM_EMAIL`: required only when
+  `EMAIL_SENDING_ENABLED=true`.
+- `RESEND_FROM_NAME`: an optional sender name when email delivery is enabled.
 - The Postgres variables described on the [Database](/potrzebnik/database/) page.
 
-`getAuthEnv` in <RepoFile path="src/lib/auth-config.ts" /> reads and validates these, and throws
-on a missing or malformed value. It runs lazily rather than at process startup: `createAuth` calls
-it, and `createAuth` runs when <RepoFile path="src/lib/auth.ts" /> is first imported. It is still
-the same fail-fast contract as the database connection URL: do not weaken it.
+`getAuthEnv` in <RepoFile path="src/lib/auth-env.ts" /> reads and validates these, and throws
+on a missing or malformed value. <RepoFile path="src/lib/auth.ts" /> calls it when that module is
+first imported, then passes the validated settings to `createAuth`. It is still the same fail-fast
+contract as the database connection URL: do not weaken it.
+
+See the [Auth emails](/potrzebnik/auth-emails/) page for the differences between disabled and
+enabled email delivery, the client calls, and the underlying Better Auth endpoints.
 
 ## Google Cloud redirect URIs
 
@@ -204,10 +212,13 @@ export default async function DashboardLayout({
 An email/password sign-up follows this sequence:
 
 1. The browser calls `POST /api/auth/sign-up/email` with an email, password, and name.
-2. The route hashes the password, inserts the `user` and credential `account` rows, creates a
-   session, and sets the session cookie.
-3. `POST /api/auth/sign-in/email` verifies a later attempt against the stored hash and issues a
-   fresh session the same way. A bad password returns a 401 and no cookie.
+2. The route hashes the password and inserts the `user` and credential `account` rows.
+3. With auth emails disabled, sign-up creates a session and sets its cookie immediately. With
+   auth emails enabled, it creates a verification token, sends the verification email, and does
+   not issue a session until the address is verified.
+4. `POST /api/auth/sign-in/email` verifies a later attempt against the stored hash and issues a
+   fresh session. A bad password returns a 401 and no cookie; an unverified address returns a 403
+   when auth emails are enabled.
 
 A Google sign-in follows this sequence:
 
