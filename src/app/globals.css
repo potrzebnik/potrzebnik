@@ -62,6 +62,11 @@
   --color-org-signup-btn-bg: var(--org-signup-btn-bg);
   --color-org-signup-btn-bg-hover: var(--org-signup-btn-bg-hover);
   --color-accent-blue: var(--accent-blue);
+  --color-benefits-strip-band-bg: var(--benefits-strip-band-bg);
+  --color-benefits-strip-border: var(--benefits-strip-border);
+  --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
+  --color-benefits-strip-fg: var(--benefits-strip-fg);
+  --animate-benefits-marquee: benefits-marquee 32s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -143,6 +148,12 @@
   --org-signup-fg: #0a0a0a;
   --org-signup-btn-bg: #ffd73a;
   --org-signup-btn-bg-hover: #f5c800;
+
+  /* Benefits tags marquee strip, between the org-signup CTA and the footer. */
+  --benefits-strip-band-bg: oklch(1 0 0);
+  --benefits-strip-border: oklch(0 0 0);
+  --benefits-strip-pill-bg: #dbeafe;
+  --benefits-strip-fg: #0a0a0a;
 }
 
 .dark {
@@ -177,6 +188,15 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes benefits-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @layer base {
