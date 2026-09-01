@@ -14,13 +14,10 @@ describe('auth email templates', () => {
       createVerificationEmail({
         to: 'user@example.com',
         url,
-        token: 'test-token',
       }),
     ).toEqual({
       purpose: 'verification',
       to: 'user@example.com',
-      url,
-      token: 'test-token',
       subject: 'Verify your Potrzebnik email',
       html: '<p>Verify your email address by opening this link:</p><p><a href="https://example.com/api/auth/verify-email?token=test-token&amp;next=&lt;dashboard&gt;&quot;">https://example.com/api/auth/verify-email?token=test-token&amp;next=&lt;dashboard&gt;&quot;</a></p>',
       text: `Verify your email address by opening this link: ${url}`,
@@ -35,13 +32,10 @@ describe('auth email templates', () => {
       createPasswordResetEmail({
         to: 'user@example.com',
         url,
-        token: 'test-token',
       }),
     ).toEqual({
       purpose: 'password-reset',
       to: 'user@example.com',
-      url,
-      token: 'test-token',
       subject: 'Reset your Potrzebnik password',
       html: '<p>Reset your password by opening this link:</p><p><a href="https://example.com/reset-password/test-token?next=&lt;dashboard&gt;&amp;from=email">https://example.com/reset-password/test-token?next=&lt;dashboard&gt;&amp;from=email</a></p>',
       text: `Reset your password by opening this link: ${url}`,

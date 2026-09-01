@@ -50,23 +50,21 @@ function createEmailAuthOptions(emailSender?: EmailSender): EmailAuthOptions {
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,
-      sendResetPassword: ({ user, url, token }) =>
+      sendResetPassword: ({ user, url }) =>
         emailSender.send(
           createPasswordResetEmail({
             to: user.email,
             url,
-            token,
           }),
         ),
     },
     emailVerification: {
       sendOnSignUp: true,
-      sendVerificationEmail: ({ user, url, token }) =>
+      sendVerificationEmail: ({ user, url }) =>
         emailSender.send(
           createVerificationEmail({
             to: user.email,
             url,
-            token,
           }),
         ),
     },

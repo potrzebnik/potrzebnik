@@ -42,6 +42,16 @@ function createFakeEmailSender() {
   };
 }
 
+function extractEmailUrl(message: AuthEmailMessage) {
+  const url = message.text.match(/https?:\/\/\S+/)?.[0];
+
+  if (!url) {
+    throw new Error(`No URL found in ${message.purpose} email text`);
+  }
+
+  return new URL(url);
+}
+
 function createJsonPostRequest(pathname: string, body: unknown) {
   return createAuthRequest(pathname, {
     method: 'POST',
@@ -270,11 +280,7 @@ describe('auth integration', () => {
 
     const blockedSignInResponse = await signInWithEmail(auth);
     const verifyResponse = await auth.handler(
-      createAuthRequest(
-        `/api/auth/verify-email?token=${encodeURIComponent(
-          verificationEmail.token,
-        )}`,
-      ),
+      new Request(extractEmailUrl(verificationEmail)),
     );
     const verifiedSignInResponse = await signInWithEmail(auth);
     const verifiedSignInData = await verifiedSignInResponse.json();
@@ -282,7 +288,8 @@ describe('auth integration', () => {
     const resetData = await resetResponse.json();
 
     expect(blockedSignInResponse.status).toBe(403);
-    expect(verifyResponse.status).toBe(200);
+    expect(verifyResponse.status).toBe(302);
+    expect(verifyResponse.headers.get('location')).toBe('/');
     expect(verifiedSignInResponse.status).toBe(200);
     expect(verifiedSignInData).toMatchObject({
       user: {
@@ -298,7 +305,11 @@ describe('auth integration', () => {
       purpose: 'password-reset',
       to: TEST_CREDENTIAL_USER.email,
     });
-    expect(fakeEmail.messages[1].url).toContain('/reset-password/');
+    const passwordResetUrl = extractEmailUrl(fakeEmail.messages[1]);
+    expect(passwordResetUrl.pathname).toContain('/reset-password/');
+    expect(passwordResetUrl.searchParams.get('callbackURL')).toBe(
+      '/reset-password',
+    );
     await expect(harness.getAuthCounts()).resolves.toEqual({
       account: 1,
       session: 1,

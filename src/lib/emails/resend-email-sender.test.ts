@@ -9,8 +9,6 @@ import {
 const TEST_EMAIL_MESSAGE: AuthEmailMessage = Object.freeze({
   purpose: 'verification',
   to: 'user@example.com',
-  url: 'https://example.com/verify',
-  token: 'test-token',
   subject: 'Test subject',
   html: '<p>Test HTML</p>',
   text: 'Test text',
