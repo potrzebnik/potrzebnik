@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthEmailMessage } from './email-sender';
 import {
@@ -16,18 +16,20 @@ const TEST_EMAIL_MESSAGE: AuthEmailMessage = Object.freeze({
   text: 'Test text',
 });
 
+const sendEmail = vi.fn<ResendEmailClient['emails']['send']>();
+const resend: ResendEmailClient = {
+  emails: {
+    send: sendEmail,
+  },
+};
+
+beforeEach(() => {
+  sendEmail.mockReset();
+  sendEmail.mockResolvedValue({ error: null });
+});
+
 describe('ResendEmailSender', () => {
   it('sends auth email messages through the injected Resend client', async () => {
-    const sentMessages: unknown[] = [];
-    const resend: ResendEmailClient = {
-      emails: {
-        async send(message) {
-          sentMessages.push(message);
-
-          return { error: null };
-        },
-      },
-    };
     const sender = new ResendEmailSender(resend, {
       fromEmail: 'noreply@example.com',
       fromName: 'Potrzebnik',
@@ -35,53 +37,35 @@ describe('ResendEmailSender', () => {
 
     await sender.send(TEST_EMAIL_MESSAGE);
 
-    expect(sentMessages).toEqual([
-      {
-        from: 'Potrzebnik <noreply@example.com>',
-        to: 'user@example.com',
-        subject: 'Test subject',
-        html: '<p>Test HTML</p>',
-        text: 'Test text',
-      },
-    ]);
+    expect(sendEmail).toHaveBeenCalledWith({
+      from: 'Potrzebnik <noreply@example.com>',
+      to: 'user@example.com',
+      subject: 'Test subject',
+      html: '<p>Test HTML</p>',
+      text: 'Test text',
+    });
   });
 
   it('uses the bare from email when no from name is configured', async () => {
-    const sentMessages: unknown[] = [];
-    const resend: ResendEmailClient = {
-      emails: {
-        async send(message) {
-          sentMessages.push(message);
-
-          return { error: null };
-        },
-      },
-    };
     const sender = new ResendEmailSender(resend, {
       fromEmail: 'noreply@example.com',
     });
 
     await sender.send(TEST_EMAIL_MESSAGE);
 
-    expect(sentMessages).toEqual([
+    expect(sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         from: 'noreply@example.com',
       }),
-    ]);
+    );
   });
 
   it('fails with context when the injected Resend client returns an error', async () => {
-    const resend: ResendEmailClient = {
-      emails: {
-        async send() {
-          return {
-            error: {
-              message: 'Invalid API key',
-            },
-          };
-        },
+    sendEmail.mockResolvedValue({
+      error: {
+        message: 'Invalid API key',
       },
-    };
+    });
     const sender = new ResendEmailSender(resend, {
       fromEmail: 'noreply@example.com',
     });
