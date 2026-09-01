@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { createPasswordResetEmail } from '@/lib/emails';
-import { createVerificationEmail } from '@/lib/emails';
+import {
+  createPasswordResetEmail,
+  createVerificationEmail,
+} from '@/lib/emails';
 
 describe('auth email templates', () => {
   it('creates a verification email with configurable subject and content in one template file', () => {

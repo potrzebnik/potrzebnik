@@ -1,4 +1,4 @@
-import type { AuthEmailMessage } from '@/lib/emails';
+import type { AuthEmailMessage } from '../email-sender';
 import { escapeHtml } from './shared';
 
 export function createVerificationEmail({
