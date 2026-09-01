@@ -8,8 +8,83 @@ import {
   signInWithGoogle,
   createGoogleSignInRequestBody,
   TEST_GOOGLE_USER,
-} from '../test/auth-integration/google';
-import { createAuthIntegrationHarness } from '../test/auth-integration/harness';
+} from '@/test/auth-integration/google';
+import { createAuthIntegrationHarness } from '@/test/auth-integration/harness';
+import type { AuthEmailMessage, EmailSender } from './emails';
+
+type AuthHandler = {
+  handler: (request: Request) => Promise<Response>;
+};
+
+const TEST_CREDENTIAL_USER = Object.freeze({
+  name: 'Credential User',
+  email: 'credential@example.com',
+  password: 'TestPassword123!',
+});
+
+const EMAIL_ENABLED_ENV: Partial<NodeJS.ProcessEnv> = {
+  EMAIL_SENDING_ENABLED: 'true',
+  RESEND_API_KEY: 'test-resend-api-key',
+  RESEND_FROM_EMAIL: 'noreply@example.com',
+};
+
+function createFakeEmailSender() {
+  const messages: AuthEmailMessage[] = [];
+  const sender: EmailSender = {
+    async send(message) {
+      messages.push(message);
+    },
+  };
+
+  return {
+    messages,
+    sender,
+  };
+}
+
+function extractEmailUrl(message: AuthEmailMessage) {
+  const url = message.text.match(/https?:\/\/\S+/)?.[0];
+
+  if (!url) {
+    throw new Error(`No URL found in ${message.purpose} email text`);
+  }
+
+  return new URL(url);
+}
+
+function createJsonPostRequest(pathname: string, body: unknown) {
+  return createAuthRequest(pathname, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+function signUpWithEmail(auth: AuthHandler) {
+  return auth.handler(
+    createJsonPostRequest('/api/auth/sign-up/email', TEST_CREDENTIAL_USER),
+  );
+}
+
+function signInWithEmail(auth: AuthHandler) {
+  return auth.handler(
+    createJsonPostRequest('/api/auth/sign-in/email', {
+      email: TEST_CREDENTIAL_USER.email,
+      password: TEST_CREDENTIAL_USER.password,
+    }),
+  );
+}
+
+function requestPasswordReset(auth: AuthHandler) {
+  return auth.handler(
+    createJsonPostRequest('/api/auth/request-password-reset', {
+      email: TEST_CREDENTIAL_USER.email,
+      redirectTo: '/reset-password',
+    }),
+  );
+}
 
 describe('auth integration', () => {
   let harness: Awaited<ReturnType<typeof createAuthIntegrationHarness>>;
@@ -154,6 +229,93 @@ describe('auth integration', () => {
       linkedAccounts.rows.map((account) => account.user_id),
     );
     expect(linkedUserIds.size).toBe(1);
+  });
+
+  it('keeps email/password sign-up working and password reset disabled when email sending is disabled', async () => {
+    const auth = harness.createTestAuth();
+
+    const signUpResponse = await signUpWithEmail(auth);
+    const signUpData = await signUpResponse.json();
+    const resetResponse = await requestPasswordReset(auth);
+
+    expect(signUpResponse.status).toBe(200);
+    expect(signUpData).toMatchObject({
+      user: {
+        email: TEST_CREDENTIAL_USER.email,
+        name: TEST_CREDENTIAL_USER.name,
+      },
+    });
+    expect(resetResponse.status).toBe(400);
+    await expect(harness.getAuthCounts()).resolves.toEqual({
+      account: 1,
+      session: 1,
+      user: 1,
+      verification: 0,
+    });
+  });
+
+  it('sends verification and password reset emails when email sending is enabled', async () => {
+    const fakeEmail = createFakeEmailSender();
+    const auth = harness.createTestAuth({
+      env: EMAIL_ENABLED_ENV,
+      emailSender: fakeEmail.sender,
+    });
+
+    const signUpResponse = await signUpWithEmail(auth);
+    const signUpData = await signUpResponse.json();
+    const verificationEmail = fakeEmail.messages[0];
+
+    expect(signUpResponse.status).toBe(200);
+    expect(signUpData).toMatchObject({
+      token: null,
+      user: {
+        email: TEST_CREDENTIAL_USER.email,
+      },
+    });
+    expect(fakeEmail.messages).toHaveLength(1);
+    expect(verificationEmail).toMatchObject({
+      purpose: 'verification',
+      to: TEST_CREDENTIAL_USER.email,
+    });
+
+    const blockedSignInResponse = await signInWithEmail(auth);
+    const verifyResponse = await auth.handler(
+      new Request(extractEmailUrl(verificationEmail)),
+    );
+    const verifiedSignInResponse = await signInWithEmail(auth);
+    const verifiedSignInData = await verifiedSignInResponse.json();
+    const resetResponse = await requestPasswordReset(auth);
+    const resetData = await resetResponse.json();
+
+    expect(blockedSignInResponse.status).toBe(403);
+    expect(verifyResponse.status).toBe(302);
+    expect(verifyResponse.headers.get('location')).toBe('/');
+    expect(verifiedSignInResponse.status).toBe(200);
+    expect(verifiedSignInData).toMatchObject({
+      user: {
+        email: TEST_CREDENTIAL_USER.email,
+      },
+    });
+    expect(resetResponse.status).toBe(200);
+    expect(resetData).toMatchObject({
+      status: true,
+    });
+    expect(fakeEmail.messages).toHaveLength(2);
+    expect(fakeEmail.messages[1]).toMatchObject({
+      purpose: 'password-reset',
+      to: TEST_CREDENTIAL_USER.email,
+    });
+    const passwordResetUrl = extractEmailUrl(fakeEmail.messages[1]);
+    expect(passwordResetUrl.pathname).toContain('/reset-password/');
+    expect(passwordResetUrl.searchParams.get('callbackURL')).toBe(
+      '/reset-password',
+    );
+    await expect(harness.getAuthCounts()).resolves.toEqual({
+      account: 1,
+      session: 1,
+      user: 1,
+      verification: 1,
+    });
   });
 
   it('returns session data through the Better Auth request handler path', async () => {

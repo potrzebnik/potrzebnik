@@ -32,11 +32,19 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-The defaults work without Google OAuth keys; local development runs with
-`GOOGLE_AUTH_ENABLED=false`. To exercise Google sign-in locally, set
-`GOOGLE_AUTH_ENABLED=true` along with `GOOGLE_CLIENT_ID` and
-`GOOGLE_CLIENT_SECRET` in `.env`, and register the local redirect URI in
-Google Cloud. See the Auth & OAuth page for the full flow.
+The defaults work without Google OAuth keys or Resend credentials; local
+development runs with `GOOGLE_AUTH_ENABLED=false` and
+`EMAIL_SENDING_ENABLED=false`.
+
+To exercise Google sign-in locally, set `GOOGLE_AUTH_ENABLED=true` along with
+`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`, and register the local
+redirect URI in Google Cloud. See [Auth & OAuth](/potrzebnik/auth/) for the full
+flow.
+
+To exercise verification and password-reset emails, set
+`EMAIL_SENDING_ENABLED=true`, `RESEND_API_KEY`, and `RESEND_FROM_EMAIL`.
+`RESEND_FROM_NAME` is optional. See [Auth emails](/potrzebnik/auth-emails/) for
+setup and behavior.
 
 ## Start the database and dev server
 

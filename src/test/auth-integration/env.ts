@@ -4,6 +4,10 @@ export const AUTH_MANAGED_ENV_KEYS = [
   'GOOGLE_AUTH_ENABLED',
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
+  'EMAIL_SENDING_ENABLED',
+  'RESEND_API_KEY',
+  'RESEND_FROM_EMAIL',
+  'RESEND_FROM_NAME',
 ] as const;
 
 export const AUTH_TEST_ENV = Object.freeze({
@@ -12,6 +16,7 @@ export const AUTH_TEST_ENV = Object.freeze({
   GOOGLE_AUTH_ENABLED: 'true',
   GOOGLE_CLIENT_ID: 'test-google-client-id',
   GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
+  EMAIL_SENDING_ENABLED: 'false',
 });
 
 export function applyBaseIntegrationEnv(env: NodeJS.ProcessEnv = process.env) {
@@ -19,10 +24,11 @@ export function applyBaseIntegrationEnv(env: NodeJS.ProcessEnv = process.env) {
 }
 
 export function createIntegrationEnv(
-  env: NodeJS.ProcessEnv = process.env,
+  overrides: Partial<NodeJS.ProcessEnv> = {},
 ): NodeJS.ProcessEnv {
   return {
-    ...env,
+    ...process.env,
     ...AUTH_TEST_ENV,
+    ...overrides,
   };
 }

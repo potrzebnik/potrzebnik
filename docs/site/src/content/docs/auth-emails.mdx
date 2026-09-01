@@ -1,0 +1,110 @@
+---
+title: Auth emails
+description: Configure optional verification and password-reset email delivery through Resend.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+Auth email delivery is opt-in. <RepoFile path="src/lib/auth-config.ts" /> wires it into Better
+Auth, and <RepoFile path="src/lib/emails" /> provides the Resend sender and message templates.
+
+## Local configuration
+
+The default in <RepoFile path=".env.example" /> disables email delivery:
+
+```env
+EMAIL_SENDING_ENABLED=false
+```
+
+In this mode, the app starts without Resend credentials. Email/password sign-up and sign-in still
+work, users do not need to verify their addresses, and no verification or password-reset email is
+sent. `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `RESEND_FROM_NAME` are not required.
+
+Enable delivery with:
+
+```env
+EMAIL_SENDING_ENABLED=true
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=noreply@example.com
+RESEND_FROM_NAME=Potrzebnik
+```
+
+`RESEND_API_KEY` and `RESEND_FROM_EMAIL` are required in this mode. `RESEND_FROM_NAME` is optional;
+when omitted, messages use the email address alone as the sender.
+
+With delivery enabled, sign-up sends a verification email and credential login is blocked until
+the address is verified. Password-reset emails are also enabled. Better Auth stores verification
+and reset tokens in the existing `verification` table defined in
+
+<RepoFile path="src/db/schema/auth.ts" />.
+
+## Client usage
+
+Use the existing Better Auth client from <RepoFile path="src/lib/auth-client.ts" />:
+
+```ts
+import { authClient } from '@/lib/auth-client';
+```
+
+Sign-up sends the verification email automatically when delivery is enabled:
+
+```ts
+await authClient.signUp.email({
+  name,
+  email,
+  password,
+  callbackURL: '/dashboard',
+});
+```
+
+An unverified user receives a `403` response when attempting to sign in with email delivery
+enabled:
+
+```ts
+await authClient.signIn.email({
+  email,
+  password,
+});
+```
+
+Request a password-reset email, then set the new password after the user opens its link and the UI
+receives a reset token:
+
+```ts
+await authClient.requestPasswordReset({
+  email,
+  redirectTo: '/reset-password',
+});
+
+await authClient.resetPassword({
+  token,
+  newPassword,
+});
+```
+
+Resend a verification email manually when needed:
+
+```ts
+await authClient.sendVerificationEmail({
+  email,
+  callbackURL: '/dashboard',
+});
+```
+
+## Endpoints
+
+The email flows use the Better Auth handlers already mounted under `/api/auth/*`:
+
+- `POST /api/auth/sign-up/email`
+- `POST /api/auth/sign-in/email`
+- `GET /api/auth/verify-email?token=...`
+- `POST /api/auth/request-password-reset`
+- `GET /api/auth/reset-password/:token`
+- `POST /api/auth/reset-password`
+
+## Changing templates
+
+Verification, password-reset, and shared template code live under
+
+<RepoFile path="src/lib/emails/templates" />. Change the files there rather than
+formatting email content in the auth configuration or route handlers.
