@@ -15,6 +15,11 @@ their contents here.
   hand-written component CSS, no BEM classes. `.stylelintrc.json` enforces it.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
+- No `.tsx` file in `src/components/ui/` or `src/components/shared/` ships without a co-located
+  `*.stories.tsx`; `scripts/check-stories.mjs` enforces it in `pnpm check`.
+- A story pins a viewport only by a key defined in `parameters.viewport.options` in
+  `.storybook/preview.tsx` — an unknown key silently falls back to 1200px and tests the wrong
+  layout; `scripts/check-story-viewports.mjs` enforces it in `pnpm check`.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and

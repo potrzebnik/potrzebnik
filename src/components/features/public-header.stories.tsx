@@ -8,20 +8,6 @@ const meta = {
   component: PublicHeader,
   parameters: {
     layout: 'fullscreen',
-    viewport: {
-      options: {
-        '390-844': {
-          name: 'Mobile 390x844',
-          type: 'mobile',
-          styles: { width: '390px', height: '844px' },
-        },
-        '1280-800': {
-          name: 'Desktop 1280x800',
-          type: 'desktop',
-          styles: { width: '1280px', height: '800px' },
-        },
-      },
-    },
   },
 } satisfies Meta<typeof PublicHeader>;
 
