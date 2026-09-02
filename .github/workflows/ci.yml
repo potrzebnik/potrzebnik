@@ -28,20 +28,8 @@ jobs:
         uses: ./.github/actions/setup
 
       # Cheap static checks first so obvious failures stop the job before `build`.
-      - name: Type-check
-        run: pnpm type-check
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Lint CSS
-        run: pnpm lint:css
-
-      - name: Check duplicate arbitrary values
-        run: pnpm check:duplicate-values
-
-      - name: Format check
-        run: pnpm format:check
+      - name: Quality gates
+        run: pnpm check
 
       # Reuse Next.js compiler artifacts across runs. Key on lockfile + source so a
       # source change reuses the closest prior cache (restore-key) instead of going cold.
