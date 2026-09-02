@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChevronDown, Menu, X } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import BrandMark from '@/components/shared/BrandMark';
 import { Button } from '@/components/ui/button';
 
 const navigationItems = [
@@ -24,14 +25,8 @@ export function PublicHeader() {
       <div className="bg-header-bg-mobile relative md:hidden">
         <div className="relative flex h-[60px] items-center">
           <div className="flex h-9 w-full items-center justify-between px-5">
-            <Link
-              href="/"
-              className="text-header-fg flex h-9 items-center gap-[20px]"
-            >
-              <span className="bg-header-fg h-[25px] w-[25px] rounded-full" />
-              <span className="inline-flex h-[25px] items-center text-[20px] leading-none font-semibold">
-                Potrzebnik
-              </span>
+            <Link href="/" className="text-header-fg flex h-9 items-center">
+              <BrandMark variant="header" />
             </Link>
             <Button
               id="navi-bar-icon-mobile"
@@ -105,14 +100,8 @@ export function PublicHeader() {
       <div className="border-header-rule hidden border-b md:block">
         <div className="bg-header-bg mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between gap-[15px] px-[100px] pt-5 pb-[25px]">
           <div className="flex h-9 w-[925px] items-center gap-[65px]">
-            <Link
-              href="/"
-              className="text-header-fg flex h-9 items-center gap-[20px]"
-            >
-              <span className="bg-header-fg h-[25px] w-[25px] rounded-full" />
-              <span className="text-[20px] leading-[25px] font-semibold">
-                Potrzebnik
-              </span>
+            <Link href="/" className="text-header-fg flex h-9 items-center">
+              <BrandMark variant="header" />
             </Link>
 
             <nav aria-label="Nawigacja główna">
