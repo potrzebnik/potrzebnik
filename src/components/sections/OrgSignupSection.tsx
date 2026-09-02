@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import SectionShell from '@/components/shared/SectionShell';
 import { Button } from '@/components/ui/button';
 
 interface Asset {
@@ -78,7 +79,7 @@ const BODY =
 
 export default function OrgSignupSection() {
   return (
-    <section className="relative w-full overflow-hidden py-12 lg:py-24">
+    <SectionShell variant="bleed" rhythm="compact">
       {/* ---------- Mobile (< lg): stepped panel + notched collage ---------- */}
       <div className="lg:hidden">
         {/* Normalized clip-path for the child photo's top notch (Figma boy card).
@@ -202,6 +203,6 @@ export default function OrgSignupSection() {
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 }

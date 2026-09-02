@@ -1,3 +1,4 @@
+import SectionShell from '@/components/shared/SectionShell';
 import StepItem from '@/components/shared/StepItem';
 import Image from 'next/image';
 
@@ -30,7 +31,7 @@ const steps: Step[] = [
 
 export default function StepsSection() {
   return (
-    <section className="container mx-auto px-6 py-14 sm:py-24">
+    <SectionShell>
       <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
         <Image
           width={530}
@@ -50,6 +51,6 @@ export default function StepsSection() {
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 }
