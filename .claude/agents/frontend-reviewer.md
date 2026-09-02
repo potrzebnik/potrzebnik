@@ -88,7 +88,7 @@ Emit findings as a single YAML document. No prose around it. The `mentor-review`
 ```yaml
 findings:
   - severity: blocker # blocker | major | nit
-    file: src/components/features/public-header.tsx
+    file: src/components/features/PublicHeader.tsx
     lines: '27-27'
     title: target="_blank" without rel
     principle: a11y-external-rel # rule-id from the Rules catalog above
