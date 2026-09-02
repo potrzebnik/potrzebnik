@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, screen, userEvent, within } from 'storybook/test';
+
 import BadgeGroup from '@/components/shared/BadgeGroup';
 import { BADGES } from '@/lib/constants';
 
@@ -41,6 +43,13 @@ export const OverflowBadges: Story = {
       BADGES.URGENT,
       BADGES.EXPIRING,
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole('button', { name: /^\+\d+$/ }));
+
+    await expect(await screen.findByRole('dialog')).toBeVisible();
   },
 };
 

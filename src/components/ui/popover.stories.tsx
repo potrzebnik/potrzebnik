@@ -23,11 +23,9 @@ const meta = {
         <PopoverTrigger asChild>
           <Button variant="outline">Pozostałe potrzeby</Button>
         </PopoverTrigger>
-        <PopoverContent aria-labelledby="popover-story-title">
+        <PopoverContent>
           <PopoverHeader>
-            <PopoverTitle id="popover-story-title">
-              Pozostałe potrzeby
-            </PopoverTitle>
+            <PopoverTitle>Pozostałe potrzeby</PopoverTitle>
             <PopoverDescription>
               Zgłoszone przez organizację w tym tygodniu.
             </PopoverDescription>
