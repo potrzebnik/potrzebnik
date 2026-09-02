@@ -1,4 +1,4 @@
-﻿import HelpCard from '@/components/shared/HelpCard';
+import HelpCard from '@/components/shared/HelpCard';
 import { Button } from '@/components/ui/button';
 import { BADGES } from '@/lib/constants';
 

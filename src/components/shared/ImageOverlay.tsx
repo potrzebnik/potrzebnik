@@ -1,4 +1,4 @@
-﻿export interface ImageOverlayProps {
+export interface ImageOverlayProps {
   variant: keyof typeof overlayVariants;
 }
 
