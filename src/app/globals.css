@@ -66,7 +66,7 @@
   --color-benefits-strip-border: var(--benefits-strip-border);
   --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
   --color-benefits-strip-fg: var(--benefits-strip-fg);
-  --animate-benefits-marquee: benefits-marquee 32s linear infinite;
+  --animate-benefits-marquee: benefits-marquee 64s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -150,8 +150,8 @@
   --org-signup-btn-bg-hover: #f5c800;
 
   /* Benefits tags marquee strip, between the org-signup CTA and the footer. */
-  --benefits-strip-band-bg: oklch(1 0 0);
-  --benefits-strip-border: oklch(0 0 0);
+  --benefits-strip-band-bg: #fff;
+  --benefits-strip-border: #000;
   --benefits-strip-pill-bg: #dbeafe;
   --benefits-strip-fg: #0a0a0a;
 }

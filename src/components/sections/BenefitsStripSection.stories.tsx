@@ -27,3 +27,9 @@ export const Mobile: Story = {
     viewport: { value: '390-844' },
   },
 };
+
+export const WideDesktop: Story = {
+  globals: {
+    viewport: { value: '2560-1440' },
+  },
+};
