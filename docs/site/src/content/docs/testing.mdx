@@ -117,14 +117,12 @@ Both ship with a `RuleTester` suite in the `unit` project.
   is. A viewport object under any other parent is left alone.
 
 Neither gate can be switched off with an `eslint-disable` comment: both config blocks set
-`linterOptions.noInlineConfig`, so an inline directive in a component or a story has no effect. An
-exception means editing <RepoFile path="eslint.config.mjs" />, where a reviewer sees it.
+`linterOptions.noInlineConfig`, so no inline directive works in those files at all — not just
+one aimed at these rules. An exception means editing <RepoFile path="eslint.config.mjs" />, where a reviewer sees it.
 
-Allowed keys are `MINIMAL_VIEWPORTS` from `storybook/viewport`, the keys of `viewportOptions` in
-
-<RepoFile path=".storybook/viewports.mjs" />, and any key the same file declares
-in its own `parameters.viewport.options` — the runner merges all three. That
-module is the single source of the project-wide options:
-<RepoFile path=".storybook/preview.tsx" /> uses it as
-`parameters.viewport.options`, and the rule reads its keys, so adding a shared
-viewport in one place is enough.
+Allowed keys are `MINIMAL_VIEWPORTS` from `storybook/viewport` plus anything the file itself
+declares under `parameters.viewport.options` or the legacy `parameters.viewport.viewports` — the
+three sources the runner merges. Project-wide options arrive the same way, through
+`parameters.viewport.options`: <RepoFile path=".storybook/preview.tsx" /> passes the
+`viewportOptions` of <RepoFile path=".storybook/viewports.mjs" />, so adding a shared viewport in
+one place is enough.

@@ -14,6 +14,8 @@ const READ_PATHS = new Map([
 
 const PINNING_KEYS = new Set(READ_PATHS.values());
 
+const OPTION_KEYS = new Set(['options', 'viewports']);
+
 function unwrap(node) {
   if (
     node.type === 'TSAsExpression' ||
@@ -87,7 +89,7 @@ const validStoryViewport = {
           const key = staticKeyName(property);
           if (key === null) continue;
 
-          if (key === 'options' && container === 'parameters') {
+          if (OPTION_KEYS.has(key) && container === 'parameters') {
             for (const option of objectProperties(property.value) ?? []) {
               const optionKey = staticKeyName(option);
               if (optionKey !== null) localOptionKeys.add(optionKey);

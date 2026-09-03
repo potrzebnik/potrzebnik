@@ -28,6 +28,9 @@ ruleTester.run('valid-story-viewport', validStoryViewport, {
     'export const Elsewhere = { args: { viewport: { value: "whatever" } } };',
     `const meta = { parameters: { viewport: { options: { '${UNKNOWN_KEY}': { name: 'Local' } } } } };\n` +
       `export const Local = { globals: { viewport: { value: '${UNKNOWN_KEY}' } } };`,
+    `const meta = { parameters: { viewport: { viewports: { '${UNKNOWN_KEY}': { name: 'Legacy' } } } } };
+` +
+      `export const LegacyAlias = { globals: { viewport: { value: '${UNKNOWN_KEY}' } } };`,
   ],
   invalid: [
     {
