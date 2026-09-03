@@ -26,7 +26,7 @@ export function PublicHeader() {
         <div className="relative flex h-[60px] items-center">
           <div className="flex h-9 w-full items-center justify-between px-5">
             <Link href="/" className="text-header-fg flex h-9 items-center">
-              <BrandMark variant="header" />
+              <BrandMark />
             </Link>
             <Button
               id="navi-bar-icon-mobile"
@@ -101,7 +101,7 @@ export function PublicHeader() {
         <div className="bg-header-bg mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between gap-[15px] px-[100px] pt-5 pb-[25px]">
           <div className="flex h-9 w-[925px] items-center gap-[65px]">
             <Link href="/" className="text-header-fg flex h-9 items-center">
-              <BrandMark variant="header" />
+              <BrandMark />
             </Link>
 
             <nav aria-label="Nawigacja główna">

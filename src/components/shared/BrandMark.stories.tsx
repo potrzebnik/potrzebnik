@@ -8,34 +8,23 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['header', 'footer'],
-    },
-  },
-  args: {
-    variant: 'header',
-  },
 } satisfies Meta<typeof BrandMark>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Header: Story = {
-  args: { variant: 'header' },
-};
+export const Default: Story = {};
 
-export const Footer: Story = {
-  args: { variant: 'footer' },
-};
-
-export const BothVariants: Story = {
+export const TakesColourFromContext: Story = {
   render: () => (
     <div className="flex flex-col gap-5">
-      <BrandMark variant="header" />
-      <BrandMark variant="footer" />
+      <div className="text-header-fg bg-header-bg p-5">
+        <BrandMark />
+      </div>
+      <div className="text-footer-fg bg-footer-bg p-5">
+        <BrandMark />
+      </div>
     </div>
   ),
 };

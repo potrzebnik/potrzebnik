@@ -7,7 +7,7 @@ export function PublicFooter() {
   return (
     <footer className="text-footer-fg before:border-footer-border after:border-footer-border [&_a:focus-visible]:outline-footer-border before:m-0 before:block before:border-t before:content-none after:m-0 after:mt-3.75 after:block after:border-t after:content-none lg:before:content-[''] lg:after:content-[''] [&_a]:text-inherit [&_a]:no-underline [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2">
       <div className="border-footer-border bg-footer-bg flex flex-col items-start gap-16.25 border-t border-b px-12.5 py-12.5 pl-5 lg:grid lg:min-h-71.25 lg:grid-cols-[1fr_255px_255px] lg:items-start lg:gap-12.5 lg:border lg:border-t-0 lg:px-26.25 lg:py-8.75 lg:pb-15">
-        <BrandMark variant="footer" className="self-stretch" />
+        <BrandMark className="self-stretch" />
 
         <div className="flex w-full max-w-80 flex-col gap-17.5 lg:w-48.75 lg:max-w-none lg:gap-7.5 lg:justify-self-center">
           <div className="flex flex-col justify-center gap-3.75 lg:gap-6.25">
