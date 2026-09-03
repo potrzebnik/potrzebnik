@@ -6,6 +6,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
+import componentFilenameConvention from './eslint-rules/component-filename-convention.mjs';
 import noUntokenizedTailwind from './eslint-rules/no-untokenized-tailwind.mjs';
 import requireColocatedStory from './eslint-rules/require-colocated-story.mjs';
 import validStoryViewport from './eslint-rules/valid-story-viewport.mjs';
@@ -31,6 +32,7 @@ const eslintConfig = defineConfig([
     plugins: {
       potrzebnik: {
         rules: {
+          'component-filename-convention': componentFilenameConvention,
           'no-untokenized-tailwind': noUntokenizedTailwind,
           'require-colocated-story': requireColocatedStory,
           'valid-story-viewport': validStoryViewport,
@@ -51,6 +53,28 @@ const eslintConfig = defineConfig([
     files: ['**/*.stories.tsx'],
     rules: {
       'potrzebnik/valid-story-viewport': 'error',
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.tsx'],
+    rules: {
+      'potrzebnik/component-filename-convention': [
+        'error',
+        { convention: 'kebab-case' },
+      ],
+    },
+  },
+  {
+    files: [
+      'src/components/sections/**/*.tsx',
+      'src/components/shared/**/*.tsx',
+      'src/components/features/**/*.tsx',
+    ],
+    rules: {
+      'potrzebnik/component-filename-convention': [
+        'error',
+        { convention: 'PascalCase', requireMatchingExport: true },
+      ],
     },
   },
 ]);

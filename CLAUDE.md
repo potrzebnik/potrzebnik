@@ -23,7 +23,7 @@ their contents here.
   and tests the wrong layout; the `potrzebnik/valid-story-viewport` ESLint rule enforces it.
 - `src/components/ui/` stays kebab-case because the shadcn CLI writes those files; everything the
   project owns — `sections/`, `shared/`, `features/` — is PascalCase and named after the component
-  it exports; `scripts/check-component-names.mjs` enforces it in `pnpm check`.
+  it exports; the `potrzebnik/component-filename-convention` ESLint rule enforces both halves.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and
