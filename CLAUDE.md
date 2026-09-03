@@ -11,8 +11,11 @@ their contents here.
 - `src/db/resolve-database-url.ts` is the single source of the database connection URL, for both
   runtime and `drizzle.config.ts`. It **throws fast** on missing environment variables. Preserve
   that; never silently default a secret.
-- No raw colour literals in styles. Styling is Tailwind utility classes co-located in JSX — no
-  hand-written component CSS, no BEM classes. `.stylelintrc.json` enforces it.
+- No raw colour literals in styles. In **the Next app**, styling is Tailwind utility classes
+  co-located in JSX — no hand-written component CSS, no BEM classes. `.stylelintrc.json` enforces
+  it. The docs site under `./docs/site/` is not the Next app and does hand-write CSS: theme-level
+  colour tokens in `src/styles/custom.css` (the only file there allowed a hex literal), layout in a
+  scoped `<style>` in the component.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
