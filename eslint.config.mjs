@@ -59,6 +59,7 @@ const eslintConfig = defineConfig([
   },
   {
     files: ['src/components/ui/**/*.tsx'],
+    linterOptions: { noInlineConfig: true },
     rules: {
       'potrzebnik/component-filename-convention': [
         'error',
@@ -72,6 +73,7 @@ const eslintConfig = defineConfig([
       'src/components/shared/**/*.tsx',
       'src/components/features/**/*.tsx',
     ],
+    linterOptions: { noInlineConfig: true },
     rules: {
       'potrzebnik/component-filename-convention': [
         'error',

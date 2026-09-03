@@ -88,8 +88,15 @@ const componentFilenameConvention = {
     },
   },
   create(context) {
-    const { convention, requireMatchingExport = false } =
-      context.options[0] ?? {};
+    const [options] = context.options;
+    if (!options?.convention) {
+      throw new Error(
+        'component-filename-convention needs a `convention` option, ' +
+          `either \`${KEBAB_CASE}\` or \`${PASCAL_CASE}\`.`,
+      );
+    }
+
+    const { convention, requireMatchingExport = false } = options;
     const isKebabCase = convention === KEBAB_CASE;
 
     const basename = path.basename(context.filename);

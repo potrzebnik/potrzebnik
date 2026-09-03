@@ -52,17 +52,19 @@ prose behind is worse than a page that still says "TODO."
 
 Git hooks (installed automatically by `pnpm install` via Husky) enforce
 formatting and linting on commit, Conventional Commit style through a
-`commit-msg` hook, and a pre-push suite of type-checking, ESLint, Stylelint
-(`pnpm lint:css`), and unit tests. Integration tests, the Storybook suite, and
-the production build run in CI instead, to keep pushes fast.
+`commit-msg` hook, and a pre-push suite of `pnpm check` and `pnpm test` - so
+type-checking, ESLint, Stylelint, Prettier in check mode, the
+duplicate-arbitrary-value scan, and unit tests. Integration tests, the
+Storybook suite, and the production build run in CI instead, to keep pushes
+fast.
 
 CI is the authoritative, unbypassable gate. It spans two workflows.
 
 <RepoFile path=".github/workflows/ci.yml" /> runs three jobs on every PR and
 push to `main`:
 
-- **Quality**: `type-check`, `lint`, `lint:css`, `check:duplicate-values`,
-  `format:check`, `build`, then unit tests.
+- **Quality**: one `pnpm check` step - the same gates the pre-push hook runs -
+  then `pnpm build` and unit tests.
 - **Storybook**: installs Playwright Chromium and runs `pnpm test:storybook`
   (component plus a11y tests).
 - **Integration**: `pnpm test:integration`, against Testcontainers Postgres.

@@ -1,3 +1,4 @@
+import tsParser from '@typescript-eslint/parser';
 import { RuleTester } from 'eslint';
 import { describe, it } from 'vitest';
 
@@ -9,7 +10,12 @@ RuleTester.it = it;
 const owned = [{ convention: 'PascalCase', requireMatchingExport: true }];
 const shadcn = [{ convention: 'kebab-case' }];
 
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester({
+  languageOptions: {
+    parser: tsParser,
+    parserOptions: { ecmaFeatures: { jsx: true } },
+  },
+});
 
 ruleTester.run('component-filename-convention', componentFilenameConvention, {
   valid: [
@@ -41,6 +47,21 @@ ruleTester.run('component-filename-convention', componentFilenameConvention, {
     {
       code: 'export default class HelpCard {}',
       filename: 'src/components/shared/HelpCard.tsx',
+      options: owned,
+    },
+    {
+      code: 'export const BadgeGroup: React.FC = () => <div />;',
+      filename: 'src/components/shared/BadgeGroup.tsx',
+      options: owned,
+    },
+    {
+      code: 'export default function PublicFooter(props: { year: number }) {\n  return <footer>{props.year}</footer>;\n}',
+      filename: 'src/components/features/PublicFooter.tsx',
+      options: owned,
+    },
+    {
+      code: 'const StepItem = () => null;\nexport default StepItem; // the component',
+      filename: 'src/components/shared/StepItem.tsx',
       options: owned,
     },
     {
@@ -132,6 +153,18 @@ ruleTester.run('component-filename-convention', componentFilenameConvention, {
           data: { basename: 'BadgeGroup.tsx', componentName: 'BadgeGroup' },
         },
       ],
+    },
+    {
+      code: '// export function BadgeGroup() {}\nexport default function BadgeCluster() {}',
+      filename: 'src/components/shared/BadgeGroup.tsx',
+      options: owned,
+      errors: [{ messageId: 'filenameExportMismatch' }],
+    },
+    {
+      code: 'const snippet = "export const BadgeGroup = () => null;";\nexport default function BadgeCluster() {\n  return snippet;\n}',
+      filename: 'src/components/shared/BadgeGroup.tsx',
+      options: owned,
+      errors: [{ messageId: 'filenameExportMismatch' }],
     },
     {
       code: 'import StepItem from "./step-item";\nexport default StepItem;',
