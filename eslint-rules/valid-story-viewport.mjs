@@ -9,6 +9,8 @@ const allowedKeys = new Set([
 
 const allowedList = [...allowedKeys].sort().join(', ');
 
+const PINNING_KEYS = new Set(['value', 'defaultViewport']);
+
 function staticKeyName(property) {
   if (property.type !== 'Property' || property.computed) return null;
   if (property.key.type === 'Identifier') return property.key.name;
@@ -21,14 +23,18 @@ const validStoryViewport = {
     type: 'problem',
     docs: {
       description:
-        'Require a known viewport key in `parameters.viewport.value` of a story.',
+        'Require a known, statically pinned Storybook viewport key in `globals.viewport.value`.',
     },
     messages: {
       unknownViewport:
         '`{{key}}` is not a known Storybook viewport key. An unknown key is not an error ' +
-        'at runtime: setViewport silently falls back to 1200x900, so a story named "Mobile" ' +
+        'at runtime: the viewport silently falls back to 1200x900, so a story named "Mobile" ' +
         'quietly renders — and gets tested — as desktop. Define the key once in ' +
         '`viewportOptions` in .storybook/viewports.mjs, or pin one of: {{allowed}}.',
+      nonLiteralViewport:
+        'A viewport must be pinned as a static string literal, so this gate has something to ' +
+        'check. A computed `{{key}}` passes lint and still falls back to 1200x900 at runtime ' +
+        'if it resolves to an unknown key. Pin one of: {{allowed}}.',
     },
     schema: [],
   },
@@ -38,20 +44,28 @@ const validStoryViewport = {
         if (staticKeyName(node) !== 'viewport') return;
         if (node.value.type !== 'ObjectExpression') return;
 
-        const pinned = node.value.properties.find(
-          (property) => staticKeyName(property) === 'value',
-        );
-        if (!pinned) return;
+        for (const property of node.value.properties) {
+          const key = staticKeyName(property);
+          if (!key || !PINNING_KEYS.has(key)) continue;
 
-        const key = pinned.value;
-        if (key.type !== 'Literal' || typeof key.value !== 'string') return;
-        if (allowedKeys.has(key.value)) return;
+          const pinned = property.value;
+          if (pinned.type !== 'Literal' || typeof pinned.value !== 'string') {
+            context.report({
+              node: pinned,
+              messageId: 'nonLiteralViewport',
+              data: { key, allowed: allowedList },
+            });
+            continue;
+          }
 
-        context.report({
-          node: key,
-          messageId: 'unknownViewport',
-          data: { key: key.value, allowed: allowedList },
-        });
+          if (allowedKeys.has(pinned.value)) continue;
+
+          context.report({
+            node: pinned,
+            messageId: 'unknownViewport',
+            data: { key: pinned.value, allowed: allowedList },
+          });
+        }
       },
     };
   },
