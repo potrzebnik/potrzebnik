@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { PublicHeader } from '@/components/features/public-header';
+import { PublicHeader } from '@/components/features/PublicHeader';
 
 const meta = {
   title: 'Features/PublicHeader',

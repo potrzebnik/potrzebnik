@@ -21,6 +21,9 @@ their contents here.
   `.storybook/preview.tsx` and the lint rule. A story pins a viewport only by a key defined there
   or by one of `MINIMAL_VIEWPORTS` — an unknown key silently falls back to 1200px and tests the
   wrong layout; the `potrzebnik/valid-story-viewport` ESLint rule enforces it.
+- `src/components/ui/` stays kebab-case because the shadcn CLI writes those files; everything the
+  project owns — `sections/`, `shared/`, `features/` — is PascalCase and named after the component
+  it exports; `scripts/check-component-names.mjs` enforces it in `pnpm check`.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and
