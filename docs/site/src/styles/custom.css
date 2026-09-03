@@ -36,3 +36,25 @@
 .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) code {
   font-size: 0.9em;
 }
+
+/* Roadmap colours. Theme-level and reusable, so they live here rather than in
+   `Roadmap.astro` — and this is the only file in the docs site allowed to
+   contain a hex literal. Two independent channels: category on a node's left
+   border, status on its pill. The hues are kept apart so the channels stay
+   separable. Starlight toggles `[data-theme]` on <html>; the light values are
+   darkened for contrast against a white background. */
+:root {
+  --roadmap-category-design: #b07cff;
+  --roadmap-category-implementation: #35b8d4;
+  --roadmap-category-organization: #e2568a;
+  --roadmap-status-done: #3fae7a;
+  --roadmap-status-in-progress: #d8942a;
+}
+
+[data-theme='light'] {
+  --roadmap-category-design: #7c3fd6;
+  --roadmap-category-implementation: #0d7d95;
+  --roadmap-category-organization: #b81f57;
+  --roadmap-status-done: #1f7d51;
+  --roadmap-status-in-progress: #97620f;
+}

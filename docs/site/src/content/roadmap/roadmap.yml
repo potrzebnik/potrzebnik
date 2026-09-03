@@ -1,0 +1,160 @@
+# The roadmap's single source of content. Rendered by src/components/Roadmap.astro
+# and validated by the `roadmap` collection in src/content.config.ts.
+#
+# Shape: a mapping of goal id -> goal. `order` fixes the left-to-right column
+# order; object key order is not something the loader promises.
+#
+# Editing rules:
+#   - `status` is set by hand, on goals and nodes alike. Nothing is derived.
+#   - `done` means "good enough to build on today", not "finished forever".
+#   - `category` is required. `design` and `implementation` are stages of one
+#     node and are split into siblings only where the two halves differ in
+#     status; `organization` is a kind of work, not a stage.
+#   - The four `organization` nodes came across from the 008 prototype, where
+#     they were invented placeholders rather than decided work. Their names are
+#     a starting point, not a commitment.
+#   - `note` renders on any node that has one. Explanatory prose about
+#     the roadmap itself — what a column means, what a status means — belongs in
+#     docs/roadmap.mdx, not here. A goal renders as name + count + trailer.
+
+foundation:
+  order: 1
+  name: Foundation
+  status: in-progress
+  nodes:
+    - name: App skeleton
+      category: implementation
+      status: done
+    - name: Database schema & migrations
+      category: implementation
+      status: done
+    - name: Authentication backend
+      category: implementation
+      status: done
+      issues: [80]
+    - name: Design system & tokens
+      category: design
+      status: done
+    - name: Storybook component workshop
+      category: implementation
+      status: done
+      issues: [77]
+    - name: Documentation site
+      category: implementation
+      status: done
+    - name: CI quality gate
+      category: implementation
+      status: done
+      issues: [61]
+    - name: Write-side domain model
+      category: implementation
+      status: in-progress
+      note: entities and value objects exist; no behaviour yet
+    - name: Sign-in / sign-up UI
+      category: implementation
+      status: planned
+      issues: [13, 15, 40]
+    - name: Route protection & roles
+      category: implementation
+      status: planned
+      note: no roles model yet
+      issues: [42]
+    - name: Transactional email
+      category: implementation
+      status: planned
+      note: provider, message templates, deploy-time verification
+      issues: [78, 71]
+    - name: App deployment
+      category: implementation
+      status: planned
+      note: only the docs site deploys today
+    - name: 'Legal copy: terms & privacy'
+      category: organization
+      status: planned
+    - name: First partner organizations
+      category: organization
+      status: planned
+      note: someone has to agree to use this
+
+mvp:
+  order: 2
+  name: MVP
+  status: in-progress
+  nodes:
+    - name: Landing page
+      category: design
+      status: done
+    - name: Landing page
+      category: implementation
+      status: in-progress
+      note: sections built; header/footer mounted; hero route still placeholder
+      issues: [22, 79, 66, 65, 24, 29, 76]
+    - name: Public need list
+      category: implementation
+      status: planned
+      note: includes basic filtering
+      issues: [16]
+    - name: Need detail
+      category: implementation
+      status: planned
+      issues: [12]
+    - name: Purchase & confirmation flow
+      category: implementation
+      status: planned
+      note: donor marks purchased, organization confirms; notifies by email
+      issues: [11, 45, 44]
+    - name: Organization pages
+      category: implementation
+      status: planned
+      note: list and profile
+    - name: Static pages
+      category: implementation
+      status: planned
+      note: about, contact, FAQ, privacy, terms
+    - name: Organization dashboard
+      category: implementation
+      status: planned
+      note: includes basic user administration
+    - name: Need create & edit
+      category: implementation
+      status: planned
+      issues: [14, 43]
+    - name: Fulfilment history
+      category: implementation
+      status: planned
+      note: tables exist, nothing reads them
+    - name: Our team
+      category: design
+      status: done
+    - name: Contact with us
+      category: design
+      status: done
+    - name: Add your organization
+      category: design
+      status: done
+    - name: 'Component alignment: Storybook <-> code'
+      category: design
+      status: planned
+      note: comments on Figma
+    - name: Mailing templates
+      category: organization
+      status: in-progress
+    - name: Launch communication
+      category: organization
+      status: planned
+      note: telling anyone this exists
+
+beyond:
+  order: 3
+  name: Beyond
+  status: planned
+  trailer: The rest of this column is not written yet.
+  nodes:
+    - name: Platform moderation
+      category: implementation
+      status: planned
+      note: blocking users; approach unresolved
+      issues: [52]
+    - name: Marketing & social presence
+      category: organization
+      status: planned

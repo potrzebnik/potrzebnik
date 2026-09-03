@@ -1,0 +1,73 @@
+---
+title: Roadmap
+description: What is built, what is being built, and what comes next.
+tableOfContents: false
+---
+
+import Roadmap from '../../components/Roadmap.astro';
+
+<Roadmap />
+
+## How to read it
+
+Columns read left to right, but **left to right is a reading order, not a gate**. They overlap:
+work starts in `MVP` while `Foundation` still has planned nodes in it, and a column's
+`done / total` reports progress rather than granting the next column permission to begin.
+
+- **Foundation** is the platform everything else stands on — schema, auth, tokens, Storybook, CI,
+  deployment. It is _incomplete by intent_: it carries all platform work whether or not it is
+  finished, so it never reads as fully done.
+- **MVP** is the product surface, cut **by page** rather than by capability. API work is invisible,
+  living inside the page node it serves; the two exceptions are `Write-side domain model`, which
+  serves no single page, and `Purchase & confirmation flow`, which is named because it is the
+  product's core loop.
+- **Beyond** is what comes after that loop works. It is deliberately thin and gets written when
+  MVP is real.
+
+A node is roughly a page's worth of work. Components are below this board's resolution and do not
+appear on it.
+
+## Status
+
+Status is set by hand on every node — nothing is derived from issues, branches, or the column
+around it. The round chips above filter the board by status.
+
+- **planned** — not started.
+- **in progress** — started.
+- **done** — _good enough to build on today_. Not "finished forever": the design system will grow
+  for as long as the product does, and it still reads `done`, because nothing is waiting on it.
+
+## Category
+
+The colour on a node's left border is its **category**, an axis separate from status. The square
+chips above filter the board by category.
+
+Both rows of chips work the same way: clicking one shows **only** that value, and clicking it again
+brings the rest back. The two rows combine, so `design` plus `planned` shows the design work that
+has not started.
+
+- **design** and **implementation** are two _stages_ of the same node. They only appear as separate
+  nodes where the two halves are in different states — designing the landing page is done while
+  building it is not. Where both halves share a status, one node says it.
+- **organization** is not a stage but a _kind_ of work — the parts of shipping that are not code.
+  It reads across every column rather than sitting in one.
+
+:::note
+The organization nodes are the least settled part of this board. Every column was filled by walking
+the code, so these four were sketched in afterwards to mark that the work exists — treat their
+names as a starting point rather than a commitment.
+:::
+
+## Issues
+
+The `#nnn` links point at [GitHub issues](https://github.com/potrzebnik/potrzebnik/issues). They
+are links and nothing more: closing an issue does not move a node, and a node with no issue is
+simply unfiled work rather than a gap in the plan. Issue titles are in Polish and node names are in
+English — a node names a page, an issue names a slice of it, so the two do not line up one to one.
+
+## Editing it
+
+The content is [`docs/site/src/content/roadmap/roadmap.yml`](https://github.com/potrzebnik/potrzebnik/blob/main/docs/site/src/content/roadmap/roadmap.yml),
+validated by the `roadmap` collection in `src/content.config.ts` and rendered by
+`src/components/Roadmap.astro`. Edit the YAML; the schema will reject a status or category it does
+not recognise at build time.

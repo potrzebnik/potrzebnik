@@ -1,0 +1,372 @@
+---
+// The roadmap board. Import from a content page as:
+//   import Roadmap from '../../components/Roadmap.astro';
+//
+// Content comes from the `roadmap` collection (src/content/roadmap/roadmap.yml).
+// A node renders as title + status pill + issue links, and nothing else — every
+// explanation of what a column or a status means belongs in the surrounding
+// .mdx — which is why a goal renders its name, its count and its trailer, and
+// nothing else. Colour tokens live in src/styles/custom.css; no hex literal here.
+//
+// Two legends filter the board, on the two axes a node carries: category and
+// status. Within an axis a chip is exclusive — clicking it shows that value
+// alone, and clicking it again restores the whole axis. Across axes the two
+// combine, so a node shows when both its category and its status are active.
+// Each column's `done / total` recounts over what is left.
+import { getCollection } from 'astro:content';
+
+const goals = (await getCollection('roadmap')).sort((a, b) => a.data.order - b.data.order);
+
+// Also the display order inside a column: design first, then implementation,
+// then organization. The YAML keeps its own order; sorting is presentation.
+const CATEGORIES = ['design', 'implementation', 'organization'] as const;
+
+const STATUS_LABEL = {
+  planned: 'planned',
+  'in-progress': 'in progress',
+  done: 'done',
+} as const;
+
+const STATUSES = ['planned', 'in-progress', 'done'] as const;
+
+const issueHref = (n: number) => `https://github.com/potrzebnik/potrzebnik/issues/${n}`;
+
+// Legend counts are static; the per-column `done / total` is recomputed in the
+// browser as the filters are used, and rendered server-side for no-JS.
+const nodes = goals.flatMap((goal) => goal.data.nodes);
+const countBy = <T extends string>(values: readonly T[], of: (node: (typeof nodes)[number]) => string) =>
+  Object.fromEntries(values.map((v) => [v, nodes.filter((node) => of(node) === v).length])) as Record<T, number>;
+
+const categoryCount = countBy(CATEGORIES, (node) => node.category);
+const statusCount = countBy(STATUSES, (node) => node.status);
+---
+
+<div class="roadmap-root not-content">
+  <ul class="legend" aria-label="Filter by category" data-axis="category">
+    {
+      CATEGORIES.map((category) => (
+        <li data-category={category}>
+          <button type="button" aria-pressed="true" data-value={category}>
+            <span class="swatch" aria-hidden="true" />
+            {category}
+            <span class="count">{categoryCount[category]}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <ul class="legend" aria-label="Filter by status" data-axis="status">
+    {
+      STATUSES.map((status) => (
+        <li data-status={status}>
+          <button type="button" aria-pressed="true" data-value={status}>
+            <span class="swatch" aria-hidden="true" />
+            {STATUS_LABEL[status]}
+            <span class="count">{statusCount[status]}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="board">
+    {
+      goals.map((goal) => (
+        <section class="column" aria-labelledby={`roadmap-${goal.id}`}>
+          <h2 id={`roadmap-${goal.id}`}>
+            <span>{goal.data.name}</span>
+            <span class="column-meta">
+              {goal.data.nodes.filter((n) => n.status === 'done').length} / {goal.data.nodes.length}
+            </span>
+          </h2>
+          {goal.data.target && <p class="column-target">Target: {goal.data.target}</p>}
+          <ul class="nodes">
+            {[...goal.data.nodes]
+              .sort((a, b) => CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category))
+              .map((node) => (
+              <li class="node" data-category={node.category} data-status={node.status}>
+                <span class="node-name">{node.name}</span>
+                <span class="node-status">{STATUS_LABEL[node.status]}</span>
+                {node.note && <span class="node-note">{node.note}</span>}
+                {node.issues && (
+                  <span class="node-issues">
+                    {node.issues.map((issue) => (
+                      <a href={issueHref(issue)}>#{issue}</a>
+                    ))}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {goal.data.trailer && <p class="trailer">{goal.data.trailer}</p>}
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Category filter. Unpressed buttons dim rather than disappear, so the set of
+     categories stays legible whatever is filtered out. */
+  .legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-sm);
+  }
+
+  .legend:last-of-type {
+    margin-bottom: 1.75rem;
+  }
+
+  .legend button {
+    font: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    color: var(--sl-color-text);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    padding: 0.1rem 0.75rem 0.1rem 0.6rem;
+    cursor: pointer;
+  }
+
+  .legend button[aria-pressed='false'] {
+    color: var(--sl-color-gray-3);
+    opacity: 0.55;
+  }
+
+  /* A square swatch reads category, a round one reads status, so the two rows
+     are not mistaken for one list of six things. */
+  .legend .swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 0.15rem;
+    background: var(--category-color);
+    display: inline-block;
+  }
+
+  .legend[data-axis='status'] .swatch {
+    border-radius: 50%;
+    background: var(--status-color);
+  }
+
+  .legend .count {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+  }
+
+  /* Columns read left to right on a wide screen and stack on a narrow one.
+     Never a sideways scroll: the board must be readable on a phone. */
+  .board {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 60rem) {
+    .board {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+    }
+  }
+
+  .column {
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 0.5rem;
+    padding: 1rem 1.125rem 1.25rem;
+    background: var(--sl-color-bg-nav);
+  }
+
+  .column > h2 {
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-h3);
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .column-meta {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .column-target {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    margin: 0.375rem 0 0;
+  }
+
+  .nodes {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.625rem;
+  }
+
+  /* The left border carries category; the pill carries status. Name on the
+     left, pill pushed right, note and issues wrapping onto their own lines. */
+  .node {
+    border-left: 3px solid var(--category-color, var(--sl-color-gray-5));
+    padding: 0.4rem 0 0.4rem 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.5rem;
+  }
+
+  .node[hidden] {
+    display: none;
+  }
+
+  .node-name {
+    color: var(--sl-color-white);
+    font-weight: 600;
+    font-size: var(--sl-text-sm);
+    /* Take the remaining width and wrap internally, so a long name never
+       pushes the status pill onto a line of its own. */
+    flex: 1 1 55%;
+    min-width: 0;
+  }
+
+  .node-status {
+    color: var(--status-color, var(--sl-color-gray-3));
+    border: 1px solid var(--status-color, var(--sl-color-gray-5));
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+    font-size: var(--sl-text-xs);
+    line-height: 1.4;
+    margin: 0.125rem 0 0.125rem auto;
+    white-space: nowrap;
+  }
+
+  /* Status keeps all three channels — colour, text and a glyph — so it still
+     reads in greyscale or in print. Category is colour-only by decision. */
+  .node[data-status='done'] .node-status::before {
+    content: '\2713\00a0';
+  }
+
+  .node[data-status='in-progress'] .node-status::before {
+    content: '\25D0\00a0';
+  }
+
+  .node[data-status='planned'] .node-status::before {
+    content: '\25CB\00a0';
+  }
+
+  .node-note,
+  .node-issues {
+    flex-basis: 100%;
+  }
+
+  .node-note {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    margin-top: 0.125rem;
+  }
+
+  .node-issues {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .node a {
+    color: var(--sl-color-accent-high);
+    font-size: var(--sl-text-xs);
+  }
+
+  .trailer {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    font-style: italic;
+    margin: 1rem 0 0;
+  }
+
+  /* The one place category and status names bind to their tokens. */
+  [data-category='design'] {
+    --category-color: var(--roadmap-category-design);
+  }
+
+  [data-category='implementation'] {
+    --category-color: var(--roadmap-category-implementation);
+  }
+
+  [data-category='organization'] {
+    --category-color: var(--roadmap-category-organization);
+  }
+
+  [data-status='done'] {
+    --status-color: var(--roadmap-status-done);
+  }
+
+  [data-status='in-progress'] {
+    --status-color: var(--roadmap-status-in-progress);
+  }
+
+  [data-status='planned'] {
+    --status-color: var(--sl-color-gray-3);
+  }
+</style>
+
+<script>
+  // Progressive enhancement: without JS the board renders whole, which is the
+  // honest default. With JS the two legends filter it on their own axis, and
+  // each column's `done / total` recounts over what is left visible.
+  const root = document.querySelector<HTMLElement>('.roadmap-root');
+  if (root) {
+    const legends = [...root.querySelectorAll<HTMLElement>('.legend')].map((legend) => ({
+      // `category` | `status` — also the node dataset key the axis filters on.
+      axis: legend.dataset.axis as 'category' | 'status',
+      buttons: [...legend.querySelectorAll<HTMLButtonElement>('button')],
+    }));
+
+    const apply = () => {
+      // A node survives only if it is active on *every* axis.
+      const active = legends.map(({ axis, buttons }) => ({
+        axis,
+        values: new Set(buttons.filter((b) => b.ariaPressed === 'true').map((b) => b.dataset.value)),
+      }));
+
+      for (const node of root.querySelectorAll<HTMLElement>('.node')) {
+        node.hidden = !active.every(({ axis, values }) => values.has(node.dataset[axis]));
+      }
+
+      for (const column of root.querySelectorAll<HTMLElement>('.column')) {
+        const shown = [...column.querySelectorAll<HTMLElement>('.node')].filter((n) => !n.hidden);
+        const done = shown.filter((n) => n.dataset.status === 'done').length;
+        const meta = column.querySelector('.column-meta');
+        if (meta) meta.textContent = `${done} / ${shown.length}`;
+      }
+    };
+
+    // Clicking a chip selects it *alone* on its axis rather than toggling it
+    // off — asking for "just the planned ones" is the common move, and doing
+    // that by switching the other two off is two clicks too many. Clicking the
+    // chip that is already alone clears the axis back to all, which is the only
+    // way back and so must be the same click.
+    for (const { buttons } of legends) {
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const alreadySolo =
+            button.ariaPressed === 'true' && buttons.every((b) => b === button || b.ariaPressed === 'false');
+
+          for (const b of buttons) {
+            b.ariaPressed = String(alreadySolo || b === button);
+          }
+          apply();
+        });
+      }
+    }
+  }
+</script>

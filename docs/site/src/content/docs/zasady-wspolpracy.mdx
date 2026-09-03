@@ -1,0 +1,86 @@
+---
+title: Zasady współpracy
+description: 'Zasady obowiązujące cały zespół: ownership tasków, obecność na spotkaniach i review.'
+---
+
+Ta strona jest wyjątkiem od reguły „dokumentacja po angielsku”: dotyczy pracy
+zespołu, więc jest po polsku. Zasady obowiązują każdego, bez wyjątków.
+
+## Ownership taska
+
+Osoba przypisana do taska jest za niego odpowiedzialna: za samą pracę
+i za aktualizowanie statusu na
+[boardzie](https://github.com/orgs/potrzebnik/projects/1). Board ma odzwierciedlać stan
+rzeczywisty; nikt nie aktualizuje go za Ciebie.
+
+- Aktualizuję status taska na boardzie sam, na bieżąco.
+- Mam **maksymalnie dwa** taski w toku. Gdy oba stoją, nie biorę trzeciego,
+  tylko zgłaszam blokadę.
+- **Raz w tygodniu** wrzucam update o swojej pracy jako komentarz do taska,
+  nie na czacie i nie ustnie na spotkaniu.
+
+Komentarz zostaje przy tasku, więc historia jest w jednym miejscu i każdy może
+ją odczytać bez pytania. Zgłoszenie braku postępu to nie przyznanie się do
+porażki, tylko obowiązek: tech lead decyduje, czy ktoś task przejmie, czy da się
+Cię wesprzeć inaczej. Milczenie jest jedynym błędem.
+
+:::caution[Do ustalenia]
+Definition of Done: co dokładnie musi być spełnione, żeby przesunąć task na
+review i na done. Bez tego każdy interpretuje statusy po swojemu. Do ustalenia
+zespołowo.
+:::
+
+## Spotkania i obecność
+
+Spotkania w Google Kalendarzu są sposobem informowania o obecności.
+
+- Oznaczam odpowiedź (będę / nie będę) przed spotkaniem.
+- Trzymam się tego, co zadeklarowałem.
+- Gdy plany się zmieniają, zmieniam odpowiedź w kalendarzu, zanim spotkanie
+  się zacznie.
+
+## Code review
+
+Każdy deweloper robi review innym osobom. Review nie jest zadaniem wyłącznie
+tech leada.
+
+Jako autor PR-a:
+
+- PR, nad którym jeszcze pracuję, trzymam w drafcie. Zdjęcie draftu oznacza:
+  PR jest gotowy do review.
+- Do review przypisany jest zespół `potrzebnik/devs`. Robi to automatycznie
+  CODEOWNERS w momencie zdjęcia draftu; sprawdzam tylko, czy request faktycznie
+  wisi. „Niech ktoś zerknie” nie jest prośbą o review, bo nikt się wtedy nie
+  czuje wskazany.
+
+Jako reviewer:
+
+- Czytam kod, którego dotyczy uwaga, zanim ją napiszę.
+- Gdy review powstaje z pomocą AI, weryfikuję **każdą uwagę** przed dodaniem
+  komentarza.
+
+Komentarz, który wkleiłeś bez weryfikacji, jest Twoim komentarzem i Twoją
+odpowiedzialnością.
+
+## Zgłaszanie długu technicznego
+
+Dług techniczny zauważony przy pracy nie znika przez to, że go ominąłeś —
+znika, gdy jest zapisany. Miejscem zapisu jest GitHub issue z etykietą
+[`tech-debt`](https://github.com/potrzebnik/potrzebnik/issues?q=is%3Aissue%20state%3Aopen%20label%3Atech-debt),
+nie komentarz w kodzie, nie wiadomość na czacie i nie „trzeba to kiedyś
+poprawić" na spotkaniu.
+
+- Gdy trafiam na dług techniczny, zakładam issue z etykietą `tech-debt` —
+  od razu, nie „po skończeniu taska".
+- Nie naprawiam długu w PR-ze, który dotyczy czego innego. Issue tak,
+  poprawka osobno.
+- W issue piszę: **gdzie** (plik, moduł), **co** jest nie tak i **dlaczego**
+  to przeszkadza. Bez „dlaczego" nikt nie umie ocenić priorytetu.
+
+Issue z etykietą to nie zobowiązanie, że ktoś to zaraz zrobi — to zapis, dzięki
+któremu dług da się zobaczyć i świadomie zaplanować albo świadomie odłożyć.
+
+:::caution[Do ustalenia]
+SLA na review: w jakim czasie przypisana osoba ma odpowiedzieć na PR i co robi
+autor, gdy ten czas minie. Do ustalenia zespołowo.
+:::
