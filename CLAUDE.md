@@ -19,6 +19,12 @@ their contents here.
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and
   `./README.md` are the only exceptions, because a tool reads each at a fixed path.
+- Code says what it does; a comment earns its place by saying **why**, and only when the reason is
+  not recoverable from the code — a provenance note, an external constraint, a gotcha the language
+  hides. Name things so the sentence would have been redundant.
+- Every document here describes **current state only**: no dates, no "this used to be X", no record
+  of how a decision was reached. That history belongs in the pull request that made the change, so
+  these files stay short enough to keep true. `audit-docs` checks them against the repository.
 
 ## Where to look
 
