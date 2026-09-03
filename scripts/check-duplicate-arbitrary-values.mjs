@@ -135,7 +135,7 @@ for (const [value, hits] of regressions) {
   console.error('');
 }
 console.error(
-  'Extract the repeated value into a named design token in src/app/globals.css,\n' +
+  'Extract the repeated value into a named design token in src/app/theme.css,\n' +
     'or run `pnpm check:duplicate-values:update-baseline` to accept it deliberately.',
 );
 process.exit(1);

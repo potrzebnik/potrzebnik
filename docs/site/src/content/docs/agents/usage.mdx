@@ -17,7 +17,7 @@ now.
 
 Two agents under <RepoFile path=".claude/agents" /> read a diff and return structured findings.
 Pick the general one for backend, config, or cross-cutting changes, and the frontend-aware one for
-anything under <RepoFile path="src/app" />, <RepoFile path="src/components" />, Storybook stories, or the design-token file <RepoFile path="src/app/globals.css" />, where it enforces conventions distilled from past PR review history.
+anything under <RepoFile path="src/app" />, <RepoFile path="src/components" />, Storybook stories, or the design-token file <RepoFile path="src/app/theme.css" />, where it enforces conventions distilled from past PR review history.
 
 Only frontend-reviewer is read-only by construction: its frontmatter pins `tools: Read, Grep,
 Glob, Bash`, so it cannot edit. code-reviewer declares no `tools` key and therefore inherits the
