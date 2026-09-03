@@ -22,6 +22,7 @@ export default defineConfig({
       ],
       sidebar: [
         { label: 'Getting started', link: '/' },
+        { label: 'Roadmap', link: '/roadmap/' },
         { label: 'Architecture', link: '/architecture/' },
         { label: 'Database', link: '/database/' },
         { label: 'Auth & OAuth', link: '/auth/' },
@@ -41,6 +42,7 @@ export default defineConfig({
         },
         { label: 'Testing', link: '/testing/' },
         { label: 'Contributing', link: '/contributing/' },
+        { label: 'Zasady współpracy', link: '/zasady-wspolpracy/' },
         {
           label: 'Agents & skills',
           items: [
