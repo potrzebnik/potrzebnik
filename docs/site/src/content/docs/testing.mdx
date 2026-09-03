@@ -100,9 +100,9 @@ of that.
 
 ## Story gates enforced by ESLint
 
-Two repo-local ESLint rules, registered under the `potrzebnik` plugin in <RepoFile
+Two of the repo-local ESLint rules, registered under the `potrzebnik` plugin in <RepoFile
 path="eslint.config.mjs" /> and implemented in `eslint-rules/`, guard the story harness itself.
-Each ships with a `RuleTester` suite in the `unit` project.
+Like every rule in `eslint-rules/`, each ships with a `RuleTester` suite in the `unit` project.
 
 - `potrzebnik/require-colocated-story` applies to `.tsx` files under `src/components/ui/` and
   `src/components/shared/`. A component with no `*.stories.tsx` neighbour is never rendered by
@@ -118,3 +118,21 @@ in <RepoFile path=".storybook/viewports.mjs" />. That module is the single sourc
 viewport options: <RepoFile path=".storybook/preview.tsx" /> uses it as
 `parameters.viewport.options`, and the rule reads its keys, so adding a viewport in one place is
 enough.
+
+## Component naming enforced by ESLint
+
+`potrzebnik/component-filename-convention` guards the filenames under <RepoFile
+path="src/components" /> instead of the story harness, so it is registered twice — once per
+convention — with its own `files` section.
+
+- Under `src/components/ui/` it requires a kebab-case basename and nothing else. That directory is
+  the shadcn CLI's output directory declared in <RepoFile path="components.json" />: renaming its
+  files means the next `shadcn add button` drops a second `button.tsx` beside `Button.tsx`.
+- Under `src/components/sections/`, `src/components/shared/`, and `src/components/features/` it
+  requires a PascalCase basename **and** a component export of that exact name, resolved from the
+  `export` nodes rather than from the source text. A file the project owns is named after the
+  component it exports, so an import path reads the same as the symbol it binds. The export half is
+  skipped for `*.stories.tsx` and for `ui/`, whose files export several primitives at once.
+
+The `convention` option is required, so a new directory cannot be added to the rule without stating
+which of the two conventions it follows.

@@ -29,8 +29,33 @@ ruleTester.run('component-filename-convention', componentFilenameConvention, {
       options: owned,
     },
     {
+      code: 'export let BadgeGroup = () => null;',
+      filename: 'src/components/shared/BadgeGroup.tsx',
+      options: owned,
+    },
+    {
+      code: 'export class HelpCard {}',
+      filename: 'src/components/shared/HelpCard.tsx',
+      options: owned,
+    },
+    {
+      code: 'export default class HelpCard {}',
+      filename: 'src/components/shared/HelpCard.tsx',
+      options: owned,
+    },
+    {
+      code: 'export function AboutSection() {}',
+      filename: 'src/components/sections/AboutSection.tsx',
+      options: owned,
+    },
+    {
       code: 'function StepItem() {}\nexport default StepItem;',
       filename: 'src/components/shared/StepItem.tsx',
+      options: owned,
+    },
+    {
+      code: 'const Step2Item = () => null;\nexport default Step2Item;',
+      filename: 'src/components/shared/Step2Item.tsx',
       options: owned,
     },
     {
@@ -54,19 +79,59 @@ ruleTester.run('component-filename-convention', componentFilenameConvention, {
       code: 'export const BadgeGroup = () => null;',
       filename: 'src/components/shared/badge-group.tsx',
       options: owned,
-      errors: [{ messageId: 'wrongConvention' }],
+      errors: [
+        {
+          messageId: 'pascalCaseFilename',
+          data: { basename: 'badge-group.tsx', suggestion: 'BadgeGroup.tsx' },
+        },
+      ],
     },
     {
-      code: 'export default { title: "Shared/BadgeGroup" };',
-      filename: 'src/components/shared/badge-group.stories.tsx',
+      code: 'export default { title: "Shared/Step2Item" };',
+      filename: 'src/components/shared/step2-item.stories.tsx',
       options: owned,
-      errors: [{ messageId: 'wrongConvention' }],
+      errors: [
+        {
+          messageId: 'pascalCaseFilename',
+          data: {
+            basename: 'step2-item.stories.tsx',
+            suggestion: 'Step2Item.stories.tsx',
+          },
+        },
+      ],
+    },
+    {
+      code: 'export const Button = () => null;',
+      filename: 'src/components/ui/Button.tsx',
+      options: shadcn,
+      errors: [
+        {
+          messageId: 'kebabCaseFilename',
+          data: { basename: 'Button.tsx', suggestion: 'button.tsx' },
+        },
+      ],
+    },
+    {
+      code: 'export const Step2Item = () => null;',
+      filename: 'src/components/ui/Step2Item.tsx',
+      options: shadcn,
+      errors: [
+        {
+          messageId: 'kebabCaseFilename',
+          data: { basename: 'Step2Item.tsx', suggestion: 'step2-item.tsx' },
+        },
+      ],
     },
     {
       code: 'export function BadgeCluster() {}',
       filename: 'src/components/shared/BadgeGroup.tsx',
       options: owned,
-      errors: [{ messageId: 'filenameExportMismatch' }],
+      errors: [
+        {
+          messageId: 'filenameExportMismatch',
+          data: { basename: 'BadgeGroup.tsx', componentName: 'BadgeGroup' },
+        },
+      ],
     },
     {
       code: 'import StepItem from "./step-item";\nexport default StepItem;',
@@ -75,10 +140,10 @@ ruleTester.run('component-filename-convention', componentFilenameConvention, {
       errors: [{ messageId: 'filenameExportMismatch' }],
     },
     {
-      code: 'export const Button = () => null;',
-      filename: 'src/components/ui/Button.tsx',
-      options: shadcn,
-      errors: [{ messageId: 'wrongConvention' }],
+      code: 'if (true) {\n  function StepItem() {}\n}\nexport default StepItem;',
+      filename: 'src/components/shared/StepItem.tsx',
+      options: owned,
+      errors: [{ messageId: 'filenameExportMismatch' }],
     },
   ],
 });

@@ -49,36 +49,48 @@ const componentFilenameConvention = {
         'project owns the file, to match the name of the component it exports.',
     },
     messages: {
-      wrongConvention:
-        '`{{basename}}` breaks the naming convention of its directory — expected a ' +
-        '{{convention}} basename, e.g. {{suggestion}}. The boundary is code ownership, not ' +
-        'taste: `src/components/ui` is the output directory declared in components.json and ' +
-        'the shadcn CLI writes kebab-case filenames there, so renaming those means the next ' +
-        '`shadcn add button` drops a second `button.tsx` beside `Button.tsx`. Everything the ' +
-        'project owns — sections, shared, features — stays PascalCase instead, and is named ' +
-        'after the component it exports.',
+      kebabCaseFilename:
+        '`{{basename}}` breaks the kebab-case convention of its directory — expected a ' +
+        'kebab-case basename, e.g. {{suggestion}}. The boundary is code ownership, not taste: ' +
+        '`src/components/ui` is the output directory declared in components.json, and the ' +
+        'shadcn CLI writes kebab-case filenames there, so renaming those means the next ' +
+        '`shadcn add button` drops a second `button.tsx` beside `Button.tsx`.',
+      pascalCaseFilename:
+        '`{{basename}}` breaks the PascalCase convention of its directory — expected a ' +
+        'PascalCase basename, e.g. {{suggestion}}. The boundary is code ownership, not taste: ' +
+        'everything the project owns — sections, shared, features — stays PascalCase and is ' +
+        'named after the component it exports, unlike `src/components/ui`, whose kebab-case ' +
+        'filenames are written for it by the shadcn CLI.',
       filenameExportMismatch:
         '`{{basename}}` exports no component named `{{componentName}}` — expected `export ' +
-        'function {{componentName}}`, `export const {{componentName}}`, `export default ' +
-        'function {{componentName}}`, or a default export of a local `{{componentName}}`. A ' +
-        'file the project owns is named after the component it exports, so an import path ' +
-        'reads the same as the symbol it binds. This half of the gate is skipped for ' +
+        'function {{componentName}}`, `export const {{componentName}}`, `export class ' +
+        '{{componentName}}`, `export default function {{componentName}}`, `export default ' +
+        'class {{componentName}}`, or a default export of a local `{{componentName}}`. A file ' +
+        'the project owns is named after the component it exports, so an import path reads the ' +
+        'same as the symbol it binds. This half of the gate is skipped for ' +
         '`src/components/ui/`, whose files export several primitives at once.',
     },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          convention: { enum: [KEBAB_CASE, PASCAL_CASE] },
-          requireMatchingExport: { type: 'boolean' },
+    schema: {
+      type: 'array',
+      minItems: 1,
+      maxItems: 1,
+      items: [
+        {
+          type: 'object',
+          properties: {
+            convention: { enum: [KEBAB_CASE, PASCAL_CASE] },
+            requireMatchingExport: { type: 'boolean' },
+          },
+          required: ['convention'],
+          additionalProperties: false,
         },
-        additionalProperties: false,
-      },
-    ],
+      ],
+    },
   },
   create(context) {
-    const { convention = PASCAL_CASE, requireMatchingExport = false } =
+    const { convention, requireMatchingExport = false } =
       context.options[0] ?? {};
+    const isKebabCase = convention === KEBAB_CASE;
 
     const basename = path.basename(context.filename);
     if (!basename.endsWith('.tsx')) return {};
@@ -88,24 +100,21 @@ const componentFilenameConvention = {
       .replace(/\.stories\.tsx$/, '')
       .replace(/\.tsx$/, '');
 
-    const matchesConvention =
-      convention === KEBAB_CASE
-        ? IS_KEBAB_CASE.test(componentName)
-        : IS_PASCAL_CASE.test(componentName);
+    const matchesConvention = isKebabCase
+      ? IS_KEBAB_CASE.test(componentName)
+      : IS_PASCAL_CASE.test(componentName);
 
     if (!matchesConvention) {
-      const suggestion =
-        convention === KEBAB_CASE
-          ? toKebabCase(componentName)
-          : toPascalCase(componentName);
+      const suggestion = isKebabCase
+        ? toKebabCase(componentName)
+        : toPascalCase(componentName);
       return {
         Program(node) {
           context.report({
             node,
-            messageId: 'wrongConvention',
+            messageId: isKebabCase ? 'kebabCaseFilename' : 'pascalCaseFilename',
             data: {
               basename,
-              convention,
               suggestion: basename.replace(componentName, suggestion),
             },
           });
