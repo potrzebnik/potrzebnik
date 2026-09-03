@@ -1,5 +1,5 @@
 // Colors, radii and other visual values must come from design tokens declared
-// in `src/app/globals.css` (see CLAUDE.md). This rule reports the offending
+// in `src/app/theme.css` (see CLAUDE.md). This rule reports the offending
 // class itself — name and location — instead of the whole string literal.
 const DEFAULT_PALETTE =
   'white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';
