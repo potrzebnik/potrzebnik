@@ -18,9 +18,9 @@ their contents here.
 - No `.tsx` file in `src/components/ui/` or `src/components/shared/` ships without a co-located
   `*.stories.tsx`; the `potrzebnik/require-colocated-story` ESLint rule enforces it.
 - Viewport options live in exactly one place: `.storybook/viewports.mjs`, imported by both
-  `.storybook/preview.tsx` and the lint rule. A story pins a viewport only by a key defined there
-  or by one of `MINIMAL_VIEWPORTS` — an unknown key silently falls back to 1200px and tests the
-  wrong layout; the `potrzebnik/valid-story-viewport` ESLint rule enforces it.
+  `.storybook/preview.tsx` and the lint rule. A story pins one with `globals.viewport.value`, by a
+  key defined there or by one of `MINIMAL_VIEWPORTS` — an unknown key silently falls back to 1200px
+  and tests the wrong layout; the `potrzebnik/valid-story-viewport` ESLint rule enforces it.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and

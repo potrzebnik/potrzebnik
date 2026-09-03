@@ -108,8 +108,10 @@ Each ships with a `RuleTester` suite in the `unit` project.
   `src/components/shared/`. A component with no `*.stories.tsx` neighbour is never rendered by
   `pnpm test:storybook`, so nothing checks it and the axe gate never sees it.
 - `potrzebnik/valid-story-viewport` applies to `*.stories.tsx` and rejects an unknown key pinned as
-  `parameters.viewport.value`. An unknown key is not a runtime error: `setViewport` silently falls
-  back to 1200x900, so a story named "Mobile" quietly renders — and gets tested — as desktop.
+  `globals.viewport.value` — the shape the runtime actually reads — or as the legacy
+  `parameters.viewport.defaultViewport`. An unknown key is not a runtime error: the viewport
+  silently falls back to 1200x900, so a story named "Mobile" quietly renders — and gets tested — as
+  desktop. The key must be a static string literal, otherwise the gate has nothing to check.
 
 Allowed keys are `MINIMAL_VIEWPORTS` from `storybook/viewport` plus the keys of `viewportOptions`
 in <RepoFile path=".storybook/viewports.mjs" />. That module is the single source of the project's

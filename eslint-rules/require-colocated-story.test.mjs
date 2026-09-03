@@ -1,40 +1,46 @@
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { RuleTester } from 'eslint';
-import { describe, it } from 'vitest';
+import { afterAll, describe, it } from 'vitest';
 
 import requireColocatedStory from './require-colocated-story.mjs';
 
 RuleTester.describe = describe;
 RuleTester.it = it;
 
-const repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..',
-);
+const fixtureDir = mkdtempSync(path.join(tmpdir(), 'require-colocated-story-'));
 
-function componentPath(name) {
-  return path.join(repoRoot, 'src', 'components', 'shared', name);
+function fixture(name) {
+  return path.join(fixtureDir, name);
 }
+
+writeFileSync(fixture('Storied.tsx'), '');
+writeFileSync(fixture('Storied.stories.tsx'), '');
+writeFileSync(fixture('Unstoried.tsx'), '');
+
+afterAll(() => {
+  rmSync(fixtureDir, { recursive: true, force: true });
+});
 
 const ruleTester = new RuleTester();
 
 ruleTester.run('require-colocated-story', requireColocatedStory, {
   valid: [
     {
-      code: 'export function BadgeGroup() {}',
-      filename: componentPath('BadgeGroup.tsx'),
+      code: 'export function Storied() {}',
+      filename: fixture('Storied.tsx'),
     },
     {
       code: 'export default {};',
-      filename: componentPath('BadgeGroup.stories.tsx'),
+      filename: fixture('Storied.stories.tsx'),
     },
   ],
   invalid: [
     {
       code: 'export function Unstoried() {}',
-      filename: componentPath('Unstoried.tsx'),
+      filename: fixture('Unstoried.tsx'),
       errors: [{ messageId: 'missingStory' }],
     },
   ],
