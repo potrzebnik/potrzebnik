@@ -14,36 +14,54 @@ markup, not in a sibling stylesheet. Tailwind v4 is wired in through the PostCSS
 ## Design tokens, not raw colours
 
 Every colour used in a component must resolve through a design token, never a literal `#hex`,
-`rgb()`, or `oklch()` value written inline. Tokens are declared once in <RepoFile path="src/app/globals.css" /> under the `@theme inline` block, which
-maps each `--color-*` custom property to a CSS variable such as `--background`
-or `--header-bg`. The same block also declares the non-colour tokens:
-`--font-sans`, `--font-mono`, and the `--radius-*` scale. Add a new colour by
-declaring the variable there, then reference it with the matching Tailwind
-utility (for example `bg-header-bg`), never by pasting the raw value into a
-component.
+`rgb()`, or `oklch()` value written inline. Tokens live in <RepoFile path="src/app/theme.css" />,
+which holds nothing else: the whole `@theme inline` block and the whole `:root`
+block. <RepoFile path="src/app/globals.css" /> is plumbing only — the three
+`@import`s (`tailwindcss`, `tw-animate-css`, `./theme.css`), the
+`benefits-marquee` keyframes, and the `@layer base` reset. Adding or renaming a
+token is a `theme.css` edit; adding a global rule or an animation is a
+`globals.css` edit.
 
-That split matters for where a literal is allowed to live. The token
-definitions under `:root` in <RepoFile path="src/app/globals.css" /> are the one
-legitimate home for a raw value, and several of them are plain hex today
-(`--overlay-yellow: #f6d94f`, `--help-section-btn-bg: #f6d94f`). What is out of
-bounds is a literal on a colour _property_ anywhere else.
+`theme.css` has two halves. The `@theme inline` block maps each Tailwind token
+to a CSS variable: a `--color-*` entry pointing at the `--header-bg` variable is
+what makes `bg-header-bg` exist. It also declares the non-colour tokens `--font-sans`,
+`--font-mono`, and the `--radius-*` scale. The `:root` block below holds the
+variables themselves, and those divide into **base tokens** (`--background`,
+`--foreground-strong`, `--brand-yellow`, `--border-strong`) and **section
+tokens** (`--header-*`, `--footer-*`, `--org-signup-*`, `--help-section-*`,
+`--benefits-strip-*`, `--overlay-*`, `--image-frame-*`).
 
-<RepoFile path=".stylelintrc.json" /> enforces that mechanically, though more
-narrowly than the rule of thumb suggests:
+That division is where a literal is allowed to live: only in a base token, only
+in `theme.css`. Section tokens alias one
+(`--header-cta: var(--brand-yellow-strong)`), components reference the matching
+Tailwind utility (`bg-header-cta`), and no other CSS file declares a colour at
+all. A section needing a shade nobody has named yet adds the base token first,
+then aliases it.
 
+<RepoFile path=".stylelintrc.json" /> enforces that mechanically, through two
+`overrides` keyed on file path:
+
+- Every file matching `**/*.css` rejects a literal in any custom property
+  (`/^--/`). This is what keeps values out of `globals.css`, and out of CSS
+  files that do not exist yet — it is scoped by path, not by a list of token
+  name prefixes that a new section would sidestep.
+- <RepoFile path="src/app/theme.css" /> replaces that entry with a narrower one:
+  literals are allowed, but not on a custom property matching the section
+  prefixes above. Because an override replaces a rule's settings rather than
+  merging them, base tokens in that one file are the only place a value passes.
 - `selector-class-pattern` rejects any hand-written CSS class name that is not the `.dark` theming
   hook, catching BEM-style classes before they land.
-- `declaration-property-value-disallowed-list` rejects values starting with `#`
-  or `rgb`, plus numeric-leading `oklch(` (the pattern is `^oklch\(\s*[\d.]`,
-  so `oklch(var(--x))` passes), on a fixed list of nine enumerated properties:
-  `background`, `background-color`, `color`, `border`, `border-color`,
-  `border-top-color`, `border-bottom-color`, `outline`, and `outline-color`. It
-  is a fixed list, not a `border*`/`outline*` wildcard: `border-left-color`,
-  for instance, is not covered. It also does not apply to custom properties, so
-  the token definitions above pass cleanly.
+- The colour-_property_ check applies everywhere and is unchanged: values
+  starting with `#` or `rgb`, plus numeric-leading `oklch(` (the pattern is
+  `^oklch\(\s*[\d.]`, so `oklch(var(--x))` passes), on a fixed list of nine
+  enumerated properties: `background`, `background-color`, `color`, `border`,
+  `border-color`, `border-top-color`, `border-bottom-color`, `outline`, and
+  `outline-color`. It is a fixed list, not a `border*`/`outline*` wildcard:
+  `border-left-color`, for instance, is not covered.
 
 Run `pnpm lint:css` to check `src/**/*.css` locally; the same command runs in CI. In practice that
-is a single file: <RepoFile path="src/app/globals.css" /> is the only CSS file under `src/`.
+is two files: <RepoFile path="src/app/theme.css" /> and <RepoFile path="src/app/globals.css" /> are
+the only CSS under `src/`.
 
 ## Arbitrary Tailwind values
 

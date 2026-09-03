@@ -37,5 +37,47 @@
         "/^oklch\\(\\s*[\\d.]/"
       ]
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.css"],
+      "rules": {
+        "declaration-property-value-disallowed-list": [
+          {
+            "/^(background|background-color|color|border|border-color|border-top-color|border-bottom-color|outline|outline-color)$/": [
+              "/^#/",
+              "/^rgb/",
+              "/^oklch\\(\\s*[\\d.]/"
+            ],
+            "/^--/": ["/^#/", "/^rgb/", "/^oklch\\("]
+          },
+          {
+            "message": "Colour values live only in src/app/theme.css. Define the value there as a base token and reference it here with var(--token) (see CLAUDE.md)."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/app/theme.css"],
+      "rules": {
+        "declaration-property-value-disallowed-list": [
+          {
+            "/^(background|background-color|color|border|border-color|border-top-color|border-bottom-color|outline|outline-color)$/": [
+              "/^#/",
+              "/^rgb/",
+              "/^oklch\\(\\s*[\\d.]/"
+            ],
+            "/^--(header|footer|org-signup|help-section|benefits-strip|overlay|image-frame)-/": [
+              "/^#/",
+              "/^rgb/",
+              "/^oklch\\("
+            ]
+          },
+          {
+            "message": "Section tokens must alias a base token, not re-declare a colour. Use var(--base-token); add the literal to the base tokens above if it does not exist yet (see CLAUDE.md)."
+          }
+        ]
+      }
+    }
+  ]
 }
