@@ -45,12 +45,14 @@ const eslintConfig = defineConfig([
   },
   {
     files: ['src/components/ui/**/*.tsx', 'src/components/shared/**/*.tsx'],
+    linterOptions: { noInlineConfig: true },
     rules: {
       'potrzebnik/require-colocated-story': 'error',
     },
   },
   {
     files: ['**/*.stories.tsx'],
+    linterOptions: { noInlineConfig: true },
     rules: {
       'potrzebnik/valid-story-viewport': 'error',
     },

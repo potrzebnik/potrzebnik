@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import tsParser from '@typescript-eslint/parser';
 import { RuleTester } from 'eslint';
 import { afterAll, describe, it } from 'vitest';
 
@@ -24,12 +25,14 @@ afterAll(() => {
   rmSync(fixtureDir, { recursive: true, force: true });
 });
 
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester({
+  languageOptions: { parser: tsParser },
+});
 
 ruleTester.run('require-colocated-story', requireColocatedStory, {
   valid: [
     {
-      code: 'export function Storied() {}',
+      code: 'export function Storied(): null { return null; }',
       filename: fixture('Storied.tsx'),
     },
     {
@@ -39,7 +42,7 @@ ruleTester.run('require-colocated-story', requireColocatedStory, {
   ],
   invalid: [
     {
-      code: 'export function Unstoried() {}',
+      code: 'export function Unstoried(): null { return null; }',
       filename: fixture('Unstoried.tsx'),
       errors: [{ messageId: 'missingStory' }],
     },
