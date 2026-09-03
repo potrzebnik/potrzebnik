@@ -1,7 +1,7 @@
 import Stripes from '@/components/shared/Stripes';
 import WhyWorthCarousel from '@/components/shared/WhyWorthCarousel';
 import WhyWorthCard from '@/components/shared/WhyWorthCard';
-import { WHY_WORTH_ITEMS } from '@/lib/constants';
+import { WHY_WORTH_ITEMS } from '@/components/shared/WhyWorthCarousel';
 
 export default function WhyWorthSection() {
   return (
