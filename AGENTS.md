@@ -18,7 +18,9 @@ than forking the content.
 - Colour values live in exactly one place: the base tokens in `src/app/theme.css`. Section tokens
   there and every other CSS file must alias one with `var(--…)`, never restate a literal. Styling
   is Tailwind utility classes co-located in JSX — no hand-written component CSS, no BEM classes.
-  `.stylelintrc.json` enforces both halves.
+  `.stylelintrc.json` enforces both halves. The docs site under `./docs/site/` is not the Next app
+  and does hand-write CSS: theme-level colour tokens live in `docs/site/src/styles/custom.css` (the
+  only file there allowed a hex literal), layout in a scoped `<style>` in the component.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
 - No `.tsx` file in `src/components/ui/` or `src/components/shared/` ships without a co-located
