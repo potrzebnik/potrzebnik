@@ -21,7 +21,8 @@ Tests run as three separate Vitest projects across two config files rather than 
   ```
 
 - **`unit`**: configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
-  (excluding integration tests) under Node. Run with:
+  under `src/` (excluding integration tests) and the `*.test.mjs` files next to the custom ESLint
+  rules in `eslint-rules/`, all under Node. Run with:
 
   ```bash
   pnpm test
@@ -96,3 +97,22 @@ check mode, and the duplicate-arbitrary-value scan (see the Tokens & styling rul
 before opening a pull request. It is a subset of what CI enforces, not a mirror: CI's Quality job
 also runs `pnpm build` and the unit tests, and the Storybook, Integration, and docs jobs run on top
 of that.
+
+## Story gates enforced by ESLint
+
+Two repo-local ESLint rules, registered under the `potrzebnik` plugin in <RepoFile
+path="eslint.config.mjs" /> and implemented in `eslint-rules/`, guard the story harness itself.
+Each ships with a `RuleTester` suite in the `unit` project.
+
+- `potrzebnik/require-colocated-story` applies to `.tsx` files under `src/components/ui/` and
+  `src/components/shared/`. A component with no `*.stories.tsx` neighbour is never rendered by
+  `pnpm test:storybook`, so nothing checks it and the axe gate never sees it.
+- `potrzebnik/valid-story-viewport` applies to `*.stories.tsx` and rejects an unknown key pinned as
+  `parameters.viewport.value`. An unknown key is not a runtime error: `setViewport` silently falls
+  back to 1200x900, so a story named "Mobile" quietly renders — and gets tested — as desktop.
+
+Allowed keys are `MINIMAL_VIEWPORTS` from `storybook/viewport` plus the keys of `viewportOptions`
+in <RepoFile path=".storybook/viewports.mjs" />. That module is the single source of the project's
+viewport options: <RepoFile path=".storybook/preview.tsx" /> uses it as
+`parameters.viewport.options`, and the rule reads its keys, so adding a viewport in one place is
+enough.

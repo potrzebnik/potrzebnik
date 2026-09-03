@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import React from 'react';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../src/app/globals.css';
+import { viewportOptions } from './viewports.mjs';
 
 // Load the same fonts the app applies in `src/app/layout.tsx` so stories render
 // with Geist instead of a fallback — otherwise type metrics (and line wrapping)
@@ -33,23 +34,7 @@ const preview: Preview = {
     },
 
     viewport: {
-      options: {
-        '390-844': {
-          name: 'Mobile 390x844',
-          type: 'mobile',
-          styles: { width: '390px', height: '844px' },
-        },
-        '1280-800': {
-          name: 'Desktop 1280x800',
-          type: 'desktop',
-          styles: { width: '1280px', height: '800px' },
-        },
-        '2560-1440': {
-          name: 'Desktop 2560x1440',
-          type: 'desktop',
-          styles: { width: '2560px', height: '1440px' },
-        },
-      },
+      options: viewportOptions,
     },
   },
   decorators: [

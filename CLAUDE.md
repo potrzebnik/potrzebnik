@@ -16,10 +16,11 @@ their contents here.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
 - No `.tsx` file in `src/components/ui/` or `src/components/shared/` ships without a co-located
-  `*.stories.tsx`; `scripts/check-stories.mjs` enforces it in `pnpm check`.
-- A story pins a viewport only by a key defined in `parameters.viewport.options` in
-  `.storybook/preview.tsx` — an unknown key silently falls back to 1200px and tests the wrong
-  layout; `scripts/check-story-viewports.mjs` enforces it in `pnpm check`.
+  `*.stories.tsx`; the `potrzebnik/require-colocated-story` ESLint rule enforces it.
+- Viewport options live in exactly one place: `.storybook/viewports.mjs`, imported by both
+  `.storybook/preview.tsx` and the lint rule. A story pins a viewport only by a key defined there
+  or by one of `MINIMAL_VIEWPORTS` — an unknown key silently falls back to 1200px and tests the
+  wrong layout; the `potrzebnik/valid-story-viewport` ESLint rule enforces it.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
   Storybook, which is served under a URL subpath.
 - Project prose lives in exactly one place: `./docs/site/src/content/docs/`. This file and

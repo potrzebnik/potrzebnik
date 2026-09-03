@@ -7,6 +7,8 @@ import nextTs from 'eslint-config-next/typescript';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
 import noUntokenizedTailwind from './eslint-rules/no-untokenized-tailwind.mjs';
+import requireColocatedStory from './eslint-rules/require-colocated-story.mjs';
+import validStoryViewport from './eslint-rules/valid-story-viewport.mjs';
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -28,11 +30,27 @@ const eslintConfig = defineConfig([
   {
     plugins: {
       potrzebnik: {
-        rules: { 'no-untokenized-tailwind': noUntokenizedTailwind },
+        rules: {
+          'no-untokenized-tailwind': noUntokenizedTailwind,
+          'require-colocated-story': requireColocatedStory,
+          'valid-story-viewport': validStoryViewport,
+        },
       },
     },
     rules: {
       'potrzebnik/no-untokenized-tailwind': 'error',
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.tsx', 'src/components/shared/**/*.tsx'],
+    rules: {
+      'potrzebnik/require-colocated-story': 'error',
+    },
+  },
+  {
+    files: ['**/*.stories.tsx'],
+    rules: {
+      'potrzebnik/valid-story-viewport': 'error',
     },
   },
 ]);
