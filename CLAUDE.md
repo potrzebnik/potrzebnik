@@ -11,8 +11,10 @@ their contents here.
 - `src/db/resolve-database-url.ts` is the single source of the database connection URL, for both
   runtime and `drizzle.config.ts`. It **throws fast** on missing environment variables. Preserve
   that; never silently default a secret.
-- No raw colour literals in styles. Styling is Tailwind utility classes co-located in JSX — no
-  hand-written component CSS, no BEM classes. `.stylelintrc.json` enforces it.
+- Colour values live in exactly one place: the base tokens in `src/app/theme.css`. Section tokens
+  there and every other CSS file must alias one with `var(--…)`, never restate a literal. Styling
+  is Tailwind utility classes co-located in JSX — no hand-written component CSS, no BEM classes.
+  `.stylelintrc.json` enforces both halves.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
 - Every image renders through `next/image`. A raw `<img>` or a CSS `url(/…)` breaks the published
