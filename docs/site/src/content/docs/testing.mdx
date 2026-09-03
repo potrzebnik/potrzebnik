@@ -100,29 +100,19 @@ of that.
 
 ## Story gates enforced by ESLint
 
-Two repo-local ESLint rules, registered under the `potrzebnik` plugin in <RepoFile
-path="eslint.config.mjs" /> and implemented in `eslint-rules/`, guard the story harness itself.
-Both ship with a `RuleTester` suite in the `unit` project.
+Two repo-local rules under the `potrzebnik` plugin guard the story harness. They sit in
+`eslint-rules/`, are wired up in <RepoFile path="eslint.config.mjs" />, and ship with a `RuleTester`
+suite in the `unit` project.
 
-- `potrzebnik/require-colocated-story` applies to `.tsx` files under `src/components/ui/` and
-  `src/components/shared/`. A component with no `*.stories.tsx` neighbour is never rendered by
-  `pnpm test:storybook`, so nothing checks it and the axe gate never sees it.
-- `potrzebnik/valid-story-viewport` applies to `*.stories.tsx`. The test runner reads exactly two
-  paths: `globals.viewport.value`, and the legacy `parameters.viewport.defaultViewport`. Pin a
-  viewport on one of those, as a static string literal, and the rule checks the key against the
-  allowed set — an unknown key is not a runtime error, the viewport silently falls back to
-  1200x900, so a story named "Mobile" quietly renders, and gets tested, as desktop. Pin it on
-  `parameters.viewport.value` or `globals.viewport.defaultViewport` instead and the rule rejects
-  the path itself: nothing reads those, so the story renders at 1200x900 however correct the key
-  is. A viewport object under any other parent is left alone.
+- `potrzebnik/require-colocated-story` — every `.tsx` under `src/components/ui/` and
+  `src/components/shared/` needs a `*.stories.tsx` neighbour.
+- `potrzebnik/valid-story-viewport` — a story pins its viewport by a key that resolves, on a path the
+  test runner actually reads. Shared keys live in <RepoFile path=".storybook/viewports.mjs" />,
+  imported by both <RepoFile path=".storybook/preview.tsx" /> and the rule, so adding one is a single
+  edit.
 
-Neither gate can be switched off with an `eslint-disable` comment: both config blocks set
-`linterOptions.noInlineConfig`, so no inline directive works in those files at all — not just
-one aimed at these rules. An exception means editing <RepoFile path="eslint.config.mjs" />, where a reviewer sees it.
+Neither gate can be silenced inline: both config blocks set `linterOptions.noInlineConfig`, so an
+exception means editing <RepoFile path="eslint.config.mjs" />, where a reviewer sees it.
 
-Allowed keys are `MINIMAL_VIEWPORTS` from `storybook/viewport` plus anything the file itself
-declares under `parameters.viewport.options` or the legacy `parameters.viewport.viewports` — the
-three sources the runner merges. Project-wide options arrive the same way, through
-`parameters.viewport.options`: <RepoFile path=".storybook/preview.tsx" /> passes the
-`viewportOptions` of <RepoFile path=".storybook/viewports.mjs" />, so adding a shared viewport in
-one place is enough.
+Each rule explains the rest when it fires, including why a viewport key that does not resolve is
+worse than an outright error.
