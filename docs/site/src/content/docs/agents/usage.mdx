@@ -7,7 +7,7 @@ import RepoFile from '../../../components/RepoFile.astro';
 
 ## What lives under `.claude/`
 
-<RepoFile path=".claude" /> holds agents, a command, and a skill scoped to this
+<RepoFile path=".claude" /> holds agents, a command, and skills scoped to this
 repository, loaded automatically whenever Claude Code runs from the project
 root. This page explains what they're for and when to reach for them; the [Agent
 & skill index](/potrzebnik/agents/index-generated/) lists what's defined right
@@ -66,6 +66,22 @@ shape of the repository. Run it by hand whenever a change reshapes the codebase
 enough that the diagram or its prose would go stale; it is deliberately not
 wired into the docs build, so the resulting diff lands in the same pull request
 as the change that prompted it.
+
+## The documentation skills
+
+Two skills keep the prose in this repository honest, and they divide the work between them.
+
+<RepoFile path=".claude/skills/writing-for-agents" /> is the reference for _how_
+to write anything an agent consumes — a skill, an agent definition, `CLAUDE.md`,
+a docs page. Read it before adding or editing one of those.
+<RepoFile path=".claude/skills/audit-docs" /> is the check on whether what is
+already written is still _true_: it takes the checkable claims out of the prose,
+settles each one against the repository, fixes what has objectively drifted and
+brings the rest to you before touching it.
+
+They deliberately skip what the build already guards. A `<RepoFile>` path that does not exist throws
+during the docs build, and a broken link between pages fails link validation, so neither is worth an
+audit pass.
 
 ## Adding a new agent
 
