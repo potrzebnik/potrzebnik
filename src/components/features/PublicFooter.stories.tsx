@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { PublicFooter } from '@/components/features/public-footer';
+import { PublicFooter } from '@/components/features/PublicFooter';
 
 const meta = {
   title: 'Features/PublicFooter',
