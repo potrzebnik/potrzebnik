@@ -13,20 +13,10 @@ root. This page explains what they're for and when to reach for them; the [Agent
 & skill index](/potrzebnik/agents/index-generated/) lists what's defined right
 now.
 
-Skills live one level up, in <RepoFile path=".agents/skills" />, not under `.claude/`. Codex and
-Gemini CLI both discover skills from a shared `.agents/skills` location — Gemini CLI natively,
-Codex once its project-scoped skill support lands — so a `SKILL.md` written there is available to
-every one of those tools without copying it. `.claude/skills` is a symlink to `.agents/skills`, kept
-only so Claude Code's own `.claude/skills/` discovery path still finds them:
-
-```sh
-$ ls -l .claude/skills
-lrwxrwxrwx  skills -> ../.agents/skills
-```
-
-Add a new skill under `.agents/skills/<name>/SKILL.md`, never directly under `.claude/skills/` —
-writing there would land inside the symlink target anyway, but starting from the canonical path
-avoids the confusion.
+Skills live one level up, in <RepoFile path=".agents/skills" />: a shared location several
+agentic tools can read directly, so a `SKILL.md` written once doesn't need copying per tool.
+`.claude/skills` is a symlink to it, kept because Claude Code only looks under `.claude/skills/`.
+Add new skills under `.agents/skills/<name>/SKILL.md`.
 
 ## Reviewer agents
 
