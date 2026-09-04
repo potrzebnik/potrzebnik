@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
 
 const alignVariants = {
   left: 'text-left',
@@ -24,11 +23,7 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <h2
-      className={cn(
-        'text-2xl font-bold tracking-tight sm:text-3xl',
-        alignVariants[align],
-        spacingVariants[spacing],
-      )}
+      className={`text-2xl font-bold tracking-tight sm:text-3xl ${alignVariants[align]} ${spacingVariants[spacing]}`}
     >
       {children}
     </h2>

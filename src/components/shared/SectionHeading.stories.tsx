@@ -24,7 +24,7 @@ const meta = {
     (Story) => (
       <div className="max-w-2xl">
         <Story />
-        <div className="bg-muted h-16 rounded-lg" />
+        <div className="bg-secondary h-16 rounded-lg" />
       </div>
     ),
   ],

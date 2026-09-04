@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
 
 const shellVariants = {
   contained: 'container mx-auto px-6',
@@ -23,7 +22,7 @@ export default function SectionShell({
   rhythm = 'default',
 }: SectionShellProps) {
   return (
-    <section className={cn(shellVariants[variant], shellRhythms[rhythm])}>
+    <section className={`${shellVariants[variant]} ${shellRhythms[rhythm]}`}>
       {children}
     </section>
   );

@@ -19,7 +19,7 @@ const meta = {
   },
   args: {
     children: (
-      <div className="bg-muted text-muted-foreground rounded-lg p-8 text-center">
+      <div className="bg-secondary text-secondary-foreground rounded-lg p-8 text-center">
         Zawartość sekcji
       </div>
     ),
