@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
-import { PublicFooter } from '@/components/features/public-footer';
+import StepsSection from '@/components/sections/StepsSection';
 
 const meta = {
-  title: 'Features/PublicFooter',
-  component: PublicFooter,
+  title: 'Sections/StepsSection',
+  component: StepsSection,
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof PublicFooter>;
+} satisfies Meta<typeof StepsSection>;
 
 export default meta;
 

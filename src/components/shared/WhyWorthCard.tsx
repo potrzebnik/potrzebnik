@@ -18,10 +18,10 @@ export default function WhyWorthCard({
   image,
 }: WhyWorthCardProps) {
   return (
-    <Card className="bg-card flex flex-col items-center justify-center rounded-2xl border-[0.32px] border-black px-6.5 py-9 md:rounded-3xl md:border-[0.5px] md:px-8 md:py-10">
-      <div className="flex w-full flex-col gap-5.5 md:gap-11.75">
+    <Card className="bg-card border-why-worth-border flex flex-col items-center justify-center rounded-2xl border-[0.32px] px-6.5 py-9 md:rounded-3xl md:border-[0.5px] md:px-8 md:pt-11 md:pb-10">
+      <div className="flex w-full flex-col gap-5.5 md:gap-10">
         <CardHeader className="w-full p-0">
-          <h3 className="mt-5 text-center text-[1.25rem] leading-6 font-semibold md:mt-6 md:text-[1.5rem] md:leading-[1.8rem] md:tracking-[-1px]">
+          <h3 className="text-center text-[1.25rem] leading-6 font-semibold md:text-[1.5rem] md:leading-[1.8rem] md:tracking-[-1px]">
             {title}
           </h3>
         </CardHeader>

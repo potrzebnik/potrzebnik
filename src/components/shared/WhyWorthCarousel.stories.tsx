@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
-import WhyWorthCarousel, {
-  WHY_WORTH_ITEMS,
-} from '@/components/shared/WhyWorthCarousel';
+import WhyWorthCarousel from '@/components/shared/WhyWorthCarousel';
+import { WHY_WORTH_ITEMS } from '@/components/sections/WhyWorthSection';
 
 const meta = {
   title: 'Shared/WhyWorthCarousel',

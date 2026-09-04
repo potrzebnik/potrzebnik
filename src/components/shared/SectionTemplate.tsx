@@ -1,4 +1,4 @@
-﻿import Image, { StaticImageData } from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import ImageOverlay, {
   overlayVariants,
 } from '@/components/shared/ImageOverlay';
@@ -44,7 +44,7 @@ const SectionTemplate = ({
       <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 xl:gap-24">
         <div className={reversed ? 'lg:order-2' : 'lg:order-1'}>
           <div
-            className={`relative mx-auto w-11/12 md:max-w-xl lg:mx-0 ${image.frame ? 'rounded-lg bg-white' : ''}`}
+            className={`relative mx-auto w-11/12 md:max-w-xl lg:mx-0 ${image.frame ? 'bg-image-frame-bg rounded-lg' : ''}`}
           >
             <div
               className={`flex items-center justify-center rounded-lg shadow-md ${

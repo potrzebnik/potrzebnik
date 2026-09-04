@@ -1,0 +1,56 @@
+---
+title: Architecture Decision Records
+description: What an ADR is, when to write one here, and how the records are numbered.
+---
+
+An **Architecture Decision Record** (ADR) is a short document capturing one architecturally
+significant decision: the context that forced a choice, the choice itself, and the consequences
+the project now lives with. One decision, one file, numbered and never rewritten - when a decision
+stops holding, a new ADR records the replacement, so the reasoning behind today's code is readable
+without archaeology through pull requests and chat logs.
+
+## Why they exist
+
+Code records _what_ the project does. It does not record what the alternatives were, which
+constraint ruled them out, or which trade-off was accepted knowingly. That reasoning otherwise
+lives only in the head of whoever made the call. An ADR is the cheapest durable form of it: a page
+of prose, reviewed in the same pull request as the change it justifies.
+
+## When to write one
+
+Write an ADR when a choice is expensive to reverse or would surprise a competent newcomer:
+adopting or dropping a framework, changing how data is persisted, introducing a new deployment
+target, or settling a convention the whole codebase must then obey. Do not write one for
+reversible, local choices - a component's internal structure or a helper's name is not an
+architecture decision.
+
+## What the status line is for
+
+An ADR is never edited into a lie. When reality moves on, the record stays as written and its
+**Status** line carries the change - that line is the only mutable part of the document, and it is
+what tells a reader whether they are looking at a live rule or a piece of history.
+
+- **Proposed** - written up for discussion; the decision is not in force yet, and code should not
+  assume it.
+- **Accepted** - in force. This is the rule the codebase is expected to follow, and a change that
+  contradicts it needs a new ADR, not a pull request comment.
+- **Deprecated** - no longer in force, either because a later ADR replaced it or because the thing
+  it governed was removed. The text stays put so the earlier reasoning, and the reason it stopped
+  holding, both remain readable.
+
+## Conventions here
+
+- Files live in `docs/site/src/content/docs/adrs/` as `NNNN-kebab-case-title.mdx`.
+- Numbers are sequential and permanent; they are never reused or renumbered.
+- An accepted ADR is immutable apart from its **Status** line.
+- Start from the [ADR template](/potrzebnik/adrs/template/) and add the new page to the sidebar in
+  `docs/site/astro.config.mjs`.
+
+## Further reading
+
+- [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+  - Michael Nygard's original article, the source of the Context / Decision / Consequences shape.
+- [architecture-decision-record](https://github.com/joelparkerhenderson/architecture-decision-record)
+  - a large collection of templates and worked examples.
+- [AWS: ADR process guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/adr-process.html)
+  - a worked process for adopting ADRs in a team.

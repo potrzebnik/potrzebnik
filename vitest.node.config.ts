@@ -15,16 +15,21 @@ export default defineConfig({
     },
   },
   test: {
+    // Vitest 4 inline projects do not inherit root options by default.
+    // `extends` makes shared options such as the `@` alias available to them.
+    // https://vitest.dev/guide/projects.html#configuration
     projects: [
       {
+        extends: true,
         test: {
           name: 'unit',
           environment: 'node',
-          include: ['src/**/*.test.ts'],
+          include: ['src/**/*.test.ts', 'eslint-rules/**/*.test.mjs'],
           exclude: ['src/**/*.integration.test.ts'],
         },
       },
       {
+        extends: true,
         test: {
           name: 'integration',
           environment: 'node',

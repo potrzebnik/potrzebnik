@@ -1,0 +1,91 @@
+---
+title: Database
+description: Schema, migrations, and the connection URL contract.
+---
+
+import RepoFile from '../../components/RepoFile.astro';
+
+## Stack
+
+The database is Postgres, run in Docker via <RepoFile path="compose.yml" />. The app talks to it
+through Drizzle ORM on top of `pg`, configured in <RepoFile path="drizzle.config.ts" />. The
+Drizzle client lives at <RepoFile path="src/db/index.ts" />.
+
+## Schema
+
+The schema is defined under <RepoFile path="src/db/schema" />, grouped by the thing being
+modelled rather than one file per table, plus a barrel export in <RepoFile path="src/db/schema/index.ts" />. A table lives with the tables it is
+meaningless without:
+
+- <RepoFile path="src/db/schema/auth.ts" />: the four Better Auth tables
+  (`user`, `session`, `account`, `verification`).
+- <RepoFile path="src/db/schema/organization.ts" />,
+  <RepoFile path="src/db/schema/need.ts" /> and
+  <RepoFile path="src/db/schema/donor.ts" />: a table plus its join or history
+  table, one each.
+- <RepoFile path="src/db/schema/address.ts" /> and
+  <RepoFile path="src/db/schema/donation.ts" />: a single table each, because so
+  far nothing hangs off them.
+
+Read that directory for the current tables and columns; this page does not duplicate
+them, and a generated schema page is deliberately out of scope: machine-made duplication is still
+duplication.
+
+## The connection URL
+
+<RepoFile path="src/db/resolve-database-url.ts" /> is the single source of the
+Postgres connection URL, used at both runtime and by
+<RepoFile path="drizzle.config.ts" />. It builds the URL from the
+`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, and
+`POSTGRES_PORT` environment variables.
+
+Four of those are required: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, and
+`POSTGRES_PORT`. If any is missing the function **throws fast**, naming every missing key, rather
+than falling back to a default. This is deliberate: a silently-defaulted connection string is how
+a local script ends up pointed at the wrong database, or a secret ends up hard-coded. Do not add a
+silent default for any of the four; fix a missing variable at its source (your `.env` file)
+instead.
+
+`POSTGRES_HOST` is the one exception: it defaults to `localhost` for backward compatibility. That
+default is safe only because a wrong host fails loudly by refusing to connect, unlike a wrong
+database name or a wrong credential. Set it explicitly anywhere the database is not local.
+
+## Migration flow
+
+For a normal local start there is nothing to run by hand:
+
+```bash
+bash startup_dev.sh
+```
+
+<RepoFile path="startup_dev.sh" /> is the same script the
+[Authentication](/potrzebnik/auth/) page uses. It checks that a `.env` file
+exists, installs dependencies, brings the service defined in
+<RepoFile path="compose.yml" /> up with `docker compose up -d --wait`, applies
+pending migrations with `pnpm run db:migrate`, and then starts the dev server -
+which blocks, so do not chain commands after it.
+
+To apply pending migrations against an already-running container, run the
+migrate step on its own:
+
+```bash
+pnpm run db:migrate
+```
+
+After changing a file under <RepoFile path="src/db/schema" />, generate the matching migration:
+
+```bash
+pnpm run db:generate
+```
+
+The generated SQL and its journal land in `./drizzle` at the repository root, set by `out` in <RepoFile path="drizzle.config.ts" />, not under <RepoFile path="src/db" />.
+Commit those files alongside the schema change that produced them.
+
+To inspect the database interactively, open Drizzle Studio:
+
+```bash
+pnpm run db:studio
+```
+
+All three commands read the connection URL through <RepoFile path="src/db/resolve-database-url.ts" />,
+so they need the same Postgres environment variables set as the running app.

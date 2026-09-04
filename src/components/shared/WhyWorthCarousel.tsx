@@ -18,30 +18,6 @@ export interface WhyWorthItem {
   image: string;
 }
 
-export const WHY_WORTH_ITEMS: WhyWorthItem[] = [
-  {
-    id: 'donors',
-    title: 'Zaufanie darczyńców',
-    description:
-      'Darczyńcy wiedzą, że ich pomoc trafia w bezpieczne i uczciwe ręce.',
-    image: '/donors.svg',
-  },
-  {
-    id: 'needs',
-    title: 'Spełnianie realnych potrzeb',
-    description:
-      'Dzięki aktualizowanej na bieżąco liście unikasz sytuacji niepotrzebnych darów.',
-    image: '/needs.svg',
-  },
-  {
-    id: 'management',
-    title: 'Proste zarządzanie',
-    description:
-      'Intuicyjny panel zarządzania przyspiesza i ułatwia codzienną pracę.',
-    image: '/management.svg',
-  },
-];
-
 interface WhyWorthCarouselProps {
   items: WhyWorthItem[];
 }
@@ -75,8 +51,11 @@ export default function WhyWorthCarousel({ items }: WhyWorthCarouselProps) {
 
   return (
     <div className="mx-auto w-full">
-      <div className="bg-why-worth-bg relative overflow-hidden border-[0.32px] border-black px-10 py-8.5">
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+      <div className="bg-why-worth-bg border-why-worth-border relative overflow-hidden border-[0.32px] px-10 pt-9 pb-12">
+        <div
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2"
+          aria-hidden={true}
+        >
           <Stripes orientation="horizontal" isMobile />
         </div>
 
@@ -87,7 +66,11 @@ export default function WhyWorthCarousel({ items }: WhyWorthCarouselProps) {
         >
           <CarouselContent>
             {items.map((item) => (
-              <CarouselItem key={item.id} className="pl-4">
+              <CarouselItem
+                key={item.id}
+                aria-label={`Slajd o nazwie ${item.id}`}
+                className="pl-4"
+              >
                 <WhyWorthCard
                   title={item.title}
                   description={item.description}
@@ -103,7 +86,7 @@ export default function WhyWorthCarousel({ items }: WhyWorthCarouselProps) {
         count={items.length}
         current={current}
         onDotClick={scrollTo}
-        className="mt-8"
+        className="mt-6"
         itemKeys={items.map((item) => item.id)}
       />
     </div>

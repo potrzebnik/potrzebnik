@@ -1,0 +1,43 @@
+---
+title: '0001: Initial stack and tooling'
+description: The stack, tooling, and conventions the project is built on.
+---
+
+import RepoFile from '../../../components/RepoFile.astro';
+
+## Context
+
+The project is a small web application with a database and a component library, maintained by a
+small team. It needs a stack a newcomer can run locally in one command, a styling approach that
+cannot drift into ad-hoc CSS, and quality gates that fail in CI rather than in review. This record
+states the foundation every later decision is measured against.
+
+## Decision
+
+The app is a single Next.js App Router project, using React and TypeScript, styled with Tailwind
+CSS utility classes co-located in JSX rather than hand-written component CSS, enforced via
+Stylelint so raw colour literals cannot reappear. UI primitives follow the shadcn-style pattern
+recorded in <RepoFile path="components.json" />. Persistence goes through Drizzle ORM against
+Postgres, with a single fail-fast module owning the database connection URL. Storybook, run
+through Vitest's browser project, is the primary test harness for the component layer; plain
+Vitest projects cover unit and integration tests. Package management runs on pnpm, with dependency
+ranges declared in <RepoFile path="package.json" /> and the exact resolved versions locked by
+`pnpm-lock.yaml`; only the framework packages that must move together (`next`, `react`,
+`react-dom`, `eslint-config-next`, and `babel-plugin-react-compiler`) are pinned exactly, the
+rest use caret ranges. Continuous integration and a pre-push hook
+gate merges to `main`.
+
+## Consequences
+
+Choosing Storybook-as-test-harness over a separate component test suite means a component without
+a story is a component without a test; writing the story is not optional busywork. Enforcing
+styling through Stylelint instead of code review convention means a raw colour literal fails the
+build rather than surviving until someone notices it in a PR. Centralizing the database URL in one
+fail-fast module means a missing environment variable surfaces immediately at startup instead of
+as a confusing runtime error deeper in the app. None of these choices were free: they trade a
+small amount of upfront rigidity for removing an entire class of drift that a purely conventional
+approach would eventually let back in.
+
+## Status
+
+Accepted.

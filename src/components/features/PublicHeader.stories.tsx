@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
-import { PublicHeader } from '@/components/features/public-header';
+import { PublicHeader } from '@/components/features/PublicHeader';
 
 const meta = {
   title: 'Features/PublicHeader',
@@ -29,5 +30,14 @@ export const Desktop: Story = {
 export const Mobile: Story = {
   globals: {
     viewport: { value: '390-844' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Otwórz menu' }));
+
+    await expect(
+      canvas.getByRole('button', { name: 'Zamknij menu' }),
+    ).toHaveAttribute('aria-expanded', 'true');
   },
 };

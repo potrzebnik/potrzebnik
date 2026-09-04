@@ -26,8 +26,8 @@ export default function Stripes({
           key={`${orientation}-${side}-${index}`}
           className={
             orientation === 'vertical'
-              ? `h-full w-2.5 ${side === 'right' ? 'border-r-[0.5px]' : 'border-l-[0.5px]'} border-black`
-              : `${isMobile ? 'h-2 border-t-[0.32px]' : 'h-2.5 border-t-[0.5px]'} w-full border-black`
+              ? `h-full w-2.5 ${side === 'right' ? 'border-r-[0.5px]' : 'border-l-[0.5px]'} border-why-worth-border`
+              : `${isMobile ? 'h-2 border-t-[0.32px]' : 'h-2.5 border-t-[0.5px]'} border-why-worth-border w-full`
           }
           aria-hidden={true}
         />

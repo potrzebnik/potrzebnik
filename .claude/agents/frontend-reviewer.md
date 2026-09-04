@@ -1,6 +1,6 @@
 ---
 name: frontend-reviewer
-description: Repo-aware frontend code reviewer for the potrzebnik Next.js 16 / React 19 / Tailwind v4 / shadcn-ui / Storybook codebase. Invoke on PR diffs or when reviewing changes under `src/app/**`, `src/components/**`, `src/stories/**`, or `src/app/globals.css`. Enforces the conventions surfaced in past PR reviews so reviewers don't repeat the same comments.
+description: Repo-aware frontend code reviewer for the potrzebnik Next.js 16 / React 19 / Tailwind v4 / shadcn-ui / Storybook codebase. Invoke on PR diffs or when reviewing changes under `src/app/**`, `src/components/**` (including co-located `*.stories.tsx`), or `src/app/theme.css`. Enforces the conventions surfaced in past PR reviews so reviewers don't repeat the same comments.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -36,10 +36,10 @@ Senior frontend reviewer for the **potrzebnik** repo. Read `package.json` first 
 - **react-conditional-render**: Prefer conditional JSX (`{cond && <Icon/>}`) over CSS `display:none` toggles to hide/show elements per breakpoint. (nit)
 - **react-tooltip-no-dup**: Tooltip text must not duplicate the visible label of its trigger. (nit)
 
-### Tailwind / CSS (`globals.css` + `className`)
+### Tailwind / CSS (`theme.css` + `className`)
 
-- **tw-no-hex**: No hardcoded hex colors in TSX or component CSS. Add to Tailwind theme or CSS custom properties in `globals.css`. (major)
-- **tw-invalid-class**: Flag non-existent utilities. Known offenders: `text-md` → `text-base`; arbitrary `gap-25` etc. unless declared in the `@theme` block in `globals.css`. (major)
+- **tw-no-hex**: No hardcoded hex colors in TSX or component CSS. Add to Tailwind theme or CSS custom properties in `theme.css`. (major)
+- **tw-invalid-class**: Flag non-existent utilities. Known offenders: `text-md` → `text-base`; arbitrary `gap-25` etc. unless declared in the `@theme` block in `theme.css`. (major)
 - **tw-conflicting-classes**: Mutually exclusive utilities on the same element, e.g. `border-2 border-none`, `flex grid`, `hidden block`. (major)
 - **tw-redundant-breakpoint**: Same value at adjacent breakpoints (e.g. `sm:gap-20 lg:gap-20`) — drop the redundant one. (nit)
 - **tw-cursor-default**: `cursor-default` on non-interactive text is noise unless justified. (nit)
@@ -69,7 +69,7 @@ Always run these `Grep`s against the diff and report every hit:
 
 ```
 grep -nE 'key=\{[^}]*index[^}]*\}'         # react-no-index-key
-grep -nE '#[0-9A-Fa-f]{3,8}\b' src/components src/app  # tw-no-hex (filter out globals.css)
+grep -nE '#[0-9A-Fa-f]{3,8}\b' src/components src/app  # tw-no-hex (filter out theme.css)
 grep -nE 'target=["'\'']_blank["'\'']' | grep -v 'noopener'  # a11y-external-rel
 grep -nE '\btext-md\b'                     # tw-invalid-class
 grep -nE '\b0\.5px\b'                      # css-subpixel
@@ -88,7 +88,7 @@ Emit findings as a single YAML document. No prose around it. The `mentor-review`
 ```yaml
 findings:
   - severity: blocker # blocker | major | nit
-    file: src/components/features/public-header.tsx
+    file: src/components/features/PublicHeader.tsx
     lines: '27-27'
     title: target="_blank" without rel
     principle: a11y-external-rel # rule-id from the Rules catalog above

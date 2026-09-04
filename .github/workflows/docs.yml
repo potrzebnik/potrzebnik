@@ -1,0 +1,60 @@
+name: Docs
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build docs site
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Starlight's `lastUpdated` reads git history; a shallow clone gives
+          # every page the same bogus date.
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: Build Storybook into the docs site
+        run: pnpm storybook:build:docs
+
+      - name: Build docs site
+        run: pnpm --filter docs build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/site/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Superseded builds are safe to cancel; a deployment already talking to
+    # Pages is not.
+    concurrency:
+      group: docs-pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

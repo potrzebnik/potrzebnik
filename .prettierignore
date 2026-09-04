@@ -12,5 +12,8 @@ playwright-report
 .nyc_output
 test-results
 junit.xml
-docs
+docs/site/dist
+docs/site/.astro
+docs/site/public/storybook
+docs/site/src/generated
 pnpm-lock.yaml
