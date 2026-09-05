@@ -2,6 +2,8 @@ import Image, { StaticImageData } from 'next/image';
 import ImageOverlay, {
   overlayVariants,
 } from '@/components/shared/ImageOverlay';
+import SectionHeading from '@/components/shared/SectionHeading';
+import SectionShell from '@/components/shared/SectionShell';
 import { Button } from '@/components/ui/button';
 
 interface ImageProperties {
@@ -40,7 +42,7 @@ const SectionTemplate = ({
   reversed = false,
 }: SectionTemplateProps) => {
   return (
-    <section className="container mx-auto px-6 py-18 sm:py-24">
+    <SectionShell>
       <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 xl:gap-24">
         <div className={reversed ? 'lg:order-2' : 'lg:order-1'}>
           <div
@@ -64,9 +66,7 @@ const SectionTemplate = ({
         </div>
         <div className={reversed ? 'lg:order-1' : 'lg:order-2'}>
           <div className="px-3 sm:px-6 xl:px-20">
-            <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
-              {title}
-            </h2>
+            <SectionHeading>{title}</SectionHeading>
             {descriptions.map((item) => (
               <p
                 className="text-foreground mb-6 text-justify text-base leading-relaxed"
@@ -84,7 +84,7 @@ const SectionTemplate = ({
           </div>
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 };
 

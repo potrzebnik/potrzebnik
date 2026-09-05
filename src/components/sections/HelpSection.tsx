@@ -1,4 +1,6 @@
 import HelpCard from '@/components/shared/HelpCard';
+import SectionHeading from '@/components/shared/SectionHeading';
+import SectionShell from '@/components/shared/SectionShell';
 import { Button } from '@/components/ui/button';
 import { BADGES } from '@/lib/constants';
 
@@ -50,10 +52,10 @@ const helpItems: HelpItem[] = [
 
 export default function HelpSection() {
   return (
-    <section className="container mx-auto px-6 py-14 sm:py-24">
-      <h2 className="mb-14 text-center text-2xl font-bold tracking-tight sm:text-3xl md:mb-18">
+    <SectionShell>
+      <SectionHeading align="center" spacing="loose">
         Zobacz jak możesz pomóc
-      </h2>
+      </SectionHeading>
       <div className="mb-10 grid grid-cols-1 gap-8 md:mb-18 md:grid-cols-2 xl:grid-cols-3">
         {helpItems.map((item) => (
           <HelpCard
@@ -72,6 +74,6 @@ export default function HelpSection() {
           Zobacz wszystkie potrzeby
         </Button>
       </div>
-    </section>
+    </SectionShell>
   );
 }
