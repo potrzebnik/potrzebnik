@@ -76,13 +76,13 @@ as the change that prompted it.
 
 <RepoFile path=".agents/skills/open-pr" /> turns the current branch into a draft
 pull request. Invoke it by hand with `/open-pr`; the agent never fires it on its
-own. It reads the commits since `main`, fills every section of
-<RepoFile path=".github/pull_request_template.md" /> from them, shows you the
-body, and only then pushes and creates the draft with `gh`. Anything it cannot
-know from the branch - the commands you ran, what you checked by hand - it
-leaves as a `TODO:`; anything it guessed from the diff it tags `(inferred)`.
-Both are listed in its report; promoting the draft to ready is yours to do after
-resolving them.
+own. It reads the commits since `main`, fills every section of the
+<RepoFile path=".agents/skills/open-pr/PULL_REQUEST_TEMPLATE.md" /> beside it
+from them, shows you the body, and only then pushes and creates the draft with
+`gh`. Anything it cannot know from the branch - the commands you ran, what you
+checked by hand - it leaves as a `TODO:`; anything it guessed from the diff it
+tags `(inferred)`. Both are listed in its report; promoting the draft to ready
+is yours to do after resolving them.
 
 ## The documentation skills
 
