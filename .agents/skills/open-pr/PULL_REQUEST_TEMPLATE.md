@@ -2,10 +2,12 @@
 
 ## What
 
-<!-- The change in the reviewer's terms: what behaviour is different and why.
-     One bullet per change, not per file — the diff already lists the files.
-     Name a path only when it is the point (a migration, a new dependency, a
-     gotcha the reviewer would otherwise miss). Keep it to about five bullets. -->
+<!-- The change in the reviewer's terms: what behaviour is different, why,
+     and how. One bullet per change, not per file. Name a thing, don't locate
+     it: a skill by its name, a config change by the option it adds, a docs
+     change by its subject — the diff gives the paths. Name a path only when
+     the path is the point (a migration, a new dependency, a gotcha the
+     reviewer would otherwise miss). Keep it to about five bullets. -->
 
 ## Design
 

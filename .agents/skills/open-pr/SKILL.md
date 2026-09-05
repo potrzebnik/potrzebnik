@@ -60,11 +60,15 @@ point genuinely needs the connective tissue; a section that reads as one long pa
 rewritten as a list.
 
 A bullet is one **change**, not one file. Several files serving one change are one bullet, written
-as the behaviour that changed. What holds about five bullets; past that, group harder. A path
-appears only where it is the point — a migration, a dependency, a token that breaks a documented
-rule, a file the reviewer would not think to open — and a bullet whose only content is a filename
-is cut, because the diff already says it. `docs`, `env` and `dependency` rows earn a bullet when
-they are present; their absence is silence, not a bullet claiming nothing changed.
+as the behaviour that changed. What holds about five bullets; past that, group harder.
+
+**Name a thing, don't locate it.** The reviewer opens the diff a minute later; it gives locations
+better than prose can, so a bullet spends its words on behaviour instead. A new skill is
+`open-pr`, not the directory holding it. A settings change is the option it adds, not the file and
+line it lands on. A docs change is its subject. A path earns its place only where the path itself
+is the point — a migration, a dependency manifest, a file the reviewer would not think to open —
+and a bullet whose only content is a filename is cut. `docs`, `env` and `dependency` rows earn a
+bullet when they are present; their absence is silence, not a bullet claiming nothing changed.
 
 Testing carries only what CI cannot prove: coverage the change added, and hand-checks the user
 reports. A gate the repo's CI workflow already runs is reported by the checks list, so its bullet is
@@ -96,6 +100,7 @@ Report the PR URL, every `TODO:`, and every `(inferred)` left in the body.
 
 A draft PR exists. Its body opens with a bare `Closes #N` line when a ticket exists, has no HTML
 comment, carries every filled evidence row in its named section, states each point as its own
-bullet with What holding about five change-shaped bullets rather than a file list, a Testing
+bullet with What holding about five change-shaped bullets that name what changed rather than
+where it lives, a Testing
 section free of CI-run gates, and no attribution footer or session URL. The report lists the URL,
 every `TODO:`, and every `(inferred)`. The user confirmed the body before `gh pr create` ran.
