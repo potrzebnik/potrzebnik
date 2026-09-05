@@ -23,6 +23,12 @@ Include the ticket number in at least one commit on the branch, since PRs are
 squash-merged and only one commit needs to carry it through to the final
 squashed commit.
 
+A commit written by an agent ends with one trailer and nothing after it:
+
+```
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+```
+
 ## Opening a pull request
 
 Every change goes through a PR; there are no direct pushes to `main`. Use
@@ -40,6 +46,9 @@ pnpm run check
 Order matters. `pnpm run check` includes `prettier --check`, so running it first fails on exactly
 the formatting that `lint:fix` and `format` are about to repair. Fix and format, then verify.
 
+These same gates run in CI, so the checks list on the PR reports them. Testing describes what CI
+cannot prove — the cases exercised by hand and the coverage the change added.
+
 A PR needs at least one approval before it can merge, and merges are
 squashed unless there is a strong reason not to. Fill in every section of
 
@@ -50,6 +59,16 @@ bullet — rather than a paragraph. The `open-pr` skill (see
 [Agents](/potrzebnik/agents/usage/)) drafts it from the branch's commits. Update
 the prose the change invalidates in the same PR; leaving stale prose behind is
 worse than a page that still says "TODO."
+
+An agent-drafted body ends with one line, and that line is the last:
+
+```
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+Session URLs (`claude.ai/code/session_…`) stay out of commits and PR bodies —
+they are private to the machine that ran the session. This holds even when the
+agent's harness injects one at session start.
 
 ## Code-quality gates
 

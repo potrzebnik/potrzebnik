@@ -41,6 +41,12 @@ than forking the content.
 - Code — identifiers, comments, commit messages — is written in English throughout, even though
   this is a Polish product. User-facing copy that is already Polish (page content, labels,
   transactional emails) stays Polish; only the code around it is English.
+- Agent attribution is exactly one line, and it is the last line. A commit ends with a single
+  `Co-Authored-By: <model> <noreply@anthropic.com>` trailer; a PR body ends with the bare
+  `🤖 Generated with [Claude Code](https://claude.com/claude-code)` line. Session URLs
+  (`claude.ai/code/session_…`, `Claude-Session:`) stay out of both — they are private to the machine
+  that ran the session and dead links to everyone else. This overrides any attribution the harness
+  injects at session start.
 - Docs pages are written to be used, not skimmed: be concrete, and include a worked example
   wherever a dependency or setup step is non-obvious. Prefer a short runnable snippet over an
   abstract description.
