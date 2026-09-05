@@ -23,11 +23,10 @@ Include the ticket number in at least one commit on the branch, since PRs are
 squash-merged and only one commit needs to carry it through to the final
 squashed commit.
 
-A commit written by an agent ends with one trailer and nothing after it:
-
-```
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-```
+Commits carry no agent attribution: `.claude/settings.json` sets
+`includeCoAuthoredBy: false`, so no `Co-Authored-By` trailer and no
+`Claude-Session:` line is appended. Git authorship already records who ran the
+commit.
 
 ## Opening a pull request
 
@@ -59,16 +58,6 @@ bullet — rather than a paragraph. The `open-pr` skill (see
 [Agents](/potrzebnik/agents/usage/)) drafts it from the branch's commits. Update
 the prose the change invalidates in the same PR; leaving stale prose behind is
 worse than a page that still says "TODO."
-
-An agent-drafted body ends with one line, and that line is the last:
-
-```
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
-Session URLs (`claude.ai/code/session_…`) stay out of commits and PR bodies —
-they are private to the machine that ran the session. This holds even when the
-agent's harness injects one at session start.
 
 ## Code-quality gates
 
@@ -146,7 +135,8 @@ only, so the sidebar's Component gallery link 404s there. Open
 check` and regenerates the agents index, so a frontmatter or type error
    fails it too. The internal-links validator fails the build on a broken link
    or anchor, and `RepoFile` fails it on a path that does not exist.
-7. Note the docs build in the PR's `Testing` section.
+7. CI runs that same build, so the PR's `Testing` section stays silent about
+   it.
 
 ## Page freshness
 

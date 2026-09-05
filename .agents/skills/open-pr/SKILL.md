@@ -67,14 +67,9 @@ commit that carries the ticket; on a mixed branch with no ticket, ask.
 
 ### 4. Confirm, then create
 
-Write the body to a file in the scratchpad. Its last line is exactly, and only:
-
-```
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
-The body stays free of session URLs (`claude.ai/code/session_…`): a session link is private to the
-machine that ran it and useless to a reviewer. Attribution belongs in the commit trailers.
+Write the body to a file in the scratchpad. It ends on its last section: the repository ships
+`includeCoAuthoredBy: false`, so the body carries no `🤖 Generated with …` footer and no session URL
+(`claude.ai/code/session_…`) — the PR author records who opened it.
 
 Print the title and body, then gate on `AskUserQuestion`: confirm or edit. Only after confirmation:
 
@@ -89,5 +84,5 @@ Report the PR URL, every `TODO:`, and every `(inferred)` left in the body.
 
 A draft PR exists. Its body opens with a bare `Closes #N` line when a ticket exists, has no HTML
 comment, carries every filled evidence row in its named section, and states each point as its own
-bullet, with a Testing section free of CI-run gates. Its last line is the bare `🤖 Generated with …` line. The report lists the URL, every
-`TODO:`, and every `(inferred)`. The user confirmed the body before `gh pr create` ran.
+bullet, with a Testing section free of CI-run gates and a body free of attribution footers and
+session URLs. The report lists the URL, every `TODO:`, and every `(inferred)`. The user confirmed the body before `gh pr create` ran.
