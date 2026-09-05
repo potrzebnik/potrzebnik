@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for coding agents (Codex, Claude Code, and similar tools) working in this repository.
+Guidance for coding agents working in this repository.
 
 This file is deliberately thin. It records only the gotchas that are cheap to violate and
 expensive to catch, and points at the canonical sources for everything else. Do not duplicate

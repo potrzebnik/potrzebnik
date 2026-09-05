@@ -1,6 +1,6 @@
 ---
 name: audit-docs
-description: Check the prose in CLAUDE.md, README.md and docs/site/src/content/docs against what the repository actually does. Verifies checkable claims — pnpm scripts, ESLint rule names, hook and workflow behaviour, described conventions — not taste. Fixes objective drift on the spot and surfaces judgement calls before editing. Run it after a refactor, after moving a gate, or on "is the documentation still true".
+description: Check the prose in AGENTS.md, README.md and docs/site/src/content/docs against what the repository actually does. Verifies checkable claims — pnpm scripts, ESLint rule names, hook and workflow behaviour, described conventions — not taste. Fixes objective drift on the spot and surfaces judgement calls before editing. Run it after a refactor, after moving a gate, or on "is the documentation still true".
 ---
 
 # Audit the docs against the repository
@@ -22,7 +22,7 @@ Everything below is unguarded, which is why it is the scope.
 
 ## Scope
 
-- `CLAUDE.md` and `README.md`.
+- `AGENTS.md` and `README.md`.
 - Every `.mdx` under `docs/site/src/content/docs/`.
 - The `name` and `description` frontmatter of every definition under `.claude/`, which the docs
   agent index reads.
