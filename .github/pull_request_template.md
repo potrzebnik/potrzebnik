@@ -2,6 +2,12 @@
 
 <!-- One paragraph: what changes and why. Closes #<ticket>. -->
 
+## Design
+
+<!-- Why this shape: the constraint or trade-off that decided it, and the
+     alternative you rejected. Docs record only current state, so this is
+     where the reasoning lives. Delete for a mechanical change. -->
+
 ## Testing
 
 <!-- How this was verified beyond CI: commands run, cases exercised, what was
