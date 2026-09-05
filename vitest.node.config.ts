@@ -24,7 +24,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          include: ['src/**/*.test.ts'],
+          include: ['src/**/*.test.ts', 'eslint-rules/**/*.test.mjs'],
           exclude: ['src/**/*.integration.test.ts'],
         },
       },

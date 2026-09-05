@@ -21,7 +21,8 @@ Tests run as three separate Vitest projects across two config files rather than 
   ```
 
 - **`unit`**: configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
-  (excluding integration tests) under Node. Run with:
+  under `src/` (excluding integration tests) and the `*.test.mjs` files next to the custom ESLint
+  rules in `eslint-rules/`, all under Node. Run with:
 
   ```bash
   pnpm test
@@ -96,3 +97,35 @@ check mode, and the duplicate-arbitrary-value scan (see the Tokens & styling rul
 before opening a pull request. It is a subset of what CI enforces, not a mirror: CI's Quality job
 also runs `pnpm build` and the unit tests, and the Storybook, Integration, and docs jobs run on top
 of that.
+
+## Story gates enforced by ESLint
+
+Two repo-local rules under the `potrzebnik` plugin guard the story harness. They sit in
+`eslint-rules/`, are wired up in <RepoFile path="eslint.config.mjs" />, and ship with a `RuleTester`
+suite in the `unit` project.
+
+- `potrzebnik/require-colocated-story` — every `.tsx` under `src/components/ui/` and
+  `src/components/shared/` needs a `*.stories.tsx` neighbour.
+- `potrzebnik/valid-story-viewport` — a story pins its viewport by a key that resolves, on a path the
+  test runner actually reads. Shared keys live in <RepoFile path=".storybook/viewports.mjs" />,
+  imported by both <RepoFile path=".storybook/preview.tsx" /> and the rule, so adding one is a single
+  edit.
+
+Neither gate can be silenced inline: both config blocks set `linterOptions.noInlineConfig`, so an
+exception means editing <RepoFile path="eslint.config.mjs" />, where a reviewer sees it.
+
+## Component naming enforced by ESLint
+
+`potrzebnik/component-filename-convention` guards filenames rather than the story harness, so it is
+registered twice, once per convention, each registration with its own `files` section and a required
+`convention` option.
+
+- `src/components/ui/` takes kebab-case, because the shadcn CLI writes those files.
+- `sections/`, `shared/` and `features/` take PascalCase plus a component export of that exact name,
+  so an import path reads the same as the symbol it binds. The export half is skipped for
+  `*.stories.tsx` and for `ui/`, whose files export several primitives at once.
+
+Like the story gates, neither registration can be silenced inline.
+
+Each of the three rules explains the rest when it fires, including the ownership boundary behind the
+two naming conventions and why a viewport key that does not resolve is worse than an outright error.
