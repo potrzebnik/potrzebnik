@@ -28,27 +28,33 @@ The commit list is a table of contents, not the story. Read `git show --stat` fo
 diff where a subject is vague, and `git diff origin/main...HEAD --stat` for the whole picture. Fill
 every row:
 
-| Row        | Source                                                               | Lands in    |
-| ---------- | -------------------------------------------------------------------- | ----------- |
-| ticket     | commit subject `(#N)`, `Closes #N` trailer, branch name `type/#N-…`  | What, title |
-| migration  | anything under `drizzle/`                                            | What        |
-| env        | any change to `.env.example`                                         | What        |
-| dependency | any `package.json` dependency change                                 | What        |
-| docs       | files under `docs/site/src/content/docs/` changed                    | What        |
-| coverage   | `*.stories.tsx` and `*.test.ts*` added or changed                    | Testing     |
-| why        | commit bodies that state a constraint, trade-off, or rejected option | Design      |
+| Row        | Source                                                               | Lands in           |
+| ---------- | -------------------------------------------------------------------- | ------------------ |
+| ticket     | commit subject `(#N)`, `Closes #N` trailer, branch name `type/#N-…`  | Top of body, title |
+| migration  | anything under `drizzle/`                                            | What               |
+| env        | any change to `.env.example`                                         | What               |
+| dependency | any `package.json` dependency change                                 | What               |
+| docs       | files under `docs/site/src/content/docs/` changed                    | What               |
+| coverage   | `*.stories.tsx` and `*.test.ts*` added or changed                    | Testing            |
+| why        | commit bodies that state a constraint, trade-off, or rejected option | Design             |
 
 Ticket sources that disagree: ask which one the PR closes. Behaviour, setup, or a dependency changed
 with no docs row: the docs row becomes `TODO: docs`.
 
 ### 3. Write the contract
 
-Read `.github/pull_request_template.md` fresh each run. Each HTML comment becomes prose answering
-it; the comment is dropped. Every evidence row lands in the section its **Lands in** column names,
-so the reviewer meets a migration or dependency before the diff. **What** ends with `Closes #N` when
-the ticket row is filled.
+Read `.github/pull_request_template.md` fresh each run. Each HTML comment becomes an answer to it;
+the comment is dropped. Every evidence row lands where its **Lands in** column names, so the
+reviewer meets a migration or dependency before the diff.
 
-A sentence the evidence supports is plain. A sentence guessed from the diff carries `(inferred)`.
+`Closes #N` is the body's first line, above every heading and with no heading of its own, when the
+ticket row is filled. Nothing else precedes it.
+
+Section content is **bullets** — one point per bullet, one row per bullet. A paragraph appears only
+where a single point genuinely needs the connective tissue; a section that reads as one long
+paragraph is rewritten as a list.
+
+A bullet the evidence supports is plain. A bullet guessed from the diff carries `(inferred)`.
 A fact outside the evidence, such as commands run or hand-checks, is `TODO:`. A section whose
 comment allows deletion, and whose rows are empty, is deleted.
 
@@ -74,6 +80,7 @@ Report the PR URL, every `TODO:`, and every `(inferred)` left in the body.
 
 ## Completion criterion
 
-A draft PR exists. Its body has no HTML comment, contains every filled evidence row in its named
-section, and ends **What** with `Closes #N` when a ticket exists. The report lists the URL, every
+A draft PR exists. Its body opens with a bare `Closes #N` line when a ticket exists, has no HTML
+comment, carries every filled evidence row in its named section, and states each point as its own
+bullet. The report lists the URL, every
 `TODO:`, and every `(inferred)`. The user confirmed the body before `gh pr create` ran.
