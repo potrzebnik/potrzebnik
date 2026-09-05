@@ -43,6 +43,11 @@
   --color-org-signup-btn-bg: var(--org-signup-btn-bg);
   --color-org-signup-btn-bg-hover: var(--org-signup-btn-bg-hover);
   --color-accent-blue: var(--accent-blue);
+  --color-why-worth-bg: var(--why-worth-bg);
+  --color-why-worth-border: var(--why-worth-border);
+  --color-carousel-dot-bg: var(--carousel-dot-bg);
+  --color-carousel-dot-bg-hover: var(--carousel-dot-bg-hover);
+  --color-carousel-dot-bg-active: var(--carousel-dot-bg-active);
   --color-benefits-strip-band-bg: var(--benefits-strip-band-bg);
   --color-benefits-strip-border: var(--benefits-strip-border);
   --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
@@ -130,4 +135,15 @@
   --benefits-strip-border: var(--foreground-strong);
   --benefits-strip-pill-bg: var(--brand-blue-pale);
   --benefits-strip-fg: var(--foreground);
+
+  /* Why Worth section — the tinted panel behind the cards and the hard
+     black hairline outline that matches the rest of the landing page. */
+  --why-worth-bg: var(--accent-blue);
+  --why-worth-border: var(--foreground-strong);
+
+  /* Carousel pagination dots: inactive grey, hover darkens, active is the
+     wide pill marking the current slide. */
+  --carousel-dot-bg: #94a3b8;
+  --carousel-dot-bg-hover: #475569;
+  --carousel-dot-bg-active: #1e293b;
 }
