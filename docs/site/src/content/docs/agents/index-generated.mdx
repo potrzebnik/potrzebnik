@@ -1,27 +1,28 @@
 ---
 title: Agent & skill index
-description: Every agent, command, and skill defined in .claude/.
+description: Every agent, command, and skill defined in .claude/ and .agents/.
 ---
 
 import RepoFile from '../../../components/RepoFile.astro';
 import agentsIndex from '../../../generated/agents-index.json';
 
-`.claude/` stays the canonical source for every agent, command, and skill definition. This index
-is regenerated on every docs build straight from that directory's frontmatter, so it cannot drift
+`.claude/` stays the canonical source for agents and commands; `.agents/skills` is the canonical
+source for skills (see [How agents are used here](/potrzebnik/agents/usage/)). This index is
+regenerated on every docs build straight from those directories' frontmatter, so it cannot drift
 out of date the way a hand-maintained list would. Full agent bodies are deliberately not
 republished here; open the linked file for the actual system prompt or skill steps.
 
 {[
-['Agents', 'agents'],
-['Commands', 'commands'],
-['Skills', 'skills'],
-].map(([heading, key]) => (
+['Agents', 'agents', '.claude/agents'],
+['Commands', 'commands', '.claude/commands'],
+['Skills', 'skills', '.agents/skills'],
+].map(([heading, key, dir]) => (
 
   <>
     <h2 id={key}>{heading}</h2>
     {agentsIndex[key].length === 0 ? (
       <p>
-        Nothing is defined under <code>.claude/{key}</code> right now.
+        Nothing is defined under <code>{dir}</code> right now.
       </p>
     ) : (
       <table>

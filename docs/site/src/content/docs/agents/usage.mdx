@@ -7,11 +7,16 @@ import RepoFile from '../../../components/RepoFile.astro';
 
 ## What lives under `.claude/`
 
-<RepoFile path=".claude" /> holds agents, a command, and skills scoped to this
+<RepoFile path=".claude" /> holds agents and a command scoped to this
 repository, loaded automatically whenever Claude Code runs from the project
 root. This page explains what they're for and when to reach for them; the [Agent
 & skill index](/potrzebnik/agents/index-generated/) lists what's defined right
 now.
+
+Skills live one level up, in <RepoFile path=".agents/skills" />: a shared location several
+agentic tools can read directly, so a `SKILL.md` written once doesn't need copying per tool.
+`.claude/skills` is a symlink to it, kept because Claude Code only looks under `.claude/skills/`.
+Add new skills under `.agents/skills/<name>/SKILL.md`.
 
 ## Reviewer agents
 
@@ -60,7 +65,7 @@ afterward.
 
 ## The architecture-regeneration skill
 
-<RepoFile path=".claude/skills/regenerate-architecture-page" /> rewrites the
+<RepoFile path=".agents/skills/regenerate-architecture-page" /> rewrites the
 [Architecture](/potrzebnik/architecture/) page and its diagram from the current
 shape of the repository. Run it by hand whenever a change reshapes the codebase
 enough that the diagram or its prose would go stale; it is deliberately not
@@ -71,10 +76,10 @@ as the change that prompted it.
 
 Two skills keep the prose in this repository honest, and they divide the work between them.
 
-<RepoFile path=".claude/skills/writing-for-agents" /> is the reference for _how_
+<RepoFile path=".agents/skills/writing-for-agents" /> is the reference for _how_
 to write anything an agent consumes — a skill, an agent definition, `CLAUDE.md`,
 a docs page. Read it before adding or editing one of those.
-<RepoFile path=".claude/skills/audit-docs" /> is the check on whether what is
+<RepoFile path=".agents/skills/audit-docs" /> is the check on whether what is
 already written is still _true_: it takes the checkable claims out of the prose,
 settles each one against the repository, fixes what has objectively drifted and
 brings the rest to you before touching it.

@@ -1,6 +1,8 @@
 // Generates the data behind the "Agent & skill index" docs page from the
-// canonical definitions in .claude/. Output is gitignored and rebuilt every
-// docs build, so the index cannot drift. Index only — bodies are never copied.
+// canonical definitions in .claude/ (agents, commands) and .agents/skills
+// (skills — shared with Codex and Gemini CLI; .claude/skills is a symlink to
+// it). Output is gitignored and rebuilt every docs build, so the index cannot
+// drift. Index only — bodies are never copied.
 import {
   mkdirSync,
   readdirSync,
@@ -14,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 const siteRoot = fileURLToPath(new URL('..', import.meta.url));
 const repoRoot = fileURLToPath(new URL('../../../', import.meta.url));
 const claudeDir = join(repoRoot, '.claude');
+const agentsDir = join(repoRoot, '.agents');
 const outFile = join(siteRoot, 'src/generated/agents-index.json');
 
 /**
@@ -34,9 +37,9 @@ function readFrontmatter(file) {
   return fields;
 }
 
-/** Markdown definition files for one `.claude/` subdirectory. */
-function collect(kind) {
-  const dir = join(claudeDir, kind);
+/** Markdown definition files for one subdirectory of `base`. */
+function collect(base, kind) {
+  const dir = join(base, kind);
   let entries;
   try {
     entries = readdirSync(dir, { recursive: true });
@@ -80,9 +83,9 @@ function assertUniqueNames(items, kind) {
 }
 
 const index = {
-  agents: assertUniqueNames(collect('agents'), 'agent'),
-  commands: assertUniqueNames(collect('commands'), 'command'),
-  skills: assertUniqueNames(collect('skills'), 'skill'),
+  agents: assertUniqueNames(collect(claudeDir, 'agents'), 'agent'),
+  commands: assertUniqueNames(collect(claudeDir, 'commands'), 'command'),
+  skills: assertUniqueNames(collect(agentsDir, 'skills'), 'skill'),
 };
 
 mkdirSync(dirname(outFile), { recursive: true });
