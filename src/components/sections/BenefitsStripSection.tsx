@@ -8,8 +8,12 @@ const TAGS = [
 ];
 
 function Pill({ label }: { label: string }) {
+  const isAccent = label === 'bezpłatne narzędzie';
+
   return (
-    <span className="border-benefits-strip-border bg-benefits-strip-pill-bg text-benefits-strip-fg mr-4 shrink-0 rounded-full border px-6 py-3 text-sm font-medium whitespace-nowrap sm:text-base">
+    <span
+      className={`border-benefits-strip-border text-benefits-strip-fg mr-4 shrink-0 rounded-full border px-6 py-3 text-sm font-medium whitespace-nowrap sm:text-base ${isAccent ? 'bg-benefits-strip-pill-bg' : 'bg-benefits-strip-pill-bg-white'}`}
+    >
       {label}
     </span>
   );
