@@ -46,13 +46,13 @@ Review the current branch: code-reviewer for backend files, frontend-reviewer fo
 Both agents emit findings as severity-ranked YAML (blocker / major / nit), each with a file,
 lines, rationale, and a fix proposal.
 
-## The `mentor-review` command
+## The `mentor-review` skill
 
-<RepoFile path=".claude/commands/mentor-review.md" /> orchestrates both reviewer
-agents in parallel against `git diff main...HEAD` plus uncommitted changes, then
-presents each finding as a teaching card: concept, why it matters, impact, the
-offending code, the fix, and references. Reach for it before opening a pull
-request, not as a replacement for a human reviewer.
+<RepoFile path=".agents/skills/mentor-review/SKILL.md" /> orchestrates both
+reviewer agents in parallel against `git diff main...HEAD` plus uncommitted
+changes, then presents each finding as a teaching card: concept, why it matters,
+impact, the offending code, the fix, and references. Reach for it before opening
+a pull request, not as a replacement for a human reviewer.
 
 Two modes:
 
