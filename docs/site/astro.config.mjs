@@ -42,7 +42,7 @@ export default defineConfig({
         },
         { label: 'Testing', link: '/testing/' },
         { label: 'Contributing', link: '/contributing/' },
-        { label: 'Zasady współpracy', link: '/zasady-wspolpracy/' },
+        { label: 'Team working agreements', link: '/working-agreements/' },
         {
           label: 'Agents & skills',
           items: [
