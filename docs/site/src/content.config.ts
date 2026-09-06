@@ -3,8 +3,6 @@ import { file } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 
-
-
 // ROADMAP SPECIFICS
 const status = z.enum(['planned', 'in-progress', 'done']);
 const category = z.enum(['design', 'implementation', 'organization']);
