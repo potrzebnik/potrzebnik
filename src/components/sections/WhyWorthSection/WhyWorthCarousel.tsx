@@ -7,9 +7,9 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 import type { CarouselApi } from '@/components/ui/carousel';
-import WhyWorthCard from '@/components/shared/WhyWorthCard';
-import CarouselDots from '@/components/shared/CarouselDots';
-import Stripes from '@/components/shared/Stripes';
+import WhyWorthCard from './WhyWorthCard';
+import CarouselDots from './CarouselDots';
+import Stripes from './Stripes';
 
 export interface WhyWorthItem {
   id: string;
@@ -62,13 +62,13 @@ export default function WhyWorthCarousel({ items }: WhyWorthCarouselProps) {
         <Carousel
           setApi={setApi}
           className="w-full"
-          aria-label="Dlaczego warto"
+          aria-label="Karuzela - Dlaczego warto"
         >
           <CarouselContent>
             {items.map((item) => (
               <CarouselItem
                 key={item.id}
-                aria-label={`Slajd o nazwie ${item.id}`}
+                aria-label={`Slajd: ${item.title}`}
                 className="pl-4"
               >
                 <WhyWorthCard
@@ -86,7 +86,7 @@ export default function WhyWorthCarousel({ items }: WhyWorthCarouselProps) {
         count={items.length}
         current={current}
         onDotClick={scrollTo}
-        className="mt-6"
+        className="mt-6 lg:mt-8"
         itemKeys={items.map((item) => item.id)}
       />
     </div>

@@ -29,10 +29,7 @@ export default function HelpCard({
     <Card className="relative flex cursor-pointer flex-col overflow-hidden shadow-sm transition-shadow hover:shadow-md">
       <CardHeader>
         <div className="relative">
-          <CardTitle
-            className="line-clamp-1 text-lg leading-tight font-medium"
-            aria-label={title}
-          >
+          <CardTitle className="line-clamp-1 text-lg leading-tight font-medium">
             {title}
           </CardTitle>
         </div>

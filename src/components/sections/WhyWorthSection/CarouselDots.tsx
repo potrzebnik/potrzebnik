@@ -28,7 +28,7 @@ export default function CarouselDots({
           onClick={() => onDotClick(index)}
           className={`transition-all duration-300 ${
             current === index
-              ? 'bg-carousel-dot-bg-active w-6'
+              ? 'bg-carousel-dot-bg-active border-carousel-dot-border-active w-5 border'
               : 'bg-carousel-dot-bg hover:bg-carousel-dot-bg-hover'
           }`}
           aria-label={`Przejdź do slajdu ${index + 1}`}

@@ -16,15 +16,18 @@ const SLIDES = [
   'Wsparcie finansowe',
   'Wolontariat',
 ];
-
 const meta = {
   title: 'UI/Carousel',
   component: Carousel,
   parameters: {
     layout: 'centered',
   },
+  globals: {
+    viewport: {
+      value: '390-844',
+    },
+  },
 } satisfies Meta<typeof Carousel>;
-
 export default meta;
 
 type Story = StoryObj<typeof meta>;

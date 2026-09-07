@@ -18,7 +18,11 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
-        dot: 'rounded-full bg-carousel-dot-bg hover:bg-carousel-dot-bg-hover',
+        // CarouselDots is the sole consumer of "dot": it sets the background and
+        // hover per state in its own className, and the active dot must have no
+        // hover. An empty variant stops the default one (bg-primary + hover)
+        // from leaking into every dot.
+        dot: '',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

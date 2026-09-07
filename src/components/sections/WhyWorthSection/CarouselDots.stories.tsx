@@ -1,12 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
-import CarouselDots from '@/components/shared/CarouselDots';
+import CarouselDots from './CarouselDots';
 
 const meta = {
-  title: 'Shared/CarouselDots',
+  title: 'Sections/WhyWorthSection/CarouselDots',
   component: CarouselDots,
   parameters: {
     layout: 'centered',
+  },
+  globals: {
+    viewport: {
+      value: '390-844',
+    },
   },
 } satisfies Meta<typeof CarouselDots>;
 

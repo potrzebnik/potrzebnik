@@ -48,6 +48,7 @@
   --color-carousel-dot-bg: var(--carousel-dot-bg);
   --color-carousel-dot-bg-hover: var(--carousel-dot-bg-hover);
   --color-carousel-dot-bg-active: var(--carousel-dot-bg-active);
+  --color-carousel-dot-border-active: var(--carousel-dot-border-active);
   --color-benefits-strip-band-bg: var(--benefits-strip-band-bg);
   --color-benefits-strip-border: var(--benefits-strip-border);
   --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
@@ -142,8 +143,12 @@
   --why-worth-border: var(--foreground-strong);
 
   /* Carousel pagination dots: inactive grey, hover darkens, active is the
-     wide pill marking the current slide. */
-  --carousel-dot-bg: #94a3b8;
-  --carousel-dot-bg-hover: #475569;
-  --carousel-dot-bg-active: #1e293b;
+   wide pill marking the current slide. */
+
+  --dot-bg: #e4e4e4;
+  --dot-hover-bg: #475569;
+  --carousel-dot-bg: var(--dot-bg);
+  --carousel-dot-bg-hover: var(--dot-hover-bg);
+  --carousel-dot-bg-active: var(--accent-blue);
+  --carousel-dot-border-active: var(--foreground-strong);
 }
