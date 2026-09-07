@@ -55,7 +55,7 @@ export function PublicHeader() {
             id="mobile-navbar-panel"
             className="bg-header-bg-mobile flex min-h-[735px] w-full items-start pt-5 pr-8 pb-0 pl-5"
           >
-            <div className="flex w-full max-w-[350px] flex-col gap-10">
+            <div className="max-w-header-nav-panel flex w-full flex-col gap-10">
               <div className="flex w-full flex-col">
                 {navigationItems.map((item, index) => (
                   <Link
