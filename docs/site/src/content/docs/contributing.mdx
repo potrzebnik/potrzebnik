@@ -23,6 +23,11 @@ Include the ticket number in at least one commit on the branch, since PRs are
 squash-merged and only one commit needs to carry it through to the final
 squashed commit.
 
+Commits carry no agent attribution: `.claude/settings.json` sets
+`includeCoAuthoredBy: false`, so no `Co-Authored-By` trailer and no
+`Claude-Session:` line is appended. Git authorship already records who ran the
+commit.
+
 ## Opening a pull request
 
 Every change goes through a PR; there are no direct pushes to `main`. Use
@@ -40,13 +45,21 @@ pnpm run check
 Order matters. `pnpm run check` includes `prettier --check`, so running it first fails on exactly
 the formatting that `lint:fix` and `format` are about to repair. Fix and format, then verify.
 
+These same gates run in CI, so the checks list on the PR reports them. Testing describes what CI
+cannot prove — the cases exercised by hand and the coverage the change added.
+
 A PR needs at least one approval before it can merge, and merges are
-squashed unless there is a strong reason not to. The PR template has a
-`Testing` section: say how the change was verified beyond CI, and name what
-covers it - the stories or tests added or updated, and anything left uncovered
-and why. CI proves only that the suite passed, not that the new behaviour is
-in it. Update the prose the change invalidates in the same PR; leaving stale
-prose behind is worse than a page that still says "TODO."
+squashed unless there is a strong reason not to. Fill in every section of
+
+<RepoFile path=".agents/skills/open-pr/PULL_REQUEST_TEMPLATE.md" />; the
+comments in it say what each section is for. It lives with the `open-pr` skill
+rather than in `.github/`, so the template and the skill that fills it stay in
+one place. The body opens with a bare `Closes #<ticket>` line
+above every heading, and each section is written as bullets — one point per
+bullet — rather than a paragraph. The `open-pr` skill (see
+[Agents](/potrzebnik/agents/usage/)) drafts it from the branch's commits. Update
+the prose the change invalidates in the same PR; leaving stale prose behind is
+worse than a page that still says "TODO."
 
 ## Code-quality gates
 
@@ -124,7 +137,8 @@ only, so the sidebar's Component gallery link 404s there. Open
 check` and regenerates the agents index, so a frontmatter or type error
    fails it too. The internal-links validator fails the build on a broken link
    or anchor, and `RepoFile` fails it on a path that does not exist.
-7. Note the docs build in the PR's `Testing` section.
+7. CI runs that same build, so the PR's `Testing` section stays silent about
+   it.
 
 ## Page freshness
 

@@ -37,8 +37,14 @@ function readFrontmatter(file) {
   return fields;
 }
 
-/** Markdown definition files for one subdirectory of `base`. */
-function collect(base, kind) {
+/**
+ * Markdown definition files for one subdirectory of `base`.
+ *
+ * `isDefinition` separates a definition from the supporting prose beside it:
+ * a skill directory may hold any number of `.md` files, but only `SKILL.md`
+ * declares the skill.
+ */
+function collect(base, kind, isDefinition = () => true) {
   const dir = join(base, kind);
   let entries;
   try {
@@ -48,11 +54,14 @@ function collect(base, kind) {
   }
   return entries
     .map((entry) => join(dir, entry))
-    .filter((file) => file.endsWith('.md') && statSync(file).isFile())
+    .filter(
+      (file) =>
+        file.endsWith('.md') && isDefinition(file) && statSync(file).isFile(),
+    )
     .map((file) => {
       const { name, description } = readFrontmatter(file);
-      // `.claude/commands/mentor-review.md` carries no `name` — fall back to
-      // the slug so every definition still lands in the index.
+      // A definition without a `name` still lands in the index, under the slug
+      // it is addressed by: the directory for a skill, the filename otherwise.
       const slug =
         basename(file) === 'SKILL.md'
           ? basename(dirname(file))
@@ -85,7 +94,10 @@ function assertUniqueNames(items, kind) {
 const index = {
   agents: assertUniqueNames(collect(claudeDir, 'agents'), 'agent'),
   commands: assertUniqueNames(collect(claudeDir, 'commands'), 'command'),
-  skills: assertUniqueNames(collect(agentsDir, 'skills'), 'skill'),
+  skills: assertUniqueNames(
+    collect(agentsDir, 'skills', (file) => basename(file) === 'SKILL.md'),
+    'skill',
+  ),
 };
 
 mkdirSync(dirname(outFile), { recursive: true });

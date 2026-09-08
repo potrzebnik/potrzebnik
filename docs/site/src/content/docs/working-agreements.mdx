@@ -1,0 +1,82 @@
+---
+title: Team working agreements
+description: 'Rules binding the whole team: task ownership, meeting attendance and review.'
+---
+
+These rules bind everyone, no exceptions.
+
+## Task ownership
+
+The person assigned to a task is responsible for it: for the work itself
+and for keeping the status up to date on the
+[board](https://github.com/orgs/potrzebnik/projects/1). The board is meant to reflect the
+actual state; nobody updates it for you.
+
+- I update my task status on the board myself, as I go.
+- I have **at most two** tasks in progress. When both are stuck, I don't take a third,
+  I report the blocker instead.
+- **Once a week** I post an update on my work as a comment on the task,
+  not on chat and not verbally at a meeting.
+
+The comment stays with the task, so the history is in one place and anyone can
+read it without asking. Reporting a lack of progress is not admitting
+failure, it is an obligation: the tech lead decides whether someone takes the task over or whether
+you can be supported some other way. Silence is the only mistake.
+
+:::caution[To be decided]
+Definition of Done: what exactly must be satisfied to move a task to
+review and to done. Without it everyone interprets the statuses their own way. To be decided
+as a team.
+:::
+
+## Meetings and attendance
+
+Meetings in Google Calendar are the way of communicating attendance.
+
+- I mark my response (attending / not attending) before the meeting.
+- I stick to what I declared.
+- When plans change, I change my response in the calendar before the meeting
+  starts.
+
+## Code review
+
+Every developer reviews other people's work. Review is not solely the
+tech lead's job.
+
+As the author of a PR:
+
+- A PR I'm still working on stays a draft. Taking it out of draft means:
+  the PR is ready for review.
+- The `potrzebnik/devs` team is assigned to the review. CODEOWNERS does this
+  automatically the moment the draft is lifted; I only check whether the request is actually
+  there. "Someone take a look" is not a review request, because nobody
+  feels singled out then.
+
+As a reviewer:
+
+- I read the code a remark concerns before I write it.
+- When a review is produced with AI, I verify **every remark** before adding
+  a comment.
+
+A comment you pasted without verifying is your comment and your
+responsibility.
+
+## Reporting technical debt
+
+The place of record is a GitHub issue with the
+[`tech-debt`](https://github.com/potrzebnik/potrzebnik/issues?q=is%3Aissue%20state%3Aopen%20label%3Atech-debt)
+label, not a comment in the code or a message on chat.
+
+- When I hit technical debt, I open an issue with the `tech-debt` label —
+  right away, not "after I finish the task".
+- I don't fix debt in a PR that is about something else.
+- In the issue I write: **where** (file, module), **what** is wrong and **why**
+  it gets in the way. Without the "why" nobody can judge the priority.
+
+A labelled issue is not a commitment that someone will do it right away — it is a record
+that makes the debt visible so it can be deliberately planned or deliberately deferred.
+
+:::caution[To be decided]
+Review SLA: how long the assigned person has to respond to a PR and what the
+author does when that time passes. To be decided as a team.
+:::

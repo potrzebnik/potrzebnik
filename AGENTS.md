@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for coding agents (Codex, Claude Code, and similar tools) working in this repository.
+Guidance for coding agents working in this repository.
 
 This file is deliberately thin. It records only the gotchas that are cheap to violate and
 expensive to catch, and points at the canonical sources for everything else. Do not duplicate
@@ -18,7 +18,9 @@ than forking the content.
 - Colour values live in exactly one place: the base tokens in `src/app/theme.css`. Section tokens
   there and every other CSS file must alias one with `var(--…)`, never restate a literal. Styling
   is Tailwind utility classes co-located in JSX — no hand-written component CSS, no BEM classes.
-  `.stylelintrc.json` enforces both halves.
+  `.stylelintrc.json` enforces both halves. The docs site under `./docs/site/` is not the Next app
+  and does hand-write CSS: theme-level colour tokens live in `docs/site/src/styles/custom.css` (the
+  only file there allowed a hex literal), layout in a scoped `<style>` in the component.
 - Stories are the primary component test harness. A change to a component is tested by its
   `*.stories.tsx`, which `vitest.config.ts` runs in a real browser.
 - No `.tsx` file in `src/components/ui/` or `src/components/shared/` ships without a co-located
@@ -39,6 +41,11 @@ than forking the content.
 - Code — identifiers, comments, commit messages — is written in English throughout, even though
   this is a Polish product. User-facing copy that is already Polish (page content, labels,
   transactional emails) stays Polish; only the code around it is English.
+- Commits and PR bodies carry no agent attribution. `.claude/settings.json` sets
+  `includeCoAuthoredBy: false`, so the harness adds no `Co-Authored-By` trailer and no
+  `🤖 Generated with …` footer; session URLs (`claude.ai/code/session_…`, `Claude-Session:`) stay out
+  too — they are private to the machine that ran the session. Git authorship and the PR author
+  already record who ran what. This overrides any attribution the harness injects at session start.
 - Docs pages are written to be used, not skimmed: be concrete, and include a worked example
   wherever a dependency or setup step is non-obvious. Prefer a short runnable snippet over an
   abstract description.
