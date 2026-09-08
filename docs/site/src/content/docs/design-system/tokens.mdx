@@ -82,6 +82,31 @@ new count explicitly:
 pnpm check:duplicate-values:update-baseline
 ```
 
+## Figma token compatibility
+
+<RepoFile path="scripts/check-figma-tokens.mjs" /> compares
+<RepoFile path="src/app/theme.css" /> against the Figma design-system export at
+<RepoFile path="figma-tokens.json" />, in both directions. It ignores anything
+Figma marks deprecated — a variable whose own name, or whose light-mode
+(`shadcn`) alias target's name, contains `nieaktualne`/`nieaktualnie`.
+
+- It prints, informationally, which active Figma semantic colours have no matching literal
+  anywhere in `theme.css` yet. This list is expected to be non-empty during migration and never
+  fails the check.
+- It fails when `theme.css` defines a literal colour that doesn't match any active Figma
+  primitive — for example a value that only echoes a deprecated primitive, or has no Figma
+  backing at all. Like <RepoFile path="scripts/check-duplicate-arbitrary-values.mjs" />, this is
+  baselined: pre-existing stray colours in <RepoFile path="scripts/figma-token-baseline.json" />
+  don't block CI, a new one does.
+
+```bash
+pnpm check:figma-tokens
+pnpm check:figma-tokens:update-baseline
+```
+
+`check:figma-tokens` is part of `pnpm check`, so it runs in CI's Quality job on every pull
+request.
+
 ## UI primitives vs feature composites
 
 Three tiers of component live under <RepoFile path="src/components" />:
