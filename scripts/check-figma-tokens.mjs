@@ -126,17 +126,24 @@ const baseline = new Set(
     : [],
 );
 
+const known = strayLiterals.filter((literal) => baseline.has(literal.hex));
 const regressions = strayLiterals.filter(
   (literal) => !baseline.has(literal.hex),
 );
+
+console.log(
+  `theme.css literals with no active Figma primitive backing (baselined, non-blocking): ${known.length}`,
+);
+for (const literal of known.sort((a, b) => a.name.localeCompare(b.name))) {
+  console.log(`  --${literal.name}: ${literal.hex};`);
+}
+console.log('');
 
 if (regressions.length === 0) {
   process.exit(0);
 }
 
-console.error(
-  'theme.css defines colours with no match in the active Figma palette:\n',
-);
+console.error('theme.css defines new colours not in that baseline:\n');
 for (const literal of regressions) {
   console.error(`  --${literal.name}: ${literal.hex};`);
 }

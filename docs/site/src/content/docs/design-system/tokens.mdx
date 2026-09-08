@@ -93,11 +93,12 @@ Figma marks deprecated — a variable whose own name, or whose light-mode
 - It prints, informationally, which active Figma semantic colours have no matching literal
   anywhere in `theme.css` yet. This list is expected to be non-empty during migration and never
   fails the check.
-- It fails when `theme.css` defines a literal colour that doesn't match any active Figma
-  primitive — for example a value that only echoes a deprecated primitive, or has no Figma
-  backing at all. Like <RepoFile path="scripts/check-duplicate-arbitrary-values.mjs" />, this is
-  baselined: pre-existing stray colours in <RepoFile path="scripts/figma-token-baseline.json" />
-  don't block CI, a new one does.
+- It also prints, informationally, every `theme.css` literal that doesn't match any active Figma
+  primitive by name — the full compatibility picture, not just the ones causing a failure.
+- It fails only when a _new_ such literal appears that isn't already in <RepoFile
+  path="scripts/figma-token-baseline.json" />, the same baseline pattern <RepoFile
+  path="scripts/check-duplicate-arbitrary-values.mjs" /> uses: pre-existing stray colours don't
+  block CI, a new one does.
 
 ```bash
 pnpm check:figma-tokens
