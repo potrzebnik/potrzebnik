@@ -46,6 +46,7 @@
   --color-benefits-strip-band-bg: var(--benefits-strip-band-bg);
   --color-benefits-strip-border: var(--benefits-strip-border);
   --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
+  --color-benefits-strip-pill-bg-white: var(--benefits-strip-pill-bg-white);
   --color-benefits-strip-fg: var(--benefits-strip-fg);
   --animate-benefits-marquee: benefits-marquee 64s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
@@ -129,5 +130,6 @@
   --benefits-strip-band-bg: var(--background);
   --benefits-strip-border: var(--foreground-strong);
   --benefits-strip-pill-bg: var(--brand-blue-pale);
+  --benefits-strip-pill-bg-white: var(--background);
   --benefits-strip-fg: var(--foreground);
 }
