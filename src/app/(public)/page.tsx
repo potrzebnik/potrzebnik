@@ -1,15 +1,14 @@
 import StepsSection from '@/components/sections/StepsSection';
 import OrgSignupSection from '@/components/sections/OrgSignupSection';
 import BenefitsStripSection from '@/components/sections/BenefitsStripSection';
-import { Button } from '@/components/ui/button';
-const { NEXT_PUBLIC_BASE_URL = 'http://localhost:3000' } = process.env;
+import WhyWorthSection from '@/components/sections/WhyWorthSection/WhyWorthSection';
 
-export default async function HomePage() {
+export default function HomePage() {
   return (
     <div>
       <main>
         <h1>Welcome to Potrzebnik</h1>
-        <Button>Click me</Button>
+        <WhyWorthSection />
         <StepsSection />
         <OrgSignupSection />
         <BenefitsStripSection />
