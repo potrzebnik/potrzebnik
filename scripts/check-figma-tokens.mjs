@@ -30,10 +30,20 @@ function normalizeHex(hex) {
     : lower;
 }
 
+function collectionVariables(data, name) {
+  const collection = data.collections[name];
+  if (!collection) {
+    throw new Error(
+      `figma-tokens.json has no "${name}" collection — it was renamed in Figma, or the export is stale.`,
+    );
+  }
+  return collection.variables;
+}
+
 async function loadFigmaTokens() {
   const data = JSON.parse(await readFile(figmaTokensPath, 'utf8'));
-  const primitives = data.collections['.primitive colors'].variables;
-  const semantic = data.collections['Semantic Colors'].variables;
+  const primitives = collectionVariables(data, '.primitive colors');
+  const semantic = collectionVariables(data, 'Semantic Colors');
 
   const primitiveHexByName = new Map(
     Object.entries(primitives).map(([name, variable]) => [
@@ -89,6 +99,16 @@ async function loadThemeLiterals() {
 
 const { activePrimitiveHexes, activeSemanticColors } = await loadFigmaTokens();
 const themeLiterals = await loadThemeLiterals();
+
+// A gate that parses nothing must not pass: no literals means this script no
+// longer understands theme.css, not that theme.css is clean.
+if (themeLiterals.length === 0) {
+  console.error(
+    'No colour literals found in the :root block of src/app/theme.css — this check can no longer read it.',
+  );
+  process.exit(1);
+}
+
 const themeHexes = new Set(themeLiterals.map((literal) => literal.hex));
 
 const missing = activeSemanticColors
@@ -103,9 +123,9 @@ for (const color of missing) {
 }
 console.log('');
 
-const strayLiterals = themeLiterals.filter(
-  (literal) => !activePrimitiveHexes.has(literal.hex),
-);
+const strayLiterals = themeLiterals
+  .filter((literal) => !activePrimitiveHexes.has(literal.hex))
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 if (process.argv.includes('--update-baseline')) {
   const baseline = [
@@ -134,7 +154,7 @@ const regressions = strayLiterals.filter(
 console.log(
   `theme.css literals with no active Figma primitive backing (baselined, non-blocking): ${known.length}`,
 );
-for (const literal of known.sort((a, b) => a.name.localeCompare(b.name))) {
+for (const literal of known) {
   console.log(`  --${literal.name}: ${literal.hex};`);
 }
 console.log('');
