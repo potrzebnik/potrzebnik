@@ -55,6 +55,10 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --max-width-header-nav-panel: var(--header-nav-panel-max-width);
+  --height-section-image-lg: var(--section-image-height-lg);
+  --height-image-frame-inset: var(--image-frame-inset);
+  --width-image-frame-inset: var(--image-frame-inset);
 }
 
 :root {
@@ -92,6 +96,8 @@
   --brand-green: #c8e6c9;
   --overlay-border: var(--foreground-strong);
   --image-frame-bg: var(--background);
+  --image-frame-inset: 95%;
+  --section-image-height-lg: 350px;
   --footer-fg: var(--foreground);
   --footer-border: var(--foreground-strong);
   --footer-bg: var(--accent-blue);
@@ -112,6 +118,7 @@
      stronger than --header-border, which is the subtle divider grey. */
   --header-rule: var(--foreground-strong);
   --header-cta: var(--brand-yellow-strong);
+  --header-nav-panel-max-width: 350px;
   --help-section-btn-bg: var(--brand-yellow);
   --help-section-btn-bg-hover: var(--brand-yellow-hover);
   --help-section-btn-fg: var(--foreground-strong);
