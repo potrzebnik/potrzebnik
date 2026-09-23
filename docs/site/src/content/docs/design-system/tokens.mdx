@@ -24,7 +24,9 @@ token is a `theme.css` edit; adding a global rule or an animation is a
 
 `theme.css` has two halves. The `@theme inline` block maps each Tailwind token
 to a CSS variable: a `--color-*` entry pointing at the `--header-bg` variable is
-what makes `bg-header-bg` exist. It also declares the non-colour tokens `--font-sans`,
+what makes `bg-header-bg` exist. A colour class with no matching `--color-*` entry, such as
+`bg-muted`, renders nothing, so ESLint reports it through `potrzebnik/no-untokenized-tailwind`. It
+also declares the non-colour tokens `--font-sans`,
 `--font-mono`, and the `--radius-*` scale. The `:root` block below holds the
 variables themselves, and those divide into **base tokens** (`--background`,
 `--foreground-strong`, `--brand-yellow`, `--border-strong`) and **section
@@ -110,7 +112,7 @@ settings, instead of hand-authoring a component under `ui/`.
 Route every image through `next/image`: never a raw `<img>` tag and never a CSS `url(/…)` background
 reference. The two components that currently render images, <RepoFile
 path="src/components/shared/HelpCard.tsx" /> and <RepoFile
-path="src/components/shared/SectionTemplate.tsx" />, both import `Image` from `next/image` for this
+path="src/components/shared/MediaTextSection.tsx" />, both import `Image` from `next/image` for this
 reason.
 
 The reason is the published gallery. Stories reference assets root-absolutely (`/children.jpg`),
