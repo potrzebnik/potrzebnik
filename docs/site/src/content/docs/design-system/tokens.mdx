@@ -24,7 +24,9 @@ token is a `theme.css` edit; adding a global rule or an animation is a
 
 `theme.css` has two halves. The `@theme inline` block maps each Tailwind token
 to a CSS variable: a `--color-*` entry pointing at the `--header-bg` variable is
-what makes `bg-header-bg` exist. It also declares the non-colour tokens `--font-sans`,
+what makes `bg-header-bg` exist. A colour class with no matching `--color-*` entry, such as
+`bg-muted`, renders nothing, so ESLint reports it through `potrzebnik/no-untokenized-tailwind`. It
+also declares the non-colour tokens `--font-sans`,
 `--font-mono`, and the `--radius-*` scale. The `:root` block below holds the
 variables themselves, and those divide into **base tokens** (`--background`,
 `--foreground-strong`, `--brand-yellow`, `--border-strong`) and **section

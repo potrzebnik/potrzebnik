@@ -43,7 +43,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ['eslint-rules/**'],
+    files: ['eslint-rules/**/*.test.mjs'],
     rules: {
       'potrzebnik/no-untokenized-tailwind': 'off',
     },
