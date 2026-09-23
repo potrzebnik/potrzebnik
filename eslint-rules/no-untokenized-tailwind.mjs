@@ -5,8 +5,8 @@ const DEFAULT_PALETTE =
   'white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';
 
 // Utility prefixes that take a color value. Entries are interpolated into a
-// regex alternation, so `border-[trblxy]` is a character class (border-t, -r,
-// -b, -l, -x, -y), not a literal prefix.
+// regex alternation, so `border-[trblxyse]` is a character class (border-t,
+// -r, -b, -l, -x, -y, -s, -e), not a literal prefix.
 const COLOR_PREFIXES =
   'bg|text|border|border-[trblxyse]|outline|ring|ring-offset|inset-ring|shadow|inset-shadow|text-shadow|fill|stroke|decoration|from|via|to|caret|accent|divide|placeholder';
 
