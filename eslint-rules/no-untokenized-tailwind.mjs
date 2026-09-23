@@ -1,9 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-// Colors, radii and other visual values must come from design tokens declared
-// in `src/app/theme.css` (see CLAUDE.md). This rule reports the offending
-// class itself — name and location — instead of the whole string literal.
 const DEFAULT_PALETTE =
   'white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';
 
@@ -43,8 +40,6 @@ const NON_COLOR_VALUES = new RegExp(
 
 const PALETTE_VALUE = new RegExp(`^(?:${DEFAULT_PALETTE})(?:-\\d{2,3})?$`);
 
-// Longer prefixes come first so `border-t-header-rule` splits as `border-t` +
-// `header-rule`, not `border` + `t-header-rule`.
 const LONGEST_COLOR_PREFIX_FIRST = COLOR_PREFIXES.split('|')
   .sort((a, b) => b.length - a.length)
   .join('|');
@@ -52,7 +47,6 @@ const LONGEST_COLOR_PREFIX_FIRST = COLOR_PREFIXES.split('|')
 const CHECKS = [
   {
     id: 'rawColor',
-    // Captures the whole class around the literal, e.g. `bg-[#1a1a1a]`.
     re: /[\w-]*\[(?:#|rgb\(|rgba\(|hsl\(|hsla\(|oklch\()[^\]]*\]/g,
     message:
       '`{{match}}` uses a raw color literal — use a design token (e.g. bg-footer-bg) instead (see CLAUDE.md).',
