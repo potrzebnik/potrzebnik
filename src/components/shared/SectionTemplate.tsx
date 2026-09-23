@@ -28,9 +28,9 @@ interface SectionTemplateProps {
 }
 
 export const heightVariants = {
-  sm: 'h-[250px] md:h-[350px]',
+  sm: 'h-[250px] md:h-section-image-lg',
   md: 'h-[300px] md:h-[450px]',
-  lg: 'h-[350px] md:h-[550px]',
+  lg: 'h-section-image-lg md:h-[550px]',
 } as const;
 
 const SectionTemplate = ({
@@ -59,7 +59,7 @@ const SectionTemplate = ({
                 alt={image.alt}
                 width={400}
                 height={400}
-                className={`${image.frame ? 'h-[95%] w-[95%]' : 'h-full w-full'} rounded-lg object-cover`}
+                className={`${image.frame ? 'h-image-frame-inset w-image-frame-inset' : 'h-full w-full'} rounded-lg object-cover`}
               />
             </div>
           </div>

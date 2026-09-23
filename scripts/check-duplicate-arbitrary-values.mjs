@@ -24,6 +24,18 @@ const baselinePath = path.join(
   'duplicate-value-baseline.json',
 );
 
+// These render decorative shape collages (clip-path corners, absolutely
+// positioned overlay panels) where each percentage is a one-off coordinate
+// in that component's own composition, not a value meant to be reused
+// elsewhere — naming one as a design token would imply a relationship
+// between shapes that doesn't exist. Exempt them from the tally instead of
+// letting incidental repeats (e.g. two shapes both 80% tall) freeze into the
+// baseline as if they were debt to pay down.
+const EXEMPT_FILES = [
+  'src/components/shared/ImageOverlay.tsx',
+  'src/components/sections/OrgSignupSection.tsx',
+];
+
 const SPACING_PREFIXES = [
   'gap',
   'gap-x',
@@ -78,7 +90,9 @@ async function collectSourceFiles(dir) {
 
 async function tally() {
   const counts = new Map();
-  const files = await collectSourceFiles(sourceRoot);
+  const files = (await collectSourceFiles(sourceRoot)).filter(
+    (file) => !EXEMPT_FILES.includes(path.relative(repoRoot, file)),
+  );
 
   for (const file of files.sort()) {
     const lines = (await readFile(file, 'utf8')).split('\n');
