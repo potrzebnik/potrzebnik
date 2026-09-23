@@ -44,6 +44,13 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    // The rules and their tests hold class names as data, not as styling.
+    files: ['eslint-rules/**'],
+    rules: {
+      'potrzebnik/no-untokenized-tailwind': 'off',
+    },
+  },
+  {
     files: ['src/components/ui/**/*.tsx', 'src/components/shared/**/*.tsx'],
     linterOptions: { noInlineConfig: true },
     rules: {
