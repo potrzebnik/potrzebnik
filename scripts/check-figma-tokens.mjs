@@ -128,28 +128,31 @@ const strayLiterals = themeLiterals
   .sort((a, b) => a.name.localeCompare(b.name));
 
 if (process.argv.includes('--update-baseline')) {
-  const baseline = [
-    ...new Set(strayLiterals.map((literal) => literal.hex)),
-  ].sort();
+  const baseline = Object.fromEntries(
+    strayLiterals.map((literal) => [`--${literal.name}`, literal.hex]),
+  );
   await writeFile(
     baselinePath,
     `${JSON.stringify(baseline, null, 2)}\n`,
     'utf8',
   );
-  console.log(`Baseline updated: ${baseline.length} stray colour(s) recorded.`);
+  console.log(
+    `Baseline updated: ${strayLiterals.length} stray token(s) recorded.`,
+  );
   process.exit(0);
 }
 
-const baseline = new Set(
-  existsSync(baselinePath)
-    ? JSON.parse(await readFile(baselinePath, 'utf8'))
-    : [],
-);
+const baseline = existsSync(baselinePath)
+  ? JSON.parse(await readFile(baselinePath, 'utf8'))
+  : {};
 
-const known = strayLiterals.filter((literal) => baseline.has(literal.hex));
-const regressions = strayLiterals.filter(
-  (literal) => !baseline.has(literal.hex),
-);
+// Keyed on name *and* value: a new token reusing a baselined colour is still
+// new, and an existing token swapped to a different off-palette colour is
+// still a new colour. Either one has to be accepted deliberately.
+const isBaselined = (literal) => baseline[`--${literal.name}`] === literal.hex;
+
+const known = strayLiterals.filter(isBaselined);
+const regressions = strayLiterals.filter((literal) => !isBaselined(literal));
 
 console.log(
   `theme.css literals with no active Figma primitive backing (baselined, non-blocking): ${known.length}`,
@@ -163,7 +166,7 @@ if (regressions.length === 0) {
   process.exit(0);
 }
 
-console.error('theme.css defines new colours not in that baseline:\n');
+console.error('theme.css has off-palette tokens that are not baselined:\n');
 for (const literal of regressions) {
   console.error(`  --${literal.name}: ${literal.hex};`);
 }

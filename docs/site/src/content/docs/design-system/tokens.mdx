@@ -95,10 +95,11 @@ Figma marks deprecated — a variable whose own name, or whose light-mode
   fails the check.
 - It also prints, informationally, every `theme.css` literal that doesn't match any active Figma
   primitive by name — the full compatibility picture, not just the ones causing a failure.
-- It fails only when a _new_ such literal appears that isn't already in <RepoFile
-  path="scripts/figma-token-baseline.json" />, the same baseline pattern <RepoFile
-  path="scripts/check-duplicate-arbitrary-values.mjs" /> uses: pre-existing stray colours don't
-  block CI, a new one does.
+- It fails unless that literal is already in <RepoFile
+  path="scripts/figma-token-baseline.json" /> under the same token name **and** the same value, so
+  pre-existing debt doesn't block CI while a new token, a renamed one, or a new value on an
+  existing one does. This mirrors the baseline pattern in <RepoFile
+  path="scripts/check-duplicate-arbitrary-values.mjs" />.
 
 ```bash
 pnpm check:figma-tokens
