@@ -1,8 +1,53 @@
-import {
-  photos,
-  Photo,
-  type Asset,
-} from '@/components/sections/OrgSignupSection';
+import Image from 'next/image';
+
+export interface Asset {
+  src: string;
+  alt: string;
+  flipped?: boolean;
+  /** Optional object-position tweak when object-cover crops an off-centre subject. */
+  objectPosition?: string;
+}
+
+// The five collage photos, referenced by both the desktop and mobile layouts.
+export const photos = {
+  child: {
+    src: '/child-gift.jpg',
+    alt: 'Uśmiechnięty chłopiec otwierający pudełko z darem',
+    flipped: true,
+    objectPosition: 'object-[center_28%]',
+  },
+  flower: {
+    src: '/hands-with-flower.png',
+    alt: 'Dłonie trzymające żółty kwiat',
+  },
+  volunteers: {
+    src: '/volunteers-aid.png',
+    alt: 'Wolontariusze pakujący dary rzeczowe do kartonu',
+    objectPosition: 'object-[62%_center]',
+  },
+  family: {
+    src: '/family-embrace.png',
+    alt: 'Rodzina przytulająca się razem',
+  },
+  senior: {
+    src: '/senior-hands.png',
+    alt: 'Dłoń wspierająca starszą osobę',
+  },
+} satisfies Record<string, Asset>;
+
+export function Photo({ asset, sizes }: { asset: Asset; sizes: string }) {
+  return (
+    <Image
+      src={asset.src}
+      alt={asset.alt}
+      fill
+      sizes={sizes}
+      className={`object-cover ${asset.objectPosition ?? ''} ${
+        asset.flipped ? '-scale-x-100' : ''
+      }`}
+    />
+  );
+}
 
 export default function OrgSignupCollage() {
   // Desktop collage: positions/sizes derived from the Figma frame (778×591).
