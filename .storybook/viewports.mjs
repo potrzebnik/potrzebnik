@@ -4,6 +4,11 @@ export const viewportOptions = {
     type: 'mobile',
     styles: { width: '390px', height: '844px' },
   },
+  '1100-900': {
+    name: 'Desktop 1100x900',
+    type: 'desktop',
+    styles: { width: '1100px', height: '900px' },
+  },
   '1280-800': {
     name: 'Desktop 1280x800',
     type: 'desktop',

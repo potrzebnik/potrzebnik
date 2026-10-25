@@ -31,8 +31,9 @@ named sizing token (`--height-*`, `--width-*`, `--max-width-*`, …) promoted fr
 arbitrary value — `--height-section-image-lg: var(--section-image-height-lg)` is what makes
 `h-section-image-lg` exist, the same way a colour token does. The `:root` block below holds the
 variables themselves, and those divide into **base tokens** (`--background`, `--foreground-strong`,
-`--brand-yellow`, `--border-strong`) and **section tokens** (`--header-*`, `--footer-*`,
-`--org-signup-*`, `--help-section-*`, `--benefits-strip-*`, `--overlay-*`, `--image-frame-*`).
+`--brand-yellow`, `--border-strong`) and **section tokens** (`--header-*`, `--construction-banner-*`,
+`--footer-*`, `--hero-*`, `--management-support-*`, `--org-signup-*`, `--help-section-*`,
+`--benefits-strip-*`, `--overlay-*`, `--image-frame-*`).
 
 That division is where a literal is allowed to live: only in a base token, only
 in `theme.css`. Section tokens alias one
@@ -124,10 +125,9 @@ settings, instead of hand-authoring a component under `ui/`.
 ## Images always go through `next/image`
 
 Route every image through `next/image`: never a raw `<img>` tag and never a CSS `url(/…)` background
-reference. The two components that currently render images, <RepoFile
+reference. Every component that renders an image, such as <RepoFile
 path="src/components/shared/HelpCard.tsx" /> and <RepoFile
-path="src/components/shared/MediaTextSection.tsx" />, both import `Image` from `next/image` for this
-reason.
+path="src/components/sections/HeroSection.tsx" />, imports `Image` from `next/image` for this reason.
 
 The reason is the published gallery. Stories reference assets root-absolutely (`/children.jpg`),
 which is correct for the application but resolves against the site origin, not against

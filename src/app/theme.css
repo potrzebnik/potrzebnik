@@ -54,6 +54,15 @@
   --color-benefits-strip-pill-bg: var(--benefits-strip-pill-bg);
   --color-benefits-strip-pill-bg-accent: var(--benefits-strip-pill-bg-accent);
   --color-benefits-strip-fg: var(--benefits-strip-fg);
+  --color-hero-surface: var(--hero-surface);
+  --color-hero-border: var(--hero-border);
+  --color-hero-pin: var(--hero-pin);
+  --color-hero-cta-bg: var(--hero-cta-bg);
+  --color-hero-cta-bg-hover: var(--hero-cta-bg-hover);
+  --color-construction-banner-bg: var(--construction-banner-bg);
+  --color-construction-banner-fg: var(--construction-banner-fg);
+  --color-management-support-band-bg: var(--management-support-band-bg);
+  --color-management-support-border: var(--management-support-border);
   --animate-benefits-marquee: benefits-marquee 64s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -138,6 +147,22 @@
   --org-signup-fg: var(--foreground);
   --org-signup-btn-bg: var(--brand-yellow-strong);
   --org-signup-btn-bg-hover: var(--brand-yellow-strong-hover);
+
+  /* Hero. Pins sit on the photo, so they stay white whatever the surface. */
+  --hero-surface: var(--background);
+  --hero-border: var(--foreground-strong);
+  --hero-pin: var(--background);
+  --hero-cta-bg: var(--brand-yellow-strong);
+  --hero-cta-bg-hover: var(--brand-yellow-strong-hover);
+
+  /* "Strona w budowie" strip under the header, on every public page. */
+  --construction-banner-bg: var(--brand-blue-pale);
+  --construction-banner-fg: var(--foreground-strong);
+
+  /* Management-support section, under the hero. The border also draws the
+     band's three guide lines. */
+  --management-support-band-bg: var(--accent-blue);
+  --management-support-border: var(--foreground-strong);
 
   /* Benefits tags marquee strip, between the org-signup CTA and the footer. */
   --benefits-strip-band-bg: var(--background);
