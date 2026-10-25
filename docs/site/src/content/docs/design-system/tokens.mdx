@@ -24,11 +24,15 @@ token is a `theme.css` edit; adding a global rule or an animation is a
 
 `theme.css` has two halves. The `@theme inline` block maps each Tailwind token
 to a CSS variable: a `--color-*` entry pointing at the `--header-bg` variable is
-what makes `bg-header-bg` exist. It also declares the non-colour tokens `--font-sans`,
-`--font-mono`, and the `--radius-*` scale. The `:root` block below holds the
-variables themselves, and those divide into **base tokens** (`--background`,
-`--foreground-strong`, `--brand-yellow`, `--border-strong`) and **section
-tokens** (`--header-*`, `--construction-banner-*`, `--footer-*`, `--hero-*`, `--management-support-*`, `--org-signup-*`, `--help-section-*`,
+what makes `bg-header-bg` exist. A colour class with no matching `--color-*` entry, such as
+`bg-muted`, renders nothing, so ESLint reports it through `potrzebnik/no-untokenized-tailwind`. It
+also declares the non-colour tokens `--font-sans`, `--font-mono`, the `--radius-*` scale, and any
+named sizing token (`--height-*`, `--width-*`, `--max-width-*`, …) promoted from a repeated
+arbitrary value — `--height-section-image-lg: var(--section-image-height-lg)` is what makes
+`h-section-image-lg` exist, the same way a colour token does. The `:root` block below holds the
+variables themselves, and those divide into **base tokens** (`--background`, `--foreground-strong`,
+`--brand-yellow`, `--border-strong`) and **section tokens** (`--header-*`, `--construction-banner-*`,
+`--footer-*`, `--hero-*`, `--management-support-*`, `--org-signup-*`, `--help-section-*`,
 `--benefits-strip-*`, `--overlay-*`, `--image-frame-*`).
 
 That division is where a literal is allowed to live: only in a base token, only
@@ -82,6 +86,19 @@ new count explicitly:
 pnpm check:duplicate-values:update-baseline
 ```
 
+Some components are decorative shape collages — <RepoFile
+path="src/components/shared/ImageOverlay.tsx" /> and <RepoFile
+path="src/components/sections/OrgSignupCollage.tsx" /> position absolutely-placed panels and a
+clip-path corner with `top`/`left`/`height`/`width` percentages that describe one shape's spot in
+that component's own composition. Two shapes coincidentally sharing a height is not duplication in
+the token sense — naming it would imply a relationship between the shapes that doesn't exist. Both
+files are listed in `EXEMPT_FILES` in the script and excluded from the tally entirely, so their
+percentages never reach the baseline. The exemption is scoped to the collage file, not its parent
+section — <RepoFile path="src/components/sections/OrgSignupSection.tsx" /> only renders
+`OrgSignupCollage` inside a wrapper, and its own spacing and sizing values are tracked like anywhere
+else. A new decorative-collage component earns the same exemption, kept to its own file; anything
+else repeated 3+ times should become a named token instead.
+
 ## UI primitives vs feature composites
 
 Three tiers of component live under <RepoFile path="src/components" />:
@@ -108,10 +125,9 @@ settings, instead of hand-authoring a component under `ui/`.
 ## Images always go through `next/image`
 
 Route every image through `next/image`: never a raw `<img>` tag and never a CSS `url(/…)` background
-reference. The two components that currently render images, <RepoFile
+reference. Every component that renders an image, such as <RepoFile
 path="src/components/shared/HelpCard.tsx" /> and <RepoFile
-path="src/components/shared/SectionTemplate.tsx" />, both import `Image` from `next/image` for this
-reason.
+path="src/components/sections/HeroSection.tsx" />, imports `Image` from `next/image` for this reason.
 
 The reason is the published gallery. Stories reference assets root-absolutely (`/children.jpg`),
 which is correct for the application but resolves against the site origin, not against

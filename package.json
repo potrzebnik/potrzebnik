@@ -42,7 +42,7 @@
     "*.css": [
       "prettier --write"
     ],
-    "*.{json,md,mdx,yml,yaml}": [
+    "!(CLAUDE).{json,md,mdx,yml,yaml}": [
       "prettier --write"
     ]
   },
