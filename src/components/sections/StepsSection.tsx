@@ -13,7 +13,7 @@ const steps: Step[] = [
     id: 1,
     title: 'Zgłoś swoją organizację',
     description:
-      'Zgłoś swoją organizację – w formlarzu poprosimy o podanie NIP organizacji. Automatycznie sprawdzimy dane w KRS, aby zapewnić bezpieczeństwo Twoim darczyńcom.',
+      'Zgłoś swoją organizację – w formularzu poprosimy o podanie NIP organizacji. Automatycznie sprawdzimy dane w KRS, aby zapewnić bezpieczeństwo Twoim darczyńcom.',
   },
   {
     id: 2,
