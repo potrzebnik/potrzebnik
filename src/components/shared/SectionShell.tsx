@@ -12,17 +12,22 @@ const shellRhythms = {
 
 interface SectionShellProps {
   children: ReactNode;
+  id?: string;
   variant?: keyof typeof shellVariants;
   rhythm?: keyof typeof shellRhythms;
 }
 
 export default function SectionShell({
   children,
+  id,
   variant = 'contained',
   rhythm = 'default',
 }: SectionShellProps) {
   return (
-    <section className={`${shellVariants[variant]} ${shellRhythms[rhythm]}`}>
+    <section
+      id={id}
+      className={`${shellVariants[variant]} ${shellRhythms[rhythm]}`}
+    >
       {children}
     </section>
   );

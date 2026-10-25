@@ -18,7 +18,7 @@ interface DescriptionItem {
   text: string;
 }
 
-interface SectionTemplateProps {
+interface MediaTextSectionProps {
   title: string;
   descriptions: DescriptionItem[];
   image: ImageProperties;
@@ -28,19 +28,19 @@ interface SectionTemplateProps {
 }
 
 export const heightVariants = {
-  sm: 'h-[250px] md:h-[350px]',
+  sm: 'h-[250px] md:h-section-image-lg',
   md: 'h-[300px] md:h-[450px]',
-  lg: 'h-[350px] md:h-[550px]',
+  lg: 'h-section-image-lg md:h-[550px]',
 } as const;
 
-const SectionTemplate = ({
+const MediaTextSection = ({
   title,
   descriptions,
   image,
   buttonText,
   overlayVariant,
   reversed = false,
-}: SectionTemplateProps) => {
+}: MediaTextSectionProps) => {
   return (
     <SectionShell>
       <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 xl:gap-24">
@@ -59,7 +59,7 @@ const SectionTemplate = ({
                 alt={image.alt}
                 width={400}
                 height={400}
-                className={`${image.frame ? 'h-[95%] w-[95%]' : 'h-full w-full'} rounded-lg object-cover`}
+                className={`${image.frame ? 'h-image-frame-inset w-image-frame-inset' : 'h-full w-full'} rounded-lg object-cover`}
               />
             </div>
           </div>
@@ -88,4 +88,4 @@ const SectionTemplate = ({
   );
 };
 
-export default SectionTemplate;
+export default MediaTextSection;

@@ -16,6 +16,10 @@ const meta = {
       control: 'radio',
       options: ['tight', 'loose'],
     },
+    size: {
+      control: 'radio',
+      options: ['section', 'display'],
+    },
   },
   args: {
     children: 'Zobacz jak możesz pomóc',
@@ -46,5 +50,13 @@ export const LooseSpacing: Story = {
   args: {
     align: 'center',
     spacing: 'loose',
+  },
+};
+
+// The large page-level heading used by the hero and the sections under it.
+export const Display: Story = {
+  args: {
+    as: 'h1',
+    size: 'display',
   },
 };

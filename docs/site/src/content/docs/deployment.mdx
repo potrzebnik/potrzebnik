@@ -44,9 +44,43 @@ the build breaks in CI while passing locally.
 
 ## Application deployment
 
-The application has no deploy target yet. There is no hosting environment, no
-production database, and no release process beyond the CI checks above; the
-repository carries no `Dockerfile` and no hosting-provider configuration.
+The application has no production deploy target: no production database and no
+release process beyond the CI checks above. What it does have is a **design
+preview**, a Cloudflare Worker that serves the public pages so the design team
+can review them on a real URL.
+
+### Design preview on Cloudflare Workers
+
+The Worker is built with [OpenNext for Cloudflare](https://opennext.js.org/cloudflare)
+from <RepoFile path="open-next.config.ts" /> and <RepoFile path="wrangler.jsonc" />.
+It is named `potrzebnik-preview`, so it is served at
+`https://potrzebnik-preview.<account-subdomain>.workers.dev`. Prerendered pages
+come straight from the Worker's static assets, so the preview needs no R2
+bucket or KV namespace; `next/image` is optimised through the Worker's
+Cloudflare Images binding.
+
+Deploys are manual, from a machine logged in to the Cloudflare account
+(`pnpm exec wrangler login`), from whichever branch should be on the preview:
+
+```bash
+POSTGRES_USER=preview POSTGRES_PASSWORD=preview POSTGRES_DB=preview \
+POSTGRES_PORT=5432 BETTER_AUTH_SECRET=preview-placeholder-secret-long-enough \
+BETTER_AUTH_URL=https://potrzebnik-preview.<account-subdomain>.workers.dev \
+GOOGLE_AUTH_ENABLED=false EMAIL_SENDING_ENABLED=false \
+pnpm deploy:cf
+```
+
+`pnpm preview:cf` with the same variables builds the Worker and runs it locally
+in `workerd` at `http://localhost:8787` instead of deploying.
+
+- The variables are placeholders for the same reason as in CI: the build
+  resolves the database URL and auth configuration even though the public
+  pages never touch them. There is no database behind the preview, so the
+  routes that need one (`/api/auth/*`, `/api/orgs`, the dashboard) do not work
+  there.
+- OpenNext inlines `.env`, `.env.production` and `.env.local` into the Worker
+  bundle. Deploy from a checkout where none of them holds a real secret; pass
+  the placeholders on the command line as above instead.
 
 The only container definition in the repository is <RepoFile path="compose.yml" />, which provides the local development Postgres
 that `startup_dev.sh` brings up. It is a developer convenience, not a deployment

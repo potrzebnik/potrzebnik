@@ -67,7 +67,7 @@
               "/^rgb/",
               "/^oklch\\(\\s*[\\d.]/"
             ],
-            "/^--(header|footer|org-signup|help-section|benefits-strip|page-feedback|overlay|image-frame)-/": [
+            "/^--(header|construction-banner|footer|hero|management-support|org-signup|help-section|benefits-strip|page-feedback|overlay|image-frame)-/": [
               "/^#/",
               "/^rgb/",
               "/^oklch\\("

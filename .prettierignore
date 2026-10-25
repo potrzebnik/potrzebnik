@@ -17,3 +17,5 @@ docs/site/.astro
 docs/site/public/storybook
 docs/site/src/generated
 pnpm-lock.yaml
+.open-next
+.wrangler

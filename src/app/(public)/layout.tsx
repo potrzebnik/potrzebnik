@@ -1,3 +1,4 @@
+import { ConstructionBanner } from '@/components/features/ConstructionBanner';
 import { PublicHeader } from '@/components/features/PublicHeader';
 import { PublicFooter } from '@/components/features/PublicFooter';
 import {
@@ -14,6 +15,7 @@ export default function PublicLayout({
     <>
       <FeedbackActivationScript />
       <PublicHeader />
+      <ConstructionBanner />
       <main>{children}</main>
       <PublicFooter />
       <PageFeedback />
