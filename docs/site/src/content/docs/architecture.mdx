@@ -28,12 +28,67 @@ to least reusable:
 - <RepoFile path="src/components/shared" />: small composites reused across more
   than one feature or section (cards, overlays).
 - <RepoFile path="src/components/features" />: page chrome such as the public
-  header and footer.
+  header and footer, plus the self-contained page-feedback widget described
+  below.
 - <RepoFile path="src/components/sections" />: page-specific sections assembled
   from the layers above.
 
 A component only moves down this list (toward `ui`) once a second call site needs it. Promoting
 speculatively is what turns `shared` into a dumping ground.
+
+## Page feedback widget
+
+<RepoFile path="src/components/features/PageFeedback" /> lets a reviewer holding
+a feedback link point at an element of a public page, attach a note, and send
+the queued notes in one batch to the shared feedback endpoint
+(`DEFAULT_FEEDBACK_ENDPOINT`, `POST /api/feedback-submit`). The folder's only
+contact with the rest of the app is its mount in
+<RepoFile path="src/app/(public)/layout.tsx" />, so it can later be swapped for
+a package by changing that one import:
+
+```tsx
+import {
+  FeedbackActivationScript,
+  PageFeedback,
+} from '@/components/features/PageFeedback';
+
+<FeedbackActivationScript />  {/* inline script, runs before hydration */}
+<PageFeedback />              {/* or <PageFeedback endpoint="https://…" /> */}
+```
+
+The widget turns on from a link with the token in the fragment, which the browser never sends to
+the server: `https://<host>/<any-page>#uwagi=fb_<43 chars>`. A fragment can keep an anchor after
+`&` (`#uwagi=fb_…&cennik` leaves `#cennik`); the older `?uwagi=fb_…` form is still read, and the
+fragment wins when both are present. The inline script removes the token from the URL with
+`history.replaceState` and stores a valid one in `localStorage` under `agency-feedback:token`. A
+visitor without a token gets nothing: `PageFeedback` renders `null` and never downloads the rest of
+the widget, zod, or the screenshot library, all of which load through `import()`.
+
+Once active, a floating "Uwagi (N)" button opens the queue. "Wskaż element" starts picking: hover
+outlines the element under the pointer, a click or tap picks it, Tab plus Enter or Space does the
+same from the keyboard, Alt + click passes the click through to the page, and Escape stops. Notes
+queue in `localStorage` under `agency-feedback:queue` and survive reloads; only notes the endpoint
+accepted with a 200 leave the queue. "Zakończ uwagi" deletes the token and the queue from that
+browser.
+
+Each note carries its kind and text, `location.pathname` (no query string), a CSS selector (unique
+`id`, then unique `data-testid`, then an `nth-of-type` path), up to 500 characters of the element's
+text, the viewport size, and a JPEG of the area around the element made with `modern-screenshot`
+(at most five queued notes keep one). The contract's `sourceId` and `buildSha` fields stay
+optional and are never sent.
+
+It does **not** collect form values. `elementText` skips the whole subtree of every `input`,
+`textarea`, `select`, and `[contenteditable]`, and the screenshot scrubs `input` (other than
+buttons, checkboxes, and radios), `textarea`, and `[contenteditable]` values in the DOM clone
+before rasterising, resetting a `select` to its first option. It also skips the widget's own
+overlay (`data-page-feedback-ui`), cookies, headers, and text outside the picked element. The mask
+covers field values only: `canvas` pixels, `video` frames, and visitor data rendered as plain text
+(for example "Witaj, Jan") still show up in the image. <RepoFile
+path="src/components/features/PageFeedback/lib/describeElement.test.ts" /> and <RepoFile
+path="src/components/features/PageFeedback/lib/screenshotMask.test.ts" /> pin both guarantees.
+
+The site's origin has to be on the token's allowlist at the endpoint, and a Content Security Policy,
+if one is added, has to allow the endpoint host in `connect-src`.
 
 ## Storybook as the component test harness
 

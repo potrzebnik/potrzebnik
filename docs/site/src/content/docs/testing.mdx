@@ -22,7 +22,16 @@ Tests run as three separate Vitest projects across two config files rather than 
 
 - **`unit`**: configured in <RepoFile path="vitest.node.config.ts" />, runs `*.test.ts` files
   under `src/` (excluding integration tests) and the `*.test.mjs` files next to the custom ESLint
-  rules in `eslint-rules/`, all under Node. Run with:
+  rules in `eslint-rules/`, all under Node. A file that needs a DOM opts into jsdom with a docblock
+  on its first line, as the page-feedback tests under
+
+  <RepoFile path="src/components/features/PageFeedback/lib" /> do:
+
+  ```ts
+  // @vitest-environment jsdom
+  ```
+
+  Run with:
 
   ```bash
   pnpm test

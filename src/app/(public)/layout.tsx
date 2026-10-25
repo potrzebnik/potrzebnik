@@ -1,5 +1,9 @@
 import { PublicHeader } from '@/components/features/PublicHeader';
 import { PublicFooter } from '@/components/features/PublicFooter';
+import {
+  FeedbackActivationScript,
+  PageFeedback,
+} from '@/components/features/PageFeedback';
 
 export default function PublicLayout({
   children,
@@ -8,9 +12,11 @@ export default function PublicLayout({
 }) {
   return (
     <>
+      <FeedbackActivationScript />
       <PublicHeader />
       <main>{children}</main>
       <PublicFooter />
+      <PageFeedback />
     </>
   );
 }
