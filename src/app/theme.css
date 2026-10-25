@@ -63,6 +63,17 @@
   --color-construction-banner-fg: var(--construction-banner-fg);
   --color-management-support-band-bg: var(--management-support-band-bg);
   --color-management-support-border: var(--management-support-border);
+  --color-page-feedback-bg: var(--page-feedback-bg);
+  --color-page-feedback-fg: var(--page-feedback-fg);
+  --color-page-feedback-fg-muted: var(--page-feedback-fg-muted);
+  --color-page-feedback-border: var(--page-feedback-border);
+  --color-page-feedback-highlight: var(--page-feedback-highlight);
+  --color-page-feedback-highlight-fg: var(--page-feedback-highlight-fg);
+  --color-page-feedback-alert-fg: var(--page-feedback-alert-fg);
+  --color-page-feedback-success: var(--page-feedback-success);
+  --color-page-feedback-warning: var(--page-feedback-warning);
+  --color-page-feedback-danger: var(--page-feedback-danger);
+  --color-page-feedback-danger-fg: var(--page-feedback-danger-fg);
   --animate-benefits-marquee: benefits-marquee 64s linear infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -175,6 +186,20 @@
      black hairline outline that matches the rest of the landing page. */
   --why-worth-bg: var(--accent-blue);
   --why-worth-border: var(--foreground-strong);
+
+  /* Page-feedback widget: the floating review panel, the picker outline drawn
+     over page content, and the send-result alerts. */
+  --page-feedback-bg: var(--card);
+  --page-feedback-fg: var(--card-foreground);
+  --page-feedback-fg-muted: var(--muted-foreground);
+  --page-feedback-border: var(--border);
+  --page-feedback-highlight: var(--primary);
+  --page-feedback-highlight-fg: var(--primary-foreground);
+  --page-feedback-alert-fg: var(--foreground);
+  --page-feedback-success: var(--brand-green);
+  --page-feedback-warning: var(--brand-yellow);
+  --page-feedback-danger: var(--destructive);
+  --page-feedback-danger-fg: var(--destructive-foreground);
 
   /* Carousel pagination dots: inactive grey, hover darkens, active is the
    wide pill marking the current slide. */
