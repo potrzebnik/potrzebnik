@@ -37,6 +37,7 @@ ruleTester.run('no-untokenized-tailwind', noUntokenizedTailwind, {
     'expect(el).toHaveStyle("text-align: center");',
     'import TextField from "@/components/ui/text-field";',
     'export { x } from "./bg-nope";',
+    'const m = import(`bg-nope`);',
     'const img = "/img/bg-image.png";',
     'const c = "see file bg-nope.png or bg-nope: here";',
     'const c = "bg-top-left bg-top-right bg-bottom-left bg-bottom-right bg-left-top bg-right-bottom";',

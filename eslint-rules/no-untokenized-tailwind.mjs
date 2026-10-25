@@ -153,6 +153,7 @@ const noUntokenizedTailwind = {
         check(node, node.value, node.range[0] + 1);
       },
       TemplateElement(node) {
+        if (MODULE_SOURCE_PARENTS.has(node.parent.parent?.type)) return;
         const quasis = node.parent.quasis;
         check(node, node.value.raw, node.range[0] + 1, {
           joinedBefore: quasis[0] !== node,
