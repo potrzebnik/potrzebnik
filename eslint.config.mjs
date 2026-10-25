@@ -23,6 +23,8 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
     '.storybook/**',
     'storybook-static/**',
+    '.open-next/**',
+    '.wrangler/**',
     // The docs site is a separate workspace package with its own toolchain.
     'docs/site/**',
   ]),
