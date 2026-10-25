@@ -1,8 +1,8 @@
-import SectionTemplate from '@/components/shared/SectionTemplate';
+import MediaTextSection from '@/components/shared/MediaTextSection';
 
 export default function AboutSection() {
   return (
-    <SectionTemplate
+    <MediaTextSection
       title="O nas"
       descriptions={[
         {

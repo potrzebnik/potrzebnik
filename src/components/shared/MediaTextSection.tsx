@@ -18,7 +18,7 @@ interface DescriptionItem {
   text: string;
 }
 
-interface SectionTemplateProps {
+interface MediaTextSectionProps {
   title: string;
   descriptions: DescriptionItem[];
   image: ImageProperties;
@@ -33,14 +33,14 @@ export const heightVariants = {
   lg: 'h-[350px] md:h-[550px]',
 } as const;
 
-const SectionTemplate = ({
+const MediaTextSection = ({
   title,
   descriptions,
   image,
   buttonText,
   overlayVariant,
   reversed = false,
-}: SectionTemplateProps) => {
+}: MediaTextSectionProps) => {
   return (
     <SectionShell>
       <div className="grid grid-cols-1 items-center gap-16 sm:gap-20 lg:grid-cols-2 xl:gap-24">
@@ -88,4 +88,4 @@ const SectionTemplate = ({
   );
 };
 
-export default SectionTemplate;
+export default MediaTextSection;

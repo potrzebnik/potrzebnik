@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import SectionTemplate from '@/components/shared/SectionTemplate';
+import MediaTextSection from '@/components/shared/MediaTextSection';
 
 const meta = {
-  title: 'Shared/SectionTemplate',
-  component: SectionTemplate,
+  title: 'Shared/MediaTextSection',
+  component: MediaTextSection,
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof SectionTemplate>;
+} satisfies Meta<typeof MediaTextSection>;
 
 export default meta;
 
