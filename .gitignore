@@ -54,3 +54,8 @@ docs/site/src/generated/
 
 # Playwright MCP scratch output (page snapshots, console logs, screenshots)
 .playwright-mcp/
+
+# OpenNext / Cloudflare build output
+.open-next/
+.wrangler/
+.dev.vars*
