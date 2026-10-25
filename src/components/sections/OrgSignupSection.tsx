@@ -2,8 +2,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SectionShell from '@/components/shared/SectionShell';
 import { Button } from '@/components/ui/button';
+import OrgSignupCollage from '@/components/sections/OrgSignupCollage';
 
-interface Asset {
+export interface Asset {
   src: string;
   alt: string;
   flipped?: boolean;
@@ -12,7 +13,7 @@ interface Asset {
 }
 
 // The five collage photos, referenced by both the desktop and mobile layouts.
-const photos = {
+export const photos = {
   child: {
     src: '/child-gift.jpg',
     alt: 'Uśmiechnięty chłopiec otwierający pudełko z darem',
@@ -38,28 +39,7 @@ const photos = {
   },
 } satisfies Record<string, Asset>;
 
-// Desktop collage: positions/sizes derived from the Figma frame (778×591).
-const desktopSlots: { asset: Asset; className: string }[] = [
-  { asset: photos.child, className: 'top-0 left-0 h-[26.6%] w-[56.3%]' },
-  {
-    asset: photos.flower,
-    className: 'top-[29.1%] left-[11.4%] h-[30.7%] w-[45.3%]',
-  },
-  {
-    asset: photos.volunteers,
-    className: 'top-[14.6%] left-[58.5%] h-[45.3%] w-[33.9%]',
-  },
-  {
-    asset: photos.family,
-    className: 'top-[62.3%] left-[2%] h-[37.7%] w-[24.3%]',
-  },
-  {
-    asset: photos.senior,
-    className: 'top-[62.3%] left-[28.5%] h-[29.8%] w-[71.5%]',
-  },
-];
-
-function Photo({ asset, sizes }: { asset: Asset; sizes: string }) {
+export function Photo({ asset, sizes }: { asset: Asset; sizes: string }) {
   return (
     <Image
       src={asset.src}
@@ -193,14 +173,7 @@ export default function OrgSignupSection() {
 
         {/* Right: 5-image collage */}
         <div className="relative aspect-[778/591] w-full max-w-[778px]">
-          {desktopSlots.map((slot) => (
-            <div
-              key={slot.asset.src}
-              className={`absolute overflow-hidden rounded-lg shadow-md ${slot.className}`}
-            >
-              <Photo asset={slot.asset} sizes="25vw" />
-            </div>
-          ))}
+          <OrgSignupCollage />
         </div>
       </div>
     </SectionShell>

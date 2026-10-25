@@ -33,7 +33,7 @@ const baselinePath = path.join(
 // baseline as if they were debt to pay down.
 const EXEMPT_FILES = [
   'src/components/shared/ImageOverlay.tsx',
-  'src/components/sections/OrgSignupSection.tsx',
+  'src/components/sections/OrgSignupCollage.tsx',
 ];
 
 const SPACING_PREFIXES = [
