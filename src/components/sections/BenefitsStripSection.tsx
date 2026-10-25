@@ -1,15 +1,24 @@
+import { cn } from '@/lib/utils';
+
 const TAGS = [
-  'dotarcie do darczyńców',
-  'prosty panel zarządzania',
-  'bezpłatne narzędzie',
-  'zwiększenie widoczności',
-  'przyspieszenie pracy',
-  'wsparcie dla organizacji pozarządowych',
+  { label: 'dotarcie do darczyńców' },
+  { label: 'prosty panel zarządzania' },
+  { label: 'bezpłatne narzędzie', accent: true },
+  { label: 'zwiększenie widoczności' },
+  { label: 'przyspieszenie pracy' },
+  { label: 'wsparcie dla organizacji pozarządowych' },
 ];
 
-function Pill({ label }: { label: string }) {
+function Pill({ label, accent }: { label: string; accent?: boolean }) {
   return (
-    <span className="border-benefits-strip-border bg-benefits-strip-pill-bg text-benefits-strip-fg mr-4 shrink-0 rounded-full border px-6 py-3 text-sm font-medium whitespace-nowrap sm:text-base">
+    <span
+      className={cn(
+        'border-benefits-strip-border text-benefits-strip-fg mr-4 shrink-0 rounded-full border px-6 py-3 text-sm font-medium whitespace-nowrap sm:text-base',
+        accent
+          ? 'bg-benefits-strip-pill-bg-accent'
+          : 'bg-benefits-strip-pill-bg',
+      )}
+    >
       {label}
     </span>
   );
@@ -18,8 +27,8 @@ function Pill({ label }: { label: string }) {
 function TagGroup({ decorative = false }: { decorative?: boolean }) {
   return (
     <div className="flex" aria-hidden={decorative || undefined}>
-      {TAGS.map((label) => (
-        <Pill key={label} label={label} />
+      {TAGS.map(({ label, accent }) => (
+        <Pill key={label} label={label} accent={accent} />
       ))}
     </div>
   );
