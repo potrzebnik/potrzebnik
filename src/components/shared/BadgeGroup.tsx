@@ -40,8 +40,12 @@ export default function BadgeGroup({
   return (
     <div className="flex gap-3">
       <div className="flex gap-2">
-        {visible.map((badge) => (
-          <Badge key={badge.id} variant="outline" className="text-xs font-bold">
+        {visible.map((badge, index) => (
+          <Badge
+            key={`${badge.id}-${index}`}
+            variant="outline"
+            className="text-xs font-bold"
+          >
             {badge.label}
           </Badge>
         ))}
@@ -53,11 +57,11 @@ export default function BadgeGroup({
             +{extra.length}
           </PopoverTrigger>
           <PopoverContent className="flex flex-wrap gap-2">
-            {extra.map((b) => (
+            {extra.map((b, index) => (
               <Badge
                 variant="outline"
                 className="shrink-0 text-xs font-bold"
-                key={b.id}
+                key={`${b.id}-${index}`}
               >
                 {b.label}
               </Badge>
